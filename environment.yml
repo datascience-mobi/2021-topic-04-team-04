@@ -1,3 +1,4 @@
 name: environmentGroup4
 dependencies:
   - numpy
+  - scikit-image
