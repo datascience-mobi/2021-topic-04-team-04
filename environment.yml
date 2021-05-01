@@ -1,0 +1,6 @@
+name: environmentGroup4
+dependencies:
+  - numpy
+  - matplotlib inline
+  - pylab
+  - skimage.io
