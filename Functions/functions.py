@@ -7,3 +7,5 @@ def show_image(img, x, y): # Funktion um Bilder schneller schön anzuzeigen
     imshow(img, "gray")
     colorbar()
 
+def sum(x,y):
+    return x+y
