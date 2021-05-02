@@ -10,3 +10,6 @@
 1. update environment: change environment.yml file, commit, update and activate https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#updating-an-environment
    1. conda env update --prefix ./env --file environment.yml  --prune
 1. push, others can pull now environment.yml file and continue in the same way
+
+## Create Python package
+- https://www.tutorialsteacher.com/python/python-package 
