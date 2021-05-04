@@ -8,7 +8,11 @@
 ## Questions
 
 - Können wir Admin-Rechte für das Githubprojekt bekommen, damit wir Issues löschen können. 
-- 
+- Biologischer Hintergrund der Data Sets:
+    1. N2DH-GOWT1: N2DH wird nicht im verlinkten Paper erwähnt, Bedeutung? 
+    1. N2DH-GOWT1: GOWT1 wird zwar benutzt aber nicht erklärt, Bedeutung?
+    1. N2DL-HeLa: N2DL wird nicht im verlinkten Paper erwähnt, Bedeutung?
+
 
 
 ## Plans for next week
