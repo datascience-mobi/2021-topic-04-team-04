@@ -15,6 +15,13 @@ def show_image(img, x, y): # Funktion um Bilder schneller schön anzuzeigen
     plt.imshow(img, "gray")
     plt.colorbar()
 
+def img_resize(img, size_l, size_b):
+    new_size = [size_l, size_b]
+    img_new = np.zeros(new_size)
+    for x in np.ndindex(new_size[0], new_size[1]):
+        img_new[x] = img[x]
+    return img_new
+
 def standarddeviation(img, size): # calculates standard deviation of every pixel (image, size of filter mask)
     result = np.zeros(img.shape) # create empty array (zeros)
     n = (size - 1) // 2
