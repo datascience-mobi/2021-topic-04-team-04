@@ -10,9 +10,9 @@
 - Können wir Admin-Rechte für das Githubprojekt bekommen, damit wir Issues löschen können. 
 - Biologischer Hintergrund der Data Sets:
     1. N2DH-GOWT1: GOWT1 wird zwar benutzt aber nicht erklärt, Bedeutung? Ist GOWT1 ein anderer Name für Oct4?
-- Müssen wir schon gt Biler und normale Bilder vergleichen und Unterschiede analysieren oder reicht dies am Ende unseres Projekts
-- Warum gibt es Unterschiede zwischen gt Bildern und richtigen Bildern von Zellen? Welches Verfahren wurde verwendet, um die gt Bilder zu erstellen?
-- Wie genau sollen wir auf die Methode eingehen?
+- Müssen wir schon gt Biler und normale Bilder im Project Proposal vergleichen und Unterschiede analysieren oder reicht dies am Ende unseres Projekts
+- Warum werden einige Zellen in gt Bildern nicht erkannt? Welches Verfahren wurde verwendet, um die gt Bilder zu erstellen?
+- Wie genau sollen wir auf die Methode eingehen; schrittweise Erklärung der mathematischen Grundlagen?
 - Müssen wir einen Projektplan erstellen, wann was fertig sein soll (widerspricht agilem Projektmangement)?
 - Wie wird die Teamarbeit bewertet? Werden einzelne Pushs bewertet? (Pairprogramming)
 
