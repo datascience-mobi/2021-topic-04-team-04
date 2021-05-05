@@ -26,3 +26,6 @@
 
 - from pylab import *
 - from numpy import *
+
+## Ideas
+- Mehrere Bilder in Liste einlesen (skimage.io.imread_collection)
