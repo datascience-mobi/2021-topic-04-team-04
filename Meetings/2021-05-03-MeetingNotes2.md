@@ -13,6 +13,7 @@
 - Müssen wir schon gt Biler und normale Bilder vergleichen und Unterschiede analysieren oder reicht dies am Ende unseres Projekts
 - Warum gibt es Unterschiede zwischen gt Bildern und richtigen Bildern von Zellen? Welches Verfahren wurde verwendet um die gt Bilder zu erstellen?
 - Wie genau sollen wir auf die Methode eingehen?
+- Wie wird die Teamarbeit bewertet? Werden einzelne Pushs bewertet? (Pairprogramming)
 
 
 ## Plans for next week
