@@ -29,3 +29,7 @@
 
 ## Ideas
 - Mehrere Bilder in Liste einlesen (skimage.io.imread_collection)
+
+
+## if __name__ == '__main__': 
+- https://www.data-science-architect.de/__name____main__/
