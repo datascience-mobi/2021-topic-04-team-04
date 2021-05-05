@@ -19,6 +19,7 @@
   -> Code rausnehmen und Methode z.B. in einem Diagramm erklären. Symbolischere Darstellung, auf die Zeit schauen, verbildlichen wie auf Folie 9
   -> Dice score noch einfügen
   -> Zeitmessung, kleineres Bild und nicht zu viel Zeit hier verlieren
+  -> Unit tests
 - Müssen wir einen Projektplan erstellen, wann was fertig sein soll (widerspricht agilem Projektmangement)?
   -> Backlog umbenennen
 - Wie wird die Teamarbeit bewertet? Werden einzelne Pushs bewertet? (Pairprogramming)
