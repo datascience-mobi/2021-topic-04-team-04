@@ -33,7 +33,7 @@
 - Automatic Seed Selection
 - Region Growing
 - Region Merging
-- Dice Score
+- Dice Score, andere Evaluationsmöglichkeiten
 - Ideen zum besseren Programmieren
 
 
