@@ -26,5 +26,18 @@
   -> so wenig wie möglich in Jupyter Notebooks
   -> STRG + b Import Definitionen
 
+## Slides
+- Warum Image Processing
+- Grundüberblick über Algorythmus, Vergleich mit anderen Algorythmus
+- Preprocessing
+- Automatic Seed Selection
+- Region Growing
+- Region Merging
+- Dice Score
+- Ideen zum besseren Programmieren
+
+
+
+
 ## Plans for next week
 -
