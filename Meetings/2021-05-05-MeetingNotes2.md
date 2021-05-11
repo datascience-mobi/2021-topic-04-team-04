@@ -33,8 +33,10 @@
 - Automatic Seed Selection
 - Region Growing
 - Region Merging
-- Dice Score
+- Dice Score, andere Evaluationsmöglichkeiten
 - Ideen zum besseren Programmieren
+- Bild für pair programming
+- Bild für Überblicksseite Project management
 
 
 
