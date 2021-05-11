@@ -33,3 +33,15 @@
 
 ## if __name__ == '__main__': 
 - https://www.data-science-architect.de/__name____main__/
+
+## dice score
+def dice_coef(y_true, y_pred, smooth=1):
+  intersection = K.sum(y_true * y_pred, axis=[1,2,3])
+  union = K.sum(y_true, axis=[1,2,3]) + K.sum(y_pred, axis=[1,2,3])
+  dice = K.mean((2. * intersection + smooth)/(union + smooth), axis=0)
+  return dice
+- https://towardsdatascience.com/metrics-to-evaluate-your-semantic-segmentation-model-6bcb99639aa2
+
+## use of image segmentation 
+- https://imageannotation.home.blog/2020/06/18/what-is-the-application-of-image-segmentation/
+- https://en.wikipedia.org/wiki/Image_segmentation
