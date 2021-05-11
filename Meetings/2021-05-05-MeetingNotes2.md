@@ -36,6 +36,10 @@
 - Dice Score, andere Evaluationsmöglichkeiten
 - Ideen zum besseren Programmieren
 
+## Notes Marie
+- Algorythmus besser machen, indem man vorgefertigte Standardabweichungsfunktion verwendet
+- Standardabweichungsalgorythmus korrigieren
+
 
 
 
