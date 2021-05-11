@@ -6,7 +6,7 @@
 ## Last week's progress
 
 - Soll jupyter ins Environment rein; wenn ja wie?
-- 
+- Wie genau können wir Unit tests verwenden?
 
 ## Questions
 -
