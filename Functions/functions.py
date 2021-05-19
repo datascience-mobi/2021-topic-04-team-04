@@ -70,3 +70,5 @@ def euclidean_n(img, size): # calculates maximum euclidean distance for every pi
             result[p] = max(neighborhood_distance) # chooses maximum distance
     return result
 
+
+
