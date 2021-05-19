@@ -22,6 +22,12 @@ def img_resize(img, size_l, size_b):
         img_new[x] = img[x]
     return img_new
 
+def t_pic():
+    img = np.zeros([100, 100])
+    img[30:40, 30:40] = 1
+    img[75:80, 75:80] = 1
+    return img
+
 def standarddeviation(img, size): # calculates standard deviation of every pixel (image, size of filter mask)
     result = np.zeros(img.shape) # create empty array (zeros)
     n = (size - 1) // 2
