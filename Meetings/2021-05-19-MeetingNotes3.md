@@ -12,4 +12,7 @@
 -
 
 ## Plans for next week
--
+- Jupyter notebook
+- environment
+- unit test
+- rename packages

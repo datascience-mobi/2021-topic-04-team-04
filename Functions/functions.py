@@ -7,8 +7,8 @@ from matplotlib import pylab, mlab
 from IPython.display import display
 from IPython.core.pylabtools import figsize, getfigs
 
-from pylab import *
-from numpy import *
+#from pylab import *
+#from numpy import *
 
 def show_image(img, x, y): # Funktion um Bilder schneller schön anzuzeigen
     plt.figure(figsize=(x,y))
@@ -29,7 +29,7 @@ def t_pic():
     return img
 
 def standarddeviation(img, size): # calculates standard deviation of every pixel (image, size of filter mask)
-    result = np.zeros(img.shape) # create empty array (zeros)
+    result = np.zeros(img.shape) # c'reate empty array (zeros)
     n = (size - 1) // 2
     for p in np.ndindex(img.shape): # iterates over every pixel
         neighborhood_sum = 0
