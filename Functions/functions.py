@@ -1,14 +1,7 @@
 import skimage.io as sk
 import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib
-from matplotlib import pylab, mlab
-
-from IPython.display import display
-from IPython.core.pylabtools import figsize, getfigs
-
-#from pylab import *
-#from numpy import *
+import math as m
 
 def show_image(img, x, y): # Funktion um Bilder schneller schön anzuzeigen
     plt.figure(figsize=(x,y))
@@ -46,7 +39,7 @@ def standarddeviation(img, size): # calculates standard deviation of every pixel
                 j = p[1]-n + q[1]
                 deviation += (img[i,j] - mean)**2 # calculate deviation from mean
 
-            result[p] = sqrt(1/(size**2) * deviation) # calculate standard deviation
+            result[p] = m.sqrt(1/(size**2) * deviation) # calculate standard deviation
     return result
 
 def euclidean_relative(img, size): # calculates maximum relative euclidean distance for every pixel in nxn neighborhood
