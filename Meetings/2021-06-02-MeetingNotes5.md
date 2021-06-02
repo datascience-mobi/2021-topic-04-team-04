@@ -1,5 +1,5 @@
 # Meeting Notes
-**01.06.2021**
+**02.06.2021**
 
 ---
 
@@ -58,3 +58,7 @@
 - Decrease region number: list Methode von Python wird überschrieben, nicht machen!
 
 - Parallel: Multi Processing Built in
+
+- Umbennenung von i, q, j, etc. 
+
+- Aussagekräftigere Namen von Parametern
