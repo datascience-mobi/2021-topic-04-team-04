@@ -28,18 +28,16 @@ def unseeded_find_neighbors(img, regions):
 
 
 def unseeded_mean_region(img, regions):
-    mean = []
-    region_max = int(max(regions.flatten()))
-    for count in range(1,region_max + 1):
-        region_pixel = []
+    mean_value = []
+    region_max = int(max(regions.flatten()))  # calculates amount of regions
+    for count in range(1, region_max + 1):  # iterates over every region
         intensity = []
         for p in np.ndindex(img.shape):
             if regions[p] == count:
-                region_pixel.append(p)
-        for l in region_pixel:
-            intensity.append(img[l])
-        mean.append(sum(intensity)/len(intensity))
-    return mean
+                intensity.append(img[
+                                     p])  # iterates over every pixel in the image and appends intensity value, if it is in the region
+        mean_value.append(np.mean(intensity))  # calculates mean value of region
+    return mean_value  # returns list with average of every region
 
 
 def unseeded_add_neighbors(img, p): #p describes pixel for which neighbors need to be added
@@ -47,13 +45,13 @@ def unseeded_add_neighbors(img, p): #p describes pixel for which neighbors need 
     if p[0] > 0: # Add neighbours to list T, up
         a = (p[0]-1, p[1])
         Ne1.append(a)
-    if p[0] < img.shape[0]: # Add neighbours to list T, down
+    if p[0] < img.shape[0] - 1: # Add neighbours to list T, down
         b = (p[0]+1, p[1])
         Ne1.append(b)
     if p[1] > 0: # Add neighbours to list T, left
         c = (p[0], p[1]-1)
         Ne1.append(c)
-    if p[1] < img.shape[1]: # Add neighbours to list T, right
+    if p[1] < img.shape[1] - 1: # Add neighbours to list T, right
         d = (p[0], p[1]+1)
         Ne1.append(d)
     return Ne1
@@ -67,20 +65,18 @@ def unseeded_distance(img, list, regions): # img intensity values, regions is re
         distance = []
         for j in nei:
             if regions[j] != 0: # Nachbarn mit zugeordneter Region
-                distance.append(abs(img[i] - means[int(regions[j] - 1)])) # Distanz Berechnung
-        if len(distance) != 0:
-            result[i] = min(distance) # Minimale Distanz wird in den array geschrieben
+                distance.append(abs(img[i] - means[int(regions[j] - 1)]))# Distanz Berechnung
+        result[i] = min(distance) # Minimale Distanz wird in den array geschrieben
     return result
 
 
 def unseeded_pixle_pick(distance): # distance ist Ergebnis von unseeded_distance, array mit Distanzen
-    pick = []
     min = np.amin(distance) # Minimale Distanz
     for p in np.ndindex(distance.shape): # alle Pixel checken
         if distance[p] == min: # Wenn Distanz minimaler Distanz entspricht
-            pick.append(p) # Liste an Pixeln mit minimaler Distanz
-        if len(pick) > 0:
-            return pick[0] # Erster Pixel wird ausgewählt (haben wir willkürlich festgelegt)
+            pick = p # Liste an Pixeln mit minimaler Distanz
+            break
+    return pick
 
 
 # Regions Zuweisung z
