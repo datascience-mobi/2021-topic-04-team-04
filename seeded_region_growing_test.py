@@ -5,6 +5,7 @@ import numpy as np
 #%matplotlib inline
 
 from Functions import functions as f
+from Functions import image_processing as ip
 import skimage.io as sk
 from collections import Counter
 
@@ -106,6 +107,31 @@ def find_neighbors(regions):
 
 #%%
 
+#%%
+
+def find_neighbors2(list_pos_region, regions):
+    Ne = []
+    for p in list_pos_region:
+        if regions[p] != 0: # Pixels with region
+            if p[0] > 0: # Add neighbours to list T, left
+                a = (p[0]-1, p[1])
+                if regions[a] == 0 and a not in Ne:
+                    Ne.append(a)
+            if p[0] < regions.shape[0]-1: # Add neighbours to list T, right
+                b = (p[0]+1, p[1])
+                if regions[b] == 0 and b not in Ne:
+                    Ne.append(b)
+            if p[1] > 0: # Add neighbours to list T, up
+                c = (p[0], p[1]-1)
+                if regions[c] == 0 and c not in Ne:
+                    Ne.append(c)
+            if p[1] < regions.shape[1]-1: # Add neighbours to list T, down
+                d = (p[0], p[1]+1)
+                if regions[d] == 0 and d not in Ne:
+                    Ne.append(d)
+    return Ne
+
+
 #neighbors = find_neighbors(test3)
 #print(neighbors)
 
@@ -153,6 +179,14 @@ def one_region_mean(img, regions, new_pixel): #img is array of intensity values,
 
 #%%
 
+# calculated mean value of region of newly labeled pixel
+def one_region_mean2(img, regions, new_pixel): #img is array of intensity values, regions is array with region numbers, new_pixel is position of last added pixel
+    pos_new_reg = np.where(regions == regions[new_pixel])
+    single_mean = np.mean(img[pos_new_reg[0],pos_new_reg[1]])
+    return single_mean #returns mean value of changed region
+
+#%%
+
 def calculation_distance(img, Ne, regions): # img intensity values, regions is region number, Ne is list of neighbours
     max_intensity = np.amax(img)
     means = mean_region(img, regions) # list of mean values of every region
@@ -176,7 +210,7 @@ def calculation_distance(img, Ne, regions): # img intensity values, regions is r
 
 #updates distances for updated region
 def new_distance(img, regions, nearest_reg, distances, new_pixel, Ne, means):
-    new_mean = one_region_mean(img, regions, new_pixel)
+    new_mean = one_region_mean2(img, regions, new_pixel)
     means[int(regions[new_pixel] -1)] = new_mean # list of all mean values of the region with the updated region
     max_intensity = np.amax(img)
     for i in Ne:
@@ -198,6 +232,30 @@ def new_distance(img, regions, nearest_reg, distances, new_pixel, Ne, means):
                     nearest_reg[i] = region_number[int(pos_min_dist)] # saves number of nearest region # saves number of nearest region
                     distances[i] = min_dist
     return distances, nearest_reg, means  # returns array with distance values between 0 and 1 and array with number of nearest region
+
+#%%
+
+def new_distance2(img, regions, nearest_reg, distances, new_pixel, Ne, means):
+    new_mean = one_region_mean2(img, regions, new_pixel)
+    means[int(regions[new_pixel] -1)] = new_mean # list of all mean values of the region with the updated region
+    max_intensity = np.amax(img)
+    pos_new_reg = np.where(regions == regions[new_pixel])
+    pos_new_reg = list(zip(pos_new_reg[0], pos_new_reg[1]))
+    nei_region = find_neighbors2(pos_new_reg, regions)
+    for i in nei_region:
+        nei = add_neighbors(img, i) # list 4 neighbors of pixel i out of unsorted neighbors list
+        distance = []
+        region_number = []
+        for j in nei:
+            if regions[j] != 0: # only neighboring pixels which are sorted
+                distance.append(np.abs((img[i] - means[int(regions[j]-1)])) / max_intensity) # saves tuple of normalized distance of pixel to neighbor j and region of j
+                region_number.append(regions[j])
+        min_dist = min(distance)  # saves minimal distance to 1 of its neighbors in distance array
+        pos_min_dist = distance.index(min(distance))
+        nearest_reg[i] = region_number[int(pos_min_dist)] # saves number of nearest region
+        distances[i] = min_dist
+    return distances, nearest_reg, means  # returns array with distance values between 0 and 1 and array with number of nearest region
+
 
 
 #%%
