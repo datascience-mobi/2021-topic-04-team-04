@@ -17,4 +17,9 @@
 ## Plans for next week
 -
 ## Notes
-- 
+- Shadowing verhindern bei Testbild
+- Großbuchstaben heißt Klasse
+- Unnötige Daten löschen
+- Issue in GitHub
+- aussagekräftige Variablennamen!
+- nicht copy/paste sondern kleinere Unternamen
