@@ -315,18 +315,17 @@ def region_growing(img, regions):
 
 
 #%%
+if __name__ == '__main__':
 
-img_small = img[300:350, 400:450]
-f.show_image(img_small, 15, 8)
-img_r = seeds(img_small, 0.1, 1)
-f.show_image(img_r, 15, 8)
-img_r = seed_merging(img_r)
-f.show_image(img_r, 15, 8)
+    img_small = img[300:350, 400:450]
+    f.show_image(img_small, 15, 8)
+    img_r = seeds(img_small, 0.1, 1)
+    f.show_image(img_r, 15, 8)
+    img_r = seed_merging(img_r)
+    f.show_image(img_r, 15, 8)
 
-#%%
-
-img_r = region_growing(img_small, img_r)
-f.show_image(img_r, 15, 8)
+    img_r = region_growing(img_small, img_r)
+    f.show_image(img_r, 15, 8)
 
 
 
