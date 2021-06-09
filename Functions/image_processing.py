@@ -20,3 +20,9 @@ def t_pic():
     img[30:40, 30:40] = 1
     img[75:80, 75:80] = 1
     return img
+
+def is_border_pixel(p, img):
+    if p[0]-1 >= 0 and p[1]-1 >= 0 and p[0]+1 <= img.shape[0] -1 and p[1]+1 <= img.shape[1] -1:
+        return False
+    return True
+

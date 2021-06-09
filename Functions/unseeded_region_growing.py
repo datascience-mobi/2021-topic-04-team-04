@@ -34,8 +34,7 @@ def unseeded_mean_region(img, regions):
         intensity = []
         for p in np.ndindex(img.shape):
             if regions[p] == count:
-                intensity.append(img[
-                                     p])  # iterates over every pixel in the image and appends intensity value, if it is in the region
+                intensity.append(img[p])  # iterates over every pixel in the image and appends intensity value, if it is in the region
         mean_value.append(np.mean(intensity))  # calculates mean value of region
     return mean_value  # returns list with average of every region
 
