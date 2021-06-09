@@ -57,10 +57,10 @@ def unseeded_add_neighbors(img, p): #p describes pixel for which neighbors need 
     return Ne1
 
 
-def unseeded_distance(img, list, regions): # img intensity values, regions is region number, list is list of neighbours
+def unseeded_distance(img, Ne, regions): # img intensity values, regions is region number, list is list of neighbours
     means = unseeded_mean_region(img, regions)
     result = np.full(img.shape, 500) # Wert 500 damit berechnete Distanzen immer kleiner sind
-    for i in list:
+    for i in Ne:
         nei = unseeded_add_neighbors(img, i) # Nachbarn des Pixels
         distance = []
         for j in nei:
@@ -70,7 +70,7 @@ def unseeded_distance(img, list, regions): # img intensity values, regions is re
     return result
 
 
-def unseeded_pixle_pick(distance): # distance ist Ergebnis von unseeded_distance, array mit Distanzen
+def unseeded_pixel_pick(distance): # distance ist Ergebnis von unseeded_distance, array mit Distanzen
     min = np.amin(distance) # Minimale Distanz
     for p in np.ndindex(distance.shape): # alle Pixel checken
         if distance[p] == min: # Wenn Distanz minimaler Distanz entspricht
@@ -85,16 +85,15 @@ def unseeded_region_direct(img, regions, pick): # pick ist ausgesuchter Pixel
     means = unseeded_mean_region(img, regions)
     nei = unseeded_add_neighbors(img, pick) # Nachbarn des Pixels
     dis = []
+    region_number = []
     for j in nei: # Distanz für Nachbarn wird wieder bestimmt
         if regions[j] != 0: # Nachbarn mit zugeordneter Region
             dis.append(abs(img[pick] - means[int(regions[j] - 1)])) # Distanz Berechnung
-        else: # Hohe Werte um die Reihenfolge der Liste zu erhalten
-            dis.append(500)
+            region_number.append(regions[j])
     minimum = min(dis) # Minimale Distanz
     for d in range(0, len(dis)):
         if dis[d] == minimum: # Bestimmt Region mit niedrigster Distanz
-            region_nei = nei[d] # nimmt den letzten Regionswert
-            regions[pick] = regions[region_nei] # Regionswert vom nähsten Pixel wird übernommen
+            regions[pick] = region_number[d] # Regionswert vom nähsten Pixel wird übernommen
     return regions
 
 
