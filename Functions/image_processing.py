@@ -49,17 +49,35 @@ def is_border_pixel(p, img):
     return True
 
 
-def filter_iteration(pixel, size):
-    """ Funktion schreibt alle Pixel auf, die in einer Filtermaske beachtet werden sollen
+def filter_iteration_sum(img, pixel, size):
+    """ Funktion berechnet die Summe der Intensitäten aller Nachbarn in einer Filtermaske
+    :param img: Bild dessen Intensitäten verwendet werden
     :param pixel: Pixel auf den die Filtermaske angewendet wird
     :param size: Größe der Filtermaske
-    :return: Liste aller Pixel, die in der Filtermaske liegen
+    :return: Summer der Intensitäten aller Pixel in der Filtermaske
     """
     n = (size - 1) // 2
-    filter_neighbors = []
+    neighborhood_sum = 0
     for filter_pixel in np.ndindex(size, size):
         filter_neighbors_row = pixel[0] + filter_pixel[0] - n
         filter_neighbors_col = pixel[1] + filter_pixel[1] - n
-        filter_neighbors.append((filter_neighbors_row, filter_neighbors_col))
-    return filter_neighbors
+        neighborhood_sum += img[filter_neighbors_row, filter_neighbors_col]
+    return neighborhood_sum
+
+
+def filter_iteration_deviation(img, pixel, size, mean):
+    """ # Funktion berechnet die Summe der Abweichungen der Intensitäten vom Mittelwerte der Pixel einer Filtermaske
+    :param img: Bild dessen Intensitäten verwendet werden
+    :param pixel: Pixel auf den die Filtermakse angewendet wird
+    :param size: Größe der Filtermaske
+    :param mean: Mittelwert von dem die Abweichung berechnet wird
+    :return: Summer der Abweichungen vom Mittelwert
+    """
+    n = (size - 1) // 2
+    deviation = 0
+    for filter_pixel in np.ndindex(size, size):
+        filter_neighbors_row = pixel[0] + filter_pixel[0] - n
+        filter_neighbors_col = pixel[1] + filter_pixel[1] - n
+        deviation += (img[filter_neighbors_row, filter_neighbors_col] - mean)**2
+    return deviation
 

@@ -50,4 +50,5 @@ def dice_coef(y_true, y_pred, smooth=1):
 - Definitionen für Bildverarbeitung sind in image_processing und nicht mehr in functions
 - Nur nötige Imports sind in den Functions files, der Rest ist auskommentiert darunter
 - img wird in vielen Definitionen verwendet, soll im Code nicht verwendet werde, um Überschneidungen zu vermeiden
+- Dokument functions ist gelöscht, die Funktionen sind in seed_detection
 - 
