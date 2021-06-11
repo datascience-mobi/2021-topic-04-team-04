@@ -45,3 +45,9 @@ def dice_coef(y_true, y_pred, smooth=1):
 ## use of image segmentation 
 - https://imageannotation.home.blog/2020/06/18/what-is-the-application-of-image-segmentation/
 - https://en.wikipedia.org/wiki/Image_segmentation
+
+## code changes on 11.06.21
+- Definitionen für Bildverarbeitung sind in image_processing und nicht mehr in functions
+- Nur nötige Imports sind in den Functions files, der Rest ist auskommentiert darunter
+- img wird in vielen Definitionen verwendet, soll im Code nicht verwendet werde, um Überschneidungen zu vermeiden
+- 
