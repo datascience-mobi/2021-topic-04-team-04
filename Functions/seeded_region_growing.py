@@ -47,17 +47,16 @@ def add_neighbors(img, p):  # p describes pixel for which neighbors need to be a
     return neighbors
 
 
-def mean_region(img, regions):  # img is array of intensity values, regions is array with region numbers
-    mean = []
-    region_max = int(max(regions.flatten()))  # calculates amount of regions
+def mean_region(img, reg):
+    mean_value = []
+    region_max = int(max(reg.flatten()))  # calculates amount of regions
     for count in range(1, region_max + 1):  # iterates over every region
         intensity = []
-        for p in np.ndindex(img.shape):
-            if regions[p] == count:
-                intensity.append(img[
-                                     p])  # iterates over every pixel in the image and appends intensity value, if it is in the region
-        mean.append(sum(intensity) / len(intensity))  # calculates mean value of region
-    return mean  # returns list with average of every region
+        for p in np.ndindex(img.shape):  # iterates over every pixel in the image
+            if reg[p] == count:
+                intensity.append(img[p])  # appends intensity value, if it is in the region
+        mean_value.append(np.mean(intensity))  # calculates mean value of region
+    return mean_value  # returns list with average of every region
 
 
 # calculated mean value of region of newly labeled pixel
