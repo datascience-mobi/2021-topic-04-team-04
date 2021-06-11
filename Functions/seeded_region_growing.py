@@ -8,6 +8,10 @@ from Functions import seed_detection as sd
 # import matplotlib.pyplot as plt
 
 def find_neighbors(reg):
+    """
+    :param reg: Array mit Regionen der Pixel
+    :return: Liste mit allen Positionen von Nachbarpixeln
+    """
     neighbors = []
     for p in np.ndindex(reg.shape):
         if reg[p] != 0:  # Pixels with region
@@ -30,7 +34,12 @@ def find_neighbors(reg):
     return neighbors
 
 
-def add_neighbors(img, p):  # p describes pixel for which neighbors need to be added
+def add_neighbors(img, p):
+    """
+    :param img: Benutztes Bild
+    :param p: Pixel, dessen Nachbarn bestimmt werden
+    :return: Liste mit maximal 4 Nachbarpixeln
+    """  # p describes pixel for which neighbors need to be added
     neighbors = []
     if p[0] > 0:  # Add neighbours to list T, up
         a = (p[0] - 1, p[1])
@@ -48,6 +57,11 @@ def add_neighbors(img, p):  # p describes pixel for which neighbors need to be a
 
 
 def mean_region(img, reg):
+    """
+    :param img: Benutztes Bild
+    :param reg: Array mit Regionen der Pixel
+    :return: Liste mit Mittelwerten der Regionen, Region Nummer 1 ist an Listen Index 0
+    """
     mean_value = []
     region_max = int(max(reg.flatten()))  # calculates amount of regions
     for count in range(1, region_max + 1):  # iterates over every region

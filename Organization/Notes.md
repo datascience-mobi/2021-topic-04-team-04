@@ -62,3 +62,4 @@ def dice_coef(y_true, y_pred, smooth=1):
 - find_neighbors2 löschen?
 - weitere Filter Iterationen auslagern?
 - one_region_mean1 löschen?
+- Standard_deviation_new ist ausgelagert

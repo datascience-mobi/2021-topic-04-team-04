@@ -8,7 +8,12 @@ from Functions import image_processing as ip
 # import matplotlib.pyplot as plt
 
 
-def standard_deviation(img, size):  # calculates standard deviation of every pixel (image, size of filter mask)
+def standard_deviation(img, size):
+    """ # berechnet Standardabweichung jedes Pixels
+    :param img: benutztes Bild
+    :param size: Größe der Filtermaske
+    :return: Array mit Standardabweichung jedes Pixels
+    """
     result = np.zeros(img.shape)  # create empty array (zeros)
     n = (size - 1) // 2
     for p in np.ndindex(img.shape):  # iterates over every pixel
@@ -29,7 +34,12 @@ def standard_deviation(img, size):  # calculates standard deviation of every pix
     return result
 
 
-def euclidean_relative(img, size):  # calculates maximum relative euclidean distance for every pixel in nxn neighborhood
+def euclidean_relative(img, size):
+    """ # calculates maximum relative euclidean distance for every pixel in nxn neighborhood
+    :param img: Benutztes Bild
+    :param size: Größe der Filtermaske/Nachbarschaft
+    :return: Array mit eingetragener maximalen Euklidischen Distanz
+    """
     result = np.zeros(img.shape)  # create empty array (zeros)
     n = (size - 1) // 2
     for p in np.ndindex(img.shape):  # iterates over every pixel using a tuple
@@ -43,7 +53,12 @@ def euclidean_relative(img, size):  # calculates maximum relative euclidean dist
     return result
 
 
-def euclidean_n(img, size):  # calculates maximum euclidean distance for every pixel in nxn neighborhood
+def euclidean_n(img, size):
+    """ # calculates maximum euclidean distance for every pixel in nxn neighborhood
+    :param img: Benutztes Bild
+    :param size: Größe der Filtermaske/Nachbarschaft
+    :return: Array mit eingetragener maximaler, relativer Euklidischer Distanz
+    """
     result = np.zeros(img.shape)  # create empty array (zeros)
     n = (size - 1) // 2
     for p in np.ndindex(img.shape):  # iterates over every pixel using a touple
@@ -57,7 +72,13 @@ def euclidean_n(img, size):  # calculates maximum euclidean distance for every p
     return result
 
 
-def seeds(img, t1, t2):  # automatic seed selection algorithm
+def seeds(img, t1, t2):
+    """ # automatic seed selection algorithm
+    :param img: Benutztes Bild
+    :param t1: Threshold für die Similarity
+    :param t2: Threshold für die relative Euklidische Distanz
+    :return: Array, alle Seeds mit Intensität 1, sonst 0
+    """
     result = np.zeros(img.shape)
     sd_seeds = standard_deviation(img, 3)  # standard deviation
     sd_flat = sd_seeds.flatten()  # standard deviation as 1D-array
@@ -73,6 +94,10 @@ def seeds(img, t1, t2):  # automatic seed selection algorithm
 
 
 def seed_merging(img):
+    """
+    :param img: Array mit gefundenen seeds
+    :return: Array mit zusammengefügten seeds
+    """
     regions = np.zeros(img.shape)  # creates new array for region numbers for every image pixel
     count = 1  # keep track of region number
     for p in np.ndindex(img.shape):  # iterates over every pixel of the image
@@ -89,8 +114,12 @@ def seed_merging(img):
     return regions
 
 
-# reduce number of starting regions for region growing by only considering starting regions with more than T seeds
 def decrease_region_number(img, t):
+    """ # reduce number of starting regions for region growing, only considering regions with more than T seeds
+    :param img: Array mit zusammengefügten Seeds
+    :param t: Threshold für die Größe der Seed-Regionen
+    :return: Array mit den großen Seeds
+    """
     count = Counter(img.flatten())  # counts number of seeds in region
     d_seeds = img.copy()
     for i in range(1, int(np.amax(img))):  # iterates over every region

@@ -7,7 +7,13 @@ from Functions import seeded_region_growing as srg
 # from Functions import image_processing as ip
 
 
-def unseeded_distance(img, neighbors, reg):  # img intensity values, regions is region number, list of neighbours
+def unseeded_distance(img, neighbors, reg):
+    """
+    :param img: Benutztes Bild
+    :param neighbors: Liste an Nachbarn der Regionen
+    :param reg: Array mit Regionen
+    :return: Array mit Distanzen, für alle Pixel die keine Nachbarn sind ist 500 eingetragen
+    """  # img intensity values, regions is region number, list of neighbours
     means = srg.mean_region(img, reg)
     result = np.full(img.shape, 500)  # Wert 500 damit berechnete Distanzen immer kleiner sind
     for i in neighbors:
@@ -20,7 +26,11 @@ def unseeded_distance(img, neighbors, reg):  # img intensity values, regions is 
     return result
 
 
-def unseeded_pixel_pick(dis):  # distance ist Ergebnis von unseeded_distance, array mit Distanzen
+def unseeded_pixel_pick(dis):
+    """
+    :param dis: Array mit Distanzen
+    :return: Position des Pixels mit der minimalen Distanz
+    """  # distance ist Ergebnis von unseeded_distance, array mit Distanzen
     minimum = np.amin(dis)  # Minimale Distanz
     for p in np.ndindex(dis.shape):  # alle Pixel checken
         if dis[p] == minimum:  # Wenn Distanz minimaler Distanz entspricht
@@ -29,9 +39,13 @@ def unseeded_pixel_pick(dis):  # distance ist Ergebnis von unseeded_distance, ar
     return pick
 
 
-# Regions Zuweisung z
-# Distanz nochmal berechnen, zu Nachbarn mit region, und der gleichen Region zuweisen
-def unseeded_region_direct(img, reg, pick):  # pick ist ausgesuchter Pixel
+def unseeded_region_direct(img, reg, pick):
+    """
+    :param img: Benutztes Bild
+    :param reg: Array mit Regionen
+    :param pick: Ausgewählter Pixel
+    :return: Array mit aktualisierten Regionen
+    """
     means = srg.mean_region(img, reg)
     nei = srg.add_neighbors(img, pick)  # Nachbarn des Pixels
     dis = []
@@ -47,9 +61,15 @@ def unseeded_region_direct(img, reg, pick):  # pick ist ausgesuchter Pixel
     return reg
 
 
-# Zu nächst ähnlicher Region zuweisen
-# Distanz zu allen Regionen ausrechnen und zu der mit der kleinsten Distanz zuweisen
 def unseeded_region_indirect_or_new(img, reg, pick, t):
+    """ # Zu nächst ähnlicher Region zuweisen
+        # Distanz zu allen Regionen ausrechnen und zu der mit der kleinsten Distanz zuweisen
+    :param img: Benutztes Bild
+    :param reg: Array mit Regionen
+    :param pick: Ausgewählter Pixel
+    :param t: Threshold um zu entscheiden ob Pixel neue Region bilden soll
+    :return: Array mit aktualisierten Regionen
+    """
     means = srg.mean_region(img, reg)  # Mittelwerte Regionen
     dis = []
     for m in means:
