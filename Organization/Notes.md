@@ -56,3 +56,9 @@ def dice_coef(y_true, y_pred, smooth=1):
   pick in Funktionen und picked_pixel beim Aufrufen
   t in Funktionen und threshold beim Aufrufen
 - Dokument functions ist gelöscht, die Funktionen sind in seed_detection
+
+## Talk about:
+- new_distance2 löschen?
+- find_neighbors2 löschen?
+- weitere Filter Iterationen auslagern?
+- one_region_mean1 löschen?
