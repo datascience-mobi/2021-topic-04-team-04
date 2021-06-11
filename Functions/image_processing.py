@@ -38,13 +38,13 @@ def t_pic():
     return img
 
 
-def is_border_pixel(p, img):
+def is_border_pixel(pixel, img):
     """ Funktion prüft für einen Pixel, ob es sich um einen Randpixel handelt
-    :param p: Pixel der geprüft wird
+    :param pixel: Pixel der geprüft wird
     :param img: Bild für welches der Rand geprüft wird
     :return: True für einen Randpixel, False für keinen Randpixel
     """
-    if p[0] - 1 >= 0 and p[1] - 1 >= 0 and p[0] + 1 <= img.shape[0] - 1 and p[1] + 1 <= img.shape[1] - 1:
+    if pixel[0] - 1 >= 0 and pixel[1] - 1 >= 0 and pixel[0] + 1 <= img.shape[0] - 1 and pixel[1] + 1 <= img.shape[1] - 1:
         return False
     return True
 

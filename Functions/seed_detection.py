@@ -39,7 +39,6 @@ def euclidean_relative(img, size):  # calculates maximum relative euclidean dist
                 i = p[0] - n + q[0]
                 j = p[1] - n + q[1]
                 neighborhood_distance.append((img[p] - img[i, j]) / img[p])  # adds relative euclidean distance to list
-
             result[p] = max(neighborhood_distance)  # chooses maximum distance
     return result
 
@@ -58,17 +57,16 @@ def euclidean_n(img, size):  # calculates maximum euclidean distance for every p
     return result
 
 
-def seeds(img, threshold1, threshold2):  # automatic seed selection algorithm
+def seeds(img, t1, t2):  # automatic seed selection algorithm
     result = np.zeros(img.shape)
     sd_seeds = standard_deviation(img, 3)  # standard deviation
     sd_flat = sd_seeds.flatten()  # standard deviation as 1D-array
     similarity_seeds = 1 - sd_seeds / max(sd_flat)  # calculates similarity of every pixel to its neighbors
     eurel_seeds = euclidean_relative(img, 3)  # relative euclidean distance of every pixel to its neighbors
     for p in np.ndindex(img.shape):  # border pixel value is zero
-        if similarity_seeds[p] > threshold1 and eurel_seeds[p] < threshold2:  # compares pixel with threshold
+        if similarity_seeds[p] > t1 and eurel_seeds[p] < t2:  # compares pixel with threshold
             result[p] = 1  # assigns value 1 to seeds
     return result
-
 
 # Achtung auch Randpixel bekommen Wert 1 und sind somit immer seeds!
 # In seed_merging werden diese jedoch wieder als seeds entfernt.
@@ -92,11 +90,11 @@ def seed_merging(img):
 
 
 # reduce number of starting regions for region growing by only considering starting regions with more than T seeds
-def decrease_region_number(img, threshold):
+def decrease_region_number(img, t):
     count = Counter(img.flatten())  # counts number of seeds in region
     d_seeds = img.copy()
     for i in range(1, int(np.amax(img))):  # iterates over every region
-        if count[i] <= threshold:  # if number of seeds is smaller than threshold, delete region
+        if count[i] <= t:  # if number of seeds is smaller than threshold, delete region
             for p in np.ndindex(img.shape):
                 if img[p] == i:
                     d_seeds[p] = 0

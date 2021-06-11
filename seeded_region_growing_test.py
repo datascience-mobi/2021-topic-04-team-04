@@ -3,7 +3,7 @@
 import numpy as np
 import skimage.io as sk
 from Functions import image_processing as ip
-from Functions import seed_detection as seed
+from Functions import seed_detection as sd
 
 # %% #import image
 
