@@ -8,7 +8,7 @@ image = sk.imread("Data/N2DH-GOWT1/img/t01.tif")
 img_r = ip.img_resize(image, 500, 500)
 ip.show_image(img_r, 15, 8)
 
-img_small = image[300:350, 400:450]
+img_small = image[300:400, 400:500]
 ip.show_image(img_small, 15, 8)
 
 regions = np.zeros(img_small.shape, int)  # array with region number
