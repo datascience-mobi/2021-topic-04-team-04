@@ -15,15 +15,19 @@ def unseeded_distance(img, neighbors, reg):
     :return: Array mit Distanzen, für alle Pixel die keine Nachbarn sind ist 500 eingetragen
     """  # img intensity values, regions is region number, list of neighbours
     means = srg.mean_region(img, reg)
-    result = np.full(img.shape, 500)  # Wert 500 damit berechnete Distanzen immer kleiner sind
+    dis = np.full(img.shape, 500)  # Wert 500 damit berechnete Distanzen immer kleiner sind
+    nearest_region = np.zeros(img.shape)
     for i in neighbors:
         nei = srg.add_neighbors(img, i)  # Nachbarn des Pixels
-        distance = []
+        distance_list = []
+        region_number = []
         for j in nei:
             if reg[j] != 0:  # Nachbarn mit zugeordneter Region
-                distance.append(abs(img[i] - means[int(reg[j] - 1)]))  # Distanz Berechnung
-        result[i] = min(distance)  # Minimale Distanz wird in den array geschrieben
-    return result
+                distance_list.append(abs(img[i] - means[int(reg[j] - 1)]))  # Distanz Berechnung
+                region_number.append(reg[j])
+        dis[i] = min(distance_list)  # Minimale Distanz wird in den array geschrieben
+        nearest_region[i] = region_number[distance_list.index(min(distance_list))]
+    return dis, nearest_region
 
 
 def unseeded_pixel_pick(dis):
@@ -31,33 +35,20 @@ def unseeded_pixel_pick(dis):
     :param dis: Array mit Distanzen
     :return: Position des Pixels mit der minimalen Distanz
     """  # distance ist Ergebnis von unseeded_distance, array mit Distanzen
-    minimum = np.amin(dis)  # Minimale Distanz
-    for p in np.ndindex(dis.shape):  # alle Pixel checken
-        if dis[p] == minimum:  # Wenn Distanz minimaler Distanz entspricht
-            pick = p  # Liste an Pixeln mit minimaler Distanz
-            break
+    x = np.where(dis == np.amin(dis))  # Minimale Distanz
+    minimum = list(zip(x[0], x[1]))[0]
+    pick = (int(minimum[0]), int(minimum[1]))
     return pick
 
 
-def unseeded_region_direct(img, reg, pick):
+def unseeded_region_direct(reg, pick, nearest_region):
     """
-    :param img: Benutztes Bild
+    :param nearest_region: Array mit der Nummer der Region die die kleinste Distanz aufweist
     :param reg: Array mit Regionen
     :param pick: Ausgewählter Pixel
     :return: Array mit aktualisierten Regionen
     """
-    means = srg.mean_region(img, reg)
-    nei = srg.add_neighbors(img, pick)  # Nachbarn des Pixels
-    dis = []
-    region_number = []
-    for j in nei:  # Distanz für Nachbarn wird wieder bestimmt
-        if reg[j] != 0:  # Nachbarn mit zugeordneter Region
-            dis.append(abs(img[pick] - means[int(reg[j] - 1)]))  # Distanz Berechnung
-            region_number.append(reg[j])
-    minimum = min(dis)  # Minimale Distanz
-    for d in range(0, len(dis)):
-        if dis[d] == minimum:  # Bestimmt Region mit niedrigster Distanz
-            reg[pick] = region_number[d]  # Region vom Pixel mit kleinster Distanz wird übernommen
+    reg[pick] = nearest_region[pick]  # Region vom Pixel mit kleinster Distanz wird übernommen
     return reg
 
 
@@ -71,15 +62,13 @@ def unseeded_region_indirect_or_new(img, reg, pick, t):
     :return: Array mit aktualisierten Regionen
     """
     means = srg.mean_region(img, reg)  # Mittelwerte Regionen
-    dis = []
+    distance_list = []
     for m in means:
-        dis.append(abs(img[pick] - m))  # Alle Abstände zu den Regionen berechnen
-    minimum = min(dis)  # Minimale Distanz
+        distance_list.append(abs(img[pick] - m))  # Alle Abstände zu den Regionen berechnen
+    minimum = min(distance_list)  # Minimale Distanz
     if minimum < t:  # Distanz muss kleiner sein als der Threshold
-        for d in range(0, len(dis)):  # Für alle Distanz Werte wir überprüft
-            if dis[d] == minimum:  # Wenn die Distanz gleich dem Minimum ist
-                reg[pick] = d + 1  # Letzte Region mit minimalem Wert
-        else:  # Definition einer neuen Region, wenn keine passende gefunden wurde
-            region_max = int(max(reg.flatten()))  # Aktuell höchste Regions-Nummer
-            reg[pick] = region_max + 1  # Neuer Regions-Wert für Pixel pick
+        reg[pick] = distance_list.index(minimum) + 1  # Erste Region mit minimalem Wert
+    else:  # Definition einer neuen Region, wenn keine passende gefunden wurde
+        region_max = int(max(reg.flatten()))  # Aktuell höchste Regions-Nummer
+        reg[pick] = region_max + 1  # Neuer Regions-Wert für Pixel pick
     return reg
