@@ -63,3 +63,4 @@ def dice_coef(y_true, y_pred, smooth=1):
 - weitere Filter Iterationen auslagern?
 - one_region_mean1 löschen?
 - Standard_deviation_new ist ausgelagert
+- warum funktioniert region_merging nur beim ersten Durchlauf
