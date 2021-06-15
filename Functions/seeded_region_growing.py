@@ -9,8 +9,9 @@ from Functions import seed_detection as sd
 
 def find_neighbors(reg):
     """
-    :param reg: Array mit Regionen der Pixel
-    :return: Liste mit allen Positionen von Nachbarpixeln
+    selects all 4 adjacent neighbors for every pixel
+    :param reg: array with region numbers of the pixel (2D array)
+    :return: list of all positions of neighboring pixels (list)
     """
     neighbors = []
     for p in np.ndindex(reg.shape):
@@ -38,9 +39,9 @@ def get_neighbors(img, p):
     """
     Find maximal 4 direct neighbors of pixels, ignores border  
     
-    :param img: Benutztes Bild
-    :param p: Pixel, dessen Nachbarn bestimmt werden
-    :return: Liste mit maximal 4 Nachbarpixeln
+    :param img: image with intensity values (2D array)
+    :param p: pixel for which the neighbors should be found (tuple with position)
+    :return: list of maximal four neighbors (list)
     """  # p describes pixel for which neighbors need to be added
     neighbors = []
     if p[0] > 0:  # Add neighbours to list T, up
@@ -60,9 +61,9 @@ def get_neighbors(img, p):
 
 def mean_region(img, reg):
     """
-    :param img: Benutztes Bild
-    :param reg: Array mit Regionen der Pixel
-    :return: Liste mit Mittelwerten der Regionen, Region Nummer 1 ist an Listen Index 0
+    :param img: image with intensity values (2D array)
+    :param reg: array with pixle numbers (2D array)
+    :return: list with mean values of the regions, region number 1 has index 0 (list)
     """
     mean_value = []
     region_max = int(max(reg.flatten()))  # calculates amount of regions
@@ -75,34 +76,33 @@ def mean_region(img, reg):
     return mean_value  # returns list with average of every region
 
 
-def one_region_mean(img, reg,
-                    new_pixel):
-    '''
+def one_region_mean(img, reg, new_pixel):
+    """
     recalculates mean value of region with added pixel
     :param img: intensity values of image (2d array)
     :param reg: region numbers of image pixels (2d array)
     :param new_pixel: position of newly labeled pixel (tuple)
     :return: updated mean value of changed region (float)
-    '''
+    """
 
     pos_new_reg = np.where(reg == reg[new_pixel])
     single_mean = np.mean(img[pos_new_reg[0], pos_new_reg[1]])
     return single_mean  # returns mean value of changed region
 
 
-def calculation_distance(img, neighbors,
-                         reg):  # img intensity values, regions is region number, Ne is list of neighbours
-    '''
+def calculation_distance(img, neighbors, reg):
+    """
     calculates distances of all
 
     :param img: image, intensity values of pixels (2d array)
     :param neighbors: list of positions (tuples (x,y)) of neighboring pixels which are to be labeled next
     :param reg: region numbers (int) of image pixels (2d array) (0 if pixel unlabeled)
 
-    :return: distances: minimal distances of to be labeled pixels (neighbors) (2d array, one if already labeled or not to be labeled, values between 0 and 1)
+    :return: distances: minimal distances of to be labeled pixels (neighbors) (2d array, one if already labeled or not
+             to be labeled, values between 0 and 1)
     :return: nearest_reg: numbers of nearest region (2d array)
     :return: list of mean values of regions(list)
-    '''
+    """
     max_intensity = np.amax(img)
     means = mean_region(img, reg)
     distances = np.ones(img.shape)
@@ -125,14 +125,14 @@ def calculation_distance(img, neighbors,
     return distances, nearest_reg, means
 
 
-def is_labeled(reg, positon):
-    if reg[positon] != 0:
+def is_labeled(reg, position):
+    if reg[position] != 0:
         return True
     return False
 
 
 def calculate_distance(img, means, max_intensity, pixel, neighboring_region):
-    '''
+    """
     calculates distance of pixel to neighboring region
     :param img: intensity values (2d array)
     :param means: list of mean values to region numbers (list)
@@ -140,27 +140,28 @@ def calculate_distance(img, means, max_intensity, pixel, neighboring_region):
     :param pixel: position of pixel for witch distance is calculated (tuple (x,y))
     :param neighboring_region: neighboring region to which distance is calculated (int)
     :return: distance
-    '''
+    """
 
     distance = np.abs((img[pixel] - means[int(neighboring_region) - 1])) / max_intensity
     return distance
 
 
 def new_distance(img, reg, nearest_reg, dis, new_pixel, neighbors, means):
-    '''
-    updates distances of to be labeld pixels to neighboring regions
+    """"
+    updates distances of to be labeled pixels to neighboring regions
     :param img: intensity values (2d array)
     :param reg: region numbers (2d array)
     :param nearest_reg: numbers of nearest regions(2d array)
     :param dis: distances to nearest region (2d array)
-    :param new_pixel: position of newly labeld pixel (tuple (x,y))
+    :param new_pixel: position of newly labeled pixel (tuple (x,y))
     :param neighbors: list of pixels to be sorted (list of tuples(x,y))
     :param means: list of mean intensity values of regions (list of floats)
 
-    :return: dist: updated minimal distances of to be labeled pixels (neighbors) (2d array, one if already labeled or not to be labeled, values between 0 and 1)
+    :return: dist: updated minimal distances of to be labeled pixels (neighbors) (2d array, one if already labeled or
+             not to be labeled, values between 0 and 1)
     :return: nearest_reg: updated numbers of nearest region (2d array)
     :return: list of mean intensity values of regions(list)
-    '''
+    """
 
     means = update_list_of_means(means, img, reg, new_pixel)
     max_intensity = np.amax(img)
@@ -188,10 +189,12 @@ def new_distance(img, reg, nearest_reg, dis, new_pixel, neighbors, means):
                     dis[pixel] = min_dist
     return dis, nearest_reg, means
 
+
 def pixel_in_new_region(reg, neighbor_position, new_pixel):
     if reg[neighbor_position] == reg[new_pixel]:
         return True
     return False
+
 
 def update_list_of_means(means, img, reg, new_pixel):
     new_mean = one_region_mean(img, reg, new_pixel)
@@ -200,19 +203,19 @@ def update_list_of_means(means, img, reg, new_pixel):
 
 
 def label(reg, dis, nearest_reg,
-          neighbors):  # regions is array of region numbers, distances is array of distances, nearest_reg is array of nearest region number
-    '''
+          neighbors):
+    """
     labels one pixel (nearest pixel to one of the regions)
     :param reg: region numbers (2d array of ints)
     :param dis: distances to nearest neighboring region (2d array)
     :param nearest_reg: number of nearest neighboring region (2d array)
-    :param neighbors: list of to be labeld pixels (list of tuples (x,y))
+    :param neighbors: list of to be labeled pixels (list of tuples (x,y))
 
     :return: reg: updated regions of pixels (2d array)
     :return: pos_min_dist: position of newly labeled pixel (tuple (x,y))
     :return: neighbors: updated list of pixels to be labeled
     :return: dis: updated distances to nearest region (2d array)
-    '''
+    """
 
     pos_min_dist = position_of_smallest_distance(dis)
     reg[pos_min_dist] = nearest_reg[pos_min_dist]
@@ -228,13 +231,14 @@ def position_of_smallest_distance(dis):
     pos_min_dist = (int(pos_min_dist[0]), int(pos_min_dist[1]))
     return pos_min_dist
 
+
 def region_growing(img, reg):
-    '''
+    """
     performs region growing algorithm on image with defined seeds (reg)
     :param img: intensity values (2d array)
     :param reg: region numbers, predefined from seed selection (2d array)
     :return: regions of all pixels, result of seeded region growing (2d array), values start with 1 (ints)
-    '''
+    """
 
     neighbors = find_neighbors(reg)
     dist = calculation_distance(img, neighbors, reg)
@@ -254,6 +258,7 @@ def region_growing(img, reg):
 
     return regions_new[0]
 
+
 def unlabeled_pixel_exist(neighbors):
     if len(neighbors) > 0:
         return True
@@ -267,8 +272,9 @@ def add_missing_neighbors(img, pos_min_dist, neighbors, reg):
             neighbors.append(neighbor)
     return neighbors
 
+
 if __name__ == '__main__':
-    image = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")  # Bild laden
+    image = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")  # load image
     img_s = image[300:400, 300:500]
     img_result = sd.seeds(img_s, 0.4, 40)
     img_result = sd.seed_merging(img_result)

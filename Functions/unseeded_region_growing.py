@@ -9,33 +9,36 @@ from Functions import seeded_region_growing as srg
 
 def unseeded_distance(img, neighbors, reg):
     """
-    :param img: Benutztes Bild
-    :param neighbors: Liste an Nachbarn der Regionen
-    :param reg: Array mit Regionen
-    :return: Array mit Distanzen, für alle Pixel die keine Nachbarn sind ist 500 eingetragen
-    """  # img intensity values, regions is region number, list of neighbours
+    calculates intensity distance from unsorted pixel to mean intensity of regions ?
+    :param img: image with intensity values (2D array)
+    :param neighbors: list of neighbors of the regions (list)
+    :param reg: array with regions (2D array)
+    :return: distance array, all non neighboring pixels have value 500 (2D array)
+             and number of region with closest intensity distance from the pixel (int)
+    """
     means = srg.mean_region(img, reg)
-    dis = np.full(img.shape, 500)  # Wert 500 damit berechnete Distanzen immer kleiner sind
+    distance = np.full(img.shape, 500)  # value 500 so all calculated distances are smaller
     nearest_region = np.zeros(img.shape)
     for i in neighbors:
-        nei = srg.add_neighbors(img, i)  # Nachbarn des Pixels
+        pixel_neighbors = srg.get_neighbors(img, i)
         distance_list = []
         region_number = []
-        for j in nei:
-            if reg[j] != 0:  # Nachbarn mit zugeordneter Region
-                distance_list.append(abs(img[i] - means[int(reg[j] - 1)]))  # Distanz Berechnung
+        for j in pixel_neighbors:
+            if reg[j] != 0:  # neighbors with assigned regions
+                distance_list.append(abs(img[i] - means[int(reg[j] - 1)]))  # calculates intensity distance
                 region_number.append(reg[j])
-        dis[i] = min(distance_list)  # Minimale Distanz wird in den array geschrieben
+        distance[i] = min(distance_list)  # minimal distance written in array
         nearest_region[i] = region_number[distance_list.index(min(distance_list))]
-    return dis, nearest_region
+    return distance, nearest_region
 
 
 def unseeded_pixel_pick(dis):
     """
-    :param dis: Array mit Distanzen
-    :return: Position des Pixels mit der minimalen Distanz
-    """  # distance ist Ergebnis von unseeded_distance, array mit Distanzen
-    x = np.where(dis == np.amin(dis))  # Minimale Distanz
+    selects pixel with minimal intensity distance
+    :param dis: array with intensity distances (2D array)
+    :return: position of the pixel with minimal intensity distance (tuple (x,y) with position in an array)
+    """
+    x = np.where(dis == np.amin(dis))
     minimum = list(zip(x[0], x[1]))[0]
     pick = (int(minimum[0]), int(minimum[1]))
     return pick
@@ -43,32 +46,33 @@ def unseeded_pixel_pick(dis):
 
 def unseeded_region_direct(reg, pick, nearest_region):
     """
-    :param nearest_region: Array mit der Nummer der Region die die kleinste Distanz aufweist
-    :param reg: Array mit Regionen
-    :param pick: Ausgewählter Pixel
-    :return: Array mit aktualisierten Regionen
+    assigns pick to the region region with minimal intensity distance
+    :param nearest_region: array with number of the region with smallest distance (2D array)
+    :param reg: array with region numbers (2D array)
+    :param pick: selected pixel (tuple, position in an array)
+    :return: array with updated regions (2D array)
     """
-    reg[pick] = nearest_region[pick]  # Region vom Pixel mit kleinster Distanz wird übernommen
+    reg[pick] = nearest_region[pick]
     return reg
 
 
-def unseeded_region_indirect_or_new(img, reg, pick, t):
-    """ # Zu nächst ähnlicher Region zuweisen
-        # Distanz zu allen Regionen ausrechnen und zu der mit der kleinsten Distanz zuweisen
-    :param img: Benutztes Bild
-    :param reg: Array mit Regionen
-    :param pick: Ausgewählter Pixel
-    :param t: Threshold um zu entscheiden ob Pixel neue Region bilden soll
-    :return: Array mit aktualisierten Regionen
+def unseeded_region_indirect_or_new(img, reg, pick, threshold):
     """
-    means = srg.mean_region(img, reg)  # Mittelwerte Regionen
+    calculates distance to all regions and assigns it to the smallest intensity distance or creates new region
+    :param img: image with intensity values (2D array)
+    :param reg: array with region numbers (2D array)
+    :param pick: selected pixel (tuple)
+    :param threshold: Threshold for decision if pixel is in new region (int?)
+    :return: array with updated regions (2D array)
+    """
+    means = srg.mean_region(img, reg)
     distance_list = []
     for m in means:
-        distance_list.append(abs(img[pick] - m))  # Alle Abstände zu den Regionen berechnen
-    minimum = min(distance_list)  # Minimale Distanz
-    if minimum < t:  # Distanz muss kleiner sein als der Threshold
-        reg[pick] = distance_list.index(minimum) + 1  # Erste Region mit minimalem Wert
-    else:  # Definition einer neuen Region, wenn keine passende gefunden wurde
-        region_max = int(max(reg.flatten()))  # Aktuell höchste Regions-Nummer
-        reg[pick] = region_max + 1  # Neuer Regions-Wert für Pixel pick
+        distance_list.append(abs(img[pick] - m))  # calculates all distances to the regions
+    minimum = min(distance_list)  # selects minimal distance
+    if minimum < threshold:
+        reg[pick] = distance_list.index(minimum) + 1  # first region with minimal value
+    else:
+        region_max = int(max(reg.flatten()))  # highest region number
+        reg[pick] = region_max + 1  # new region number for pick
     return reg
