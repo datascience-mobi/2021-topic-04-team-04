@@ -2,6 +2,16 @@
 import skimage.io as sk
 import numpy as np
 
+def find_background_number(regions):
+    """
+    determines region number of background as it is the biggest region
+    :param regions: segmented image with region number (2D array)
+    :return: number of background/ region with maximal number of elements (int)
+    """
+    regions = regions.astype(int)
+    background_number = np.bincount(regions.flatten()).argmax()
+    return background_number
+
 
 def segmented_image_clip(segmented_image, background_region):
     """
@@ -18,17 +28,6 @@ def segmented_image_clip(segmented_image, background_region):
             else:
                 segmented_image[i, j] = 1
     return segmented_image
-
-
-def find_background_number(regions):
-    """
-    determines region number of background as it is the biggest region
-    :param regions: segmented image with region number (2D array)
-    :return: number of background/ region with maximal number of elements (int)
-    """
-    regions = regions.astype(int)
-    background_number = np.bincount(regions.flatten()).argmax()
-    return background_number
 
 
 def gt_clip(gt):
@@ -84,7 +83,8 @@ def region_dice_score(segmented_image, gt, region_number):
 
 def dice_score_weighted(segmented_image, gt):
     """
-    calculates weighted dice score looking separately the different regions so all regions have the same impact (regardless the size)
+    calculates weighted dice score looking separately the different regions so all regions have the same impact
+    (regardless the size)
     :param segmented_image: result image with region numbers (2D array)
     :param gt: ground truth image with region numbers (2D array)
     :return: weighted dice score of whole image (float, between 0 and 1)
@@ -145,3 +145,4 @@ if __name__ == '__main__':
     dice_score_unweight = evaluate_accuracy_unweighted(segmented_image, gt_resize)
     print(dice_score_weight)
     print(dice_score_unweight)
+
