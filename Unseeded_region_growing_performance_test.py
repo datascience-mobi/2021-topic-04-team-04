@@ -1,7 +1,7 @@
 from Functions import image_processing as ip
 import skimage.io as sk
 import numpy as np
-from Functions import seeded_region_growing as srg
+from Functions import old_seeded_region_growing as srg
 from Functions import unseeded_region_growing as urg
 
 image = sk.imread("Data/N2DH-GOWT1/img/t01.tif")

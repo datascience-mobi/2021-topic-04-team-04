@@ -1,62 +1,52 @@
-import skimage.io as sk
 import numpy as np
-from Functions import image_processing as ip
-from Functions import seed_detection as sd
 
 
-# import math as m
-# import matplotlib.pyplot as plt
-
-def find_neighbors(reg):
-    """
-    selects all 4 adjacent neighbors for every pixel
-    :param reg: array with region numbers of the pixel (2D array)
-    :return: list of all positions of neighboring pixels (list)
-    """
-    neighbors = []
-    for p in np.ndindex(reg.shape):
-        if reg[p] != 0:  # Pixels with region
-            if p[0] > 0:  # Add neighbours to list T, up
-                a = (p[0] - 1, p[1])
-                if reg[a] == 0 and a not in neighbors:
-                    neighbors.append(a)
-            if p[0] < reg.shape[0] - 1:  # Add neighbours to list T, down
-                b = (p[0] + 1, p[1])
-                if reg[b] == 0 and b not in neighbors:
-                    neighbors.append(b)
-            if p[1] > 0:  # Add neighbours to list T, left
-                c = (p[0], p[1] - 1)
-                if reg[c] == 0 and c not in neighbors:
-                    neighbors.append(c)
-            if p[1] < reg.shape[1] - 1:  # Add neighbours to list T, right
-                d = (p[0], p[1] + 1)
-                if reg[d] == 0 and d not in neighbors:
-                    neighbors.append(d)
-    return neighbors
+#  from Functions import image_processing as ip
+#  from Functions import seed_detection as sd
+#  import skimage.io as sk
 
 
-def get_neighbors(img, p):
-    """
-    Find maximal 4 direct neighbors of pixels, ignores border  
-    
-    :param img: image with intensity values (2D array)
-    :param p: pixel for which the neighbors should be found (tuple with position)
-    :return: list of maximal four neighbors (list)
-    """  # p describes pixel for which neighbors need to be added
-    neighbors = []
-    if p[0] > 0:  # Add neighbours to list T, up
-        a = (p[0] - 1, p[1])
-        neighbors.append(a)
-    if p[0] < img.shape[0] - 1:  # Add neighbours to list T, down
-        b = (p[0] + 1, p[1])
-        neighbors.append(b)
-    if p[1] > 0:  # Add neighbours to list T, left
-        c = (p[0], p[1] - 1)
-        neighbors.append(c)
-    if p[1] < img.shape[1] - 1:  # Add neighbours to list T, right
-        d = (p[0], p[1] + 1)
-        neighbors.append(d)
-    return neighbors
+def calculate_left_neighbors(reg, seeds):
+    left_neighbors = np.zeros((reg.shape[0], reg.shape[1] + 1))
+    left_neighbors[seeds[0], seeds[1]] = reg[seeds[0], seeds[1]]
+    left_neighbors = np.delete(left_neighbors, 0, axis=1)
+    left_neighbors[seeds[0], seeds[1]] = 0  # remove already labeled pixels
+    return left_neighbors
+
+
+def calculate_right_neighbors(reg, seeds):
+    right_neighbors = np.zeros((reg.shape[0], reg.shape[1] + 1))
+    right_neighbors[seeds[0], seeds[1] + 1] = reg[seeds[0], seeds[1]]
+    right_neighbors = np.delete(right_neighbors, reg.shape[1] - 1, axis=1)
+    right_neighbors[seeds[0], seeds[1]] = 0
+    return right_neighbors
+
+
+def calculate_top_neighbors(reg, seeds):
+    top_neighbors = np.zeros((reg.shape[0] + 1, reg.shape[1]))
+    top_neighbors[seeds[0], seeds[1]] = reg[seeds[0], seeds[1]]
+    top_neighbors = np.delete(top_neighbors, 0, axis=0)
+    top_neighbors[seeds[0], seeds[1]] = 0
+    return top_neighbors
+
+
+def calculate_bottom_neighbors(reg, seeds):
+    bottom_neighbors = np.zeros((reg.shape[0] + 1, reg.shape[1]))
+    bottom_neighbors[seeds[0] + 1, seeds[1]] = reg[seeds[0], seeds[1]]
+    bottom_neighbors = np.delete(bottom_neighbors, reg.shape[0] - 1, axis=0)
+    bottom_neighbors[seeds[0], seeds[1]] = 0
+    return bottom_neighbors
+
+
+def find_seed_neighbors(reg):
+    seeds = np.where(reg != 0)
+
+    left_neighbors = calculate_left_neighbors(reg, seeds).astype(int)
+    right_neighbors = calculate_right_neighbors(reg, seeds).astype(int)
+    top_neighbors = calculate_top_neighbors(reg, seeds).astype(int)
+    bottom_neighbors = calculate_bottom_neighbors(reg, seeds).astype(int)
+
+    return left_neighbors, right_neighbors, top_neighbors, bottom_neighbors
 
 
 def mean_region(img, reg):
@@ -87,113 +77,36 @@ def one_region_mean(img, reg, new_pixel):
 
     pos_new_reg = np.where(reg == reg[new_pixel])
     single_mean = np.mean(img[pos_new_reg[0], pos_new_reg[1]])
-    return single_mean  # returns mean value of changed region
+    return single_mean  # returns mean value of changed regio
 
 
-def calculation_distance(img, neighbors, reg):
-    """
-    calculates distances of all
+def calculate_one_distance(max_intensity, means, pixel_intensity, region_number):
+    dist = np.abs((pixel_intensity - means[int(region_number) - 1]) / max_intensity)
+    return dist
 
-    :param img: image, intensity values of pixels (2d array)
-    :param neighbors: list of positions (tuples (x,y)) of neighboring pixels which are to be labeled next
-    :param reg: region numbers (int) of image pixels (2d array) (0 if pixel unlabeled)
 
-    :return: distances: minimal distances of to be labeled pixels (neighbors) (2d array, one if already labeled or not
-             to be labeled, values between 0 and 1)
-    :return: nearest_reg: numbers of nearest region (2d array)
-    :return: list of mean values of regions(list)
-    """
+def calculate_one_border_distances(max_intensity, means, img, max_region, one_border_neighbors):
+    one_border_distances = np.ones(img.shape)
+    for region_number in range(1, max_region + 1):
+        pos_reg_bor = np.where(one_border_neighbors == region_number)
+        one_border_distances[pos_reg_bor[0], pos_reg_bor[1]] = calculate_one_distance(max_intensity, means,
+                                                                                      img[pos_reg_bor[0],
+                                                                                          pos_reg_bor[1]],
+                                                                                      region_number)
+    return one_border_distances
+
+
+def calculate_distances(img, reg, left_neighbors, right_neighbors, top_neighbors, bottom_neighbors):
     max_intensity = np.amax(img)
     means = mean_region(img, reg)
-    distances = np.ones(img.shape)
-    nearest_reg = np.zeros(img.shape)
+    max_region = int(np.amax(reg))
 
-    for pixel in neighbors:
-        four_neighbors = get_neighbors(img, pixel)
+    left_distances = calculate_one_border_distances(max_intensity, means, img, max_region, left_neighbors)
+    right_distances = calculate_one_border_distances(max_intensity, means, img, max_region, right_neighbors)
+    top_distances = calculate_one_border_distances(max_intensity, means, img, max_region, top_neighbors)
+    bottom_distances = calculate_one_border_distances(max_intensity, means, img, max_region, bottom_neighbors)
 
-        distance = []
-        region_number = []
-
-        for neighbor_position in four_neighbors:
-            if is_labeled(reg, neighbor_position):
-                distance.append(calculate_distance(img, means, max_intensity, pixel, reg[neighbor_position]))
-                region_number.append(reg[neighbor_position])
-        min_dist = min(distance)
-        pos_min_dist = distance.index(min(distance))
-        nearest_reg[pixel] = region_number[int(pos_min_dist)]
-        distances[pixel] = min_dist
-    return distances, nearest_reg, means
-
-
-def is_labeled(reg, position):
-    if reg[position] != 0:
-        return True
-    return False
-
-
-def calculate_distance(img, means, max_intensity, pixel, neighboring_region):
-    """
-    calculates distance of pixel to neighboring region
-    :param img: intensity values (2d array)
-    :param means: list of mean values to region numbers (list)
-    :param max_intensity: maximal intensity of image (float)
-    :param pixel: position of pixel for witch distance is calculated (tuple (x,y))
-    :param neighboring_region: neighboring region to which distance is calculated (int)
-    :return: distance
-    """
-
-    distance = np.abs((img[pixel] - means[int(neighboring_region) - 1])) / max_intensity
-    return distance
-
-
-def new_distance(img, reg, nearest_reg, dis, new_pixel, neighbors, means):
-    """"
-    updates distances of to be labeled pixels to neighboring regions
-    :param img: intensity values (2d array)
-    :param reg: region numbers (2d array)
-    :param nearest_reg: numbers of nearest regions(2d array)
-    :param dis: distances to nearest region (2d array)
-    :param new_pixel: position of newly labeled pixel (tuple (x,y))
-    :param neighbors: list of pixels to be sorted (list of tuples(x,y))
-    :param means: list of mean intensity values of regions (list of floats)
-
-    :return: dist: updated minimal distances of to be labeled pixels (neighbors) (2d array, one if already labeled or
-             not to be labeled, values between 0 and 1)
-    :return: nearest_reg: updated numbers of nearest region (2d array)
-    :return: list of mean intensity values of regions(list)
-    """
-
-    means = update_list_of_means(means, img, reg, new_pixel)
-    max_intensity = np.amax(img)
-
-    for pixel in neighbors:
-        four_neighbors = get_neighbors(img, pixel)  # list 4 neighbors of pixel i out of unsorted neighbors list
-
-        distance = []
-        region_number = []
-        recalculated = False
-
-        for neighbor_position_to_change in four_neighbors:
-            if not recalculated:
-                if pixel_in_new_region(reg, neighbor_position_to_change, new_pixel):
-                    recalculated = True
-                    for neighbor_position in four_neighbors:
-                        if is_labeled(reg, neighbor_position):
-                            distance.append(calculate_distance(img, means, max_intensity, pixel, reg[neighbor_position]))
-                            region_number.append(reg[neighbor_position])
-
-                    min_dist = min(distance)
-                    pos_min_dist = distance.index(min_dist)
-                    nearest_reg[pixel] = region_number[
-                        int(pos_min_dist)]
-                    dis[pixel] = min_dist
-    return dis, nearest_reg, means
-
-
-def pixel_in_new_region(reg, neighbor_position, new_pixel):
-    if reg[neighbor_position] == reg[new_pixel]:
-        return True
-    return False
+    return means, left_distances, right_distances, top_distances, bottom_distances
 
 
 def update_list_of_means(means, img, reg, new_pixel):
@@ -202,83 +115,179 @@ def update_list_of_means(means, img, reg, new_pixel):
     return means
 
 
-def label(reg, dis, nearest_reg,
-          neighbors):
-    """
-    labels one pixel (nearest pixel to one of the regions)
-    :param reg: region numbers (2d array of ints)
-    :param dis: distances to nearest neighboring region (2d array)
-    :param nearest_reg: number of nearest neighboring region (2d array)
-    :param neighbors: list of to be labeled pixels (list of tuples (x,y))
-
-    :return: reg: updated regions of pixels (2d array)
-    :return: pos_min_dist: position of newly labeled pixel (tuple (x,y))
-    :return: neighbors: updated list of pixels to be labeled
-    :return: dis: updated distances to nearest region (2d array)
-    """
-
-    pos_min_dist = position_of_smallest_distance(dis)
-    reg[pos_min_dist] = nearest_reg[pos_min_dist]
-    neighbors.remove(pos_min_dist)
-    dis[pos_min_dist] = 1
-    print(len(neighbors))
-    return reg, pos_min_dist, neighbors, dis
+def update_one_distance(img, reg, means, max_intensity, new_pixel, one_border_neighbors, one_border_distances):
+    positions_to_update = np.where(one_border_neighbors == reg[new_pixel])
+    one_border_distances[positions_to_update[0],
+                         positions_to_update[1]] = calculate_one_distance(max_intensity, means,
+                                                                          img[positions_to_update[0],
+                                                                              positions_to_update[1]], reg[new_pixel])
+    one_border_distances[new_pixel] = 1
+    return one_border_distances
 
 
-def position_of_smallest_distance(dis):
-    minimal_distances = np.where(dis == np.amin(dis))
+def update_distances(img, reg, means, new_pixel, left_neighbors, right_neighbors, top_neighbors, bottom_neighbors,
+                     left_distances, right_distances, top_distances, bottom_distances):
+    means = update_list_of_means(means, img, reg, new_pixel)
+    max_intensity = np.amax(img)
+
+    left_distances = update_one_distance(img, reg, means, max_intensity, new_pixel, left_neighbors, left_distances)
+    right_distances = update_one_distance(img, reg, means, max_intensity, new_pixel, right_neighbors, right_distances)
+    top_distances = update_one_distance(img, reg, means, max_intensity, new_pixel, top_neighbors, top_distances)
+    bottom_distances = update_one_distance(img, reg, means, max_intensity, new_pixel, bottom_neighbors,
+                                           bottom_distances)
+
+    return left_distances, right_distances, top_distances, bottom_distances
+
+
+def is_labeled(reg, position):
+    if reg[position] != 0:
+        return True
+    return False
+
+
+def unlabeled_pixel_exist(reg):
+    if 0 in reg:
+        return True
+    return False
+
+
+def position_of_smallest_distance_one_border(one_border_distance):
+    minimal_distances = np.where(one_border_distance == np.amin(one_border_distance))
     pos_min_dist = list(zip(minimal_distances[0], minimal_distances[1]))[0]
     pos_min_dist = (int(pos_min_dist[0]), int(pos_min_dist[1]))
     return pos_min_dist
 
 
+def position_of_smallest_distance(left_distances, right_distances, top_distances, bottom_distances):
+    left_min_dist = position_of_smallest_distance_one_border(left_distances)
+    right_min_dist = position_of_smallest_distance_one_border(right_distances)
+    top_min_dist = position_of_smallest_distance_one_border(right_distances)
+    bottom_min_dist = position_of_smallest_distance_one_border(bottom_distances)
+
+    pos_min_distances = [left_min_dist, right_min_dist, top_min_dist, bottom_min_dist]
+    min_distances = np.asarray(
+        [left_distances[left_min_dist], right_distances[right_min_dist], top_distances[top_min_dist],
+         bottom_distances[bottom_min_dist]])
+    border_number = np.where(min_distances == np.amin(min_distances))  # left:0, right:1, top:2, bottom:3
+    border_number = border_number[0][0]
+    pos_min_dist = pos_min_distances[border_number]
+
+    return pos_min_dist, border_number
+
+
+def choose_border_number(border_number, left_neighbors, right_neighbors, top_neighbors, bottom_neighbors):
+    if border_number == 0:
+        return left_neighbors
+    elif border_number == 1:
+        return right_neighbors
+    elif border_number == 2:
+        return top_neighbors
+    return bottom_neighbors
+
+
+def update_left_neighbors(reg, left_neighbors, pos_min_dist):
+    if pos_min_dist[1] != 0:  # not border
+        left_neighbor_pos = (pos_min_dist[0], pos_min_dist[1] - 1)
+        if not is_labeled(reg, left_neighbor_pos):
+            left_neighbors[left_neighbor_pos] = reg[pos_min_dist]
+    left_neighbors[pos_min_dist] = 0
+    return left_neighbors
+
+
+def update_right_neighbors(reg, right_neighbors, pos_min_dist):
+    if pos_min_dist[1] != reg.shape[1] - 1:  # not border
+        right_neighbor_pos = (pos_min_dist[0], pos_min_dist[1] + 1)
+        if not is_labeled(reg, right_neighbor_pos):
+            right_neighbors[right_neighbor_pos] = reg[pos_min_dist]
+    right_neighbors[pos_min_dist] = 0
+    return right_neighbors
+
+
+def update_top_neighbors(reg, top_neighbors, pos_min_dist):
+    if pos_min_dist[0] != 0:  # not border
+        top_neighbor_pos = (pos_min_dist[0] - 1, pos_min_dist[1])
+        if not is_labeled(reg, top_neighbor_pos):
+            top_neighbors[top_neighbor_pos] = reg[pos_min_dist]
+    top_neighbors[pos_min_dist] = 0
+    return top_neighbors
+
+
+def update_bottom_neighbors(reg, bottom_neighbors, pos_min_dist):
+    if pos_min_dist[0] != reg.shape[0] - 1:  # not border
+        bottom_neighbor_pos = (pos_min_dist[0] + 1, pos_min_dist[1])
+        if not is_labeled(reg, bottom_neighbor_pos):
+            bottom_neighbors[bottom_neighbor_pos] = reg[pos_min_dist]
+    bottom_neighbors[pos_min_dist] = 0
+    return bottom_neighbors
+
+
+def label_new_pixel(reg, left_distances, right_distances, top_distances, bottom_distances, left_neighbors,
+                    right_neighbors,
+                    top_neighbors, bottom_neighbors):
+    pos_min_dist_return = position_of_smallest_distance(left_distances, right_distances, top_distances,
+                                                        bottom_distances)
+    pos_min_dist = pos_min_dist_return[0]
+    border_number = pos_min_dist_return[1]
+    one_border_neighbors = choose_border_number(border_number, left_neighbors, right_neighbors, top_neighbors,
+                                                bottom_neighbors)
+
+    reg[pos_min_dist] = one_border_neighbors[pos_min_dist]
+
+    left_neighbors = update_left_neighbors(reg, left_neighbors, pos_min_dist)
+    right_neighbors = update_right_neighbors(reg, right_neighbors, pos_min_dist)
+    top_neighbors = update_top_neighbors(reg, top_neighbors, pos_min_dist)
+    bottom_neighbors = update_bottom_neighbors(reg, bottom_neighbors, pos_min_dist)
+
+    return reg, pos_min_dist, left_neighbors, right_neighbors, top_neighbors, bottom_neighbors  # one_border?
+
+
 def region_growing(img, reg):
     """
     performs region growing algorithm on image with defined seeds (reg)
-    :param img: intensity values (2d array)
-    :param reg: region numbers, predefined from seed selection (2d array)
-    :return: regions of all pixels, result of seeded region growing (2d array), values start with 1 (ints)
+    :param img: intensity value (2d array)
+    :param reg: region numbers (2d array)
+    :return: labeled image with region numbers (2d array)
     """
 
-    neighbors = find_neighbors(reg)
-    dist = calculation_distance(img, neighbors, reg)
+    border_neighbors = find_seed_neighbors(reg)
+    left_neighbors = border_neighbors[0]
+    right_neighbors = border_neighbors[1]
+    top_neighbors = border_neighbors[2]
+    bottom_neighbors = border_neighbors[3]
 
-    regions_new = label(reg, dist[0], dist[1], neighbors)
-    neighbors = regions_new[2]
-    distances = regions_new[3]
-    neighbors = add_missing_neighbors(img, regions_new[1], neighbors, reg)
+    border_distances = calculate_distances(img, reg, left_neighbors, right_neighbors, top_neighbors, bottom_neighbors)
+    means = border_distances[0]
+    left_distances = border_distances[1]
+    right_distances = border_distances[2]
+    top_distances = border_distances[3]
+    bottom_distances = border_distances[4]
 
-    while unlabeled_pixel_exist(neighbors):
-        dist = new_distance(img, regions_new[0], dist[1], distances, regions_new[1], neighbors,
-                            dist[2])
-        regions_new = label(regions_new[0], dist[0], dist[1], neighbors)  # labels next pixel
-        neighbors = regions_new[2]
-        distances = regions_new[3]
-        neighbors = add_missing_neighbors(img, regions_new[1], neighbors, reg)
+    regions_new = label_new_pixel(reg, left_distances, right_distances, top_distances, bottom_distances,
+                                  left_neighbors, right_neighbors, top_neighbors, bottom_neighbors)
+    reg = regions_new[0]
+    pos_min_dist = regions_new[1]
+    left_neighbors = regions_new[2]
+    right_neighbors = regions_new[3]
+    top_neighbors = regions_new[4]
+    bottom_neighbors = regions_new[5]
 
-    return regions_new[0]
+    while unlabeled_pixel_exist(reg):
+        new_distances = update_distances(img, reg, means, pos_min_dist, left_neighbors, right_neighbors, top_neighbors,
+                                         bottom_neighbors, left_distances, right_distances, top_distances,
+                                         bottom_distances)
+        left_distances = new_distances[0]
+        right_distances = new_distances[1]
+        top_distances = new_distances[2]
+        bottom_distances = new_distances[3]
 
+        regions_new = label_new_pixel(reg, left_distances, right_distances, top_distances, bottom_distances,
+                                      left_neighbors, right_neighbors, top_neighbors, bottom_neighbors)
+        reg = regions_new[0]
+        pos_min_dist = regions_new[1]
+        left_neighbors = regions_new[2]
+        right_neighbors = regions_new[3]
+        top_neighbors = regions_new[4]
+        bottom_neighbors = regions_new[5]
 
-def unlabeled_pixel_exist(neighbors):
-    if len(neighbors) > 0:
-        return True
-    return False
-
-
-def add_missing_neighbors(img, pos_min_dist, neighbors, reg):
-    neighbors_to_add = get_neighbors(img, pos_min_dist)  # finds neighbors of newly labeled pixel
-    for neighbor in neighbors_to_add:
-        if neighbor not in neighbors and not is_labeled(reg, neighbor):
-            neighbors.append(neighbor)
-    return neighbors
-
-
-if __name__ == '__main__':
-    image = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")  # load image
-    img_s = image[300:400, 300:500]
-    img_result = sd.seeds(img_s, 0.4, 40)
-    img_result = sd.seed_merging(img_result)
-    img_result = sd.decrease_region_number(img_result, 50)
-
-    img_result = region_growing(img_s, img_result)
-    ip.show_image(img_result, 15, 8)
+        # print(np.count_nonzero(reg == 0))
+    return reg

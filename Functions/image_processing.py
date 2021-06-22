@@ -81,3 +81,9 @@ def filter_iteration_deviation(img, pixel, size, mean):
         deviation += (img[filter_neighbors_row, filter_neighbors_col] - mean)**2
     return deviation
 
+
+def add_border(array):
+    array_with_border = np.zeros((array.shape[0]+2, array.shape[1]+2))
+    array_with_border[1:array.shape[0]+1, 1:array.shape[1]+1] = array
+    return array_with_border
+
