@@ -9,7 +9,7 @@ from Functions import seeded_region_growing as srg
 
 def unseeded_distance(img, neighbors, reg):
     """
-    calculates intensity distance from unsorted pixel to mean intensity of regions ?
+    calculates intensity distance from unsorted neighbor pixel to mean intensity of regions ?
     :param img: image with intensity values (2D array)
     :param neighbors: list of neighbors of the regions (list)
     :param reg: array with regions (2D array)
@@ -34,7 +34,7 @@ def unseeded_distance(img, neighbors, reg):
 
 def unseeded_pixel_pick(dis):
     """
-    selects pixel with minimal intensity distance
+    selects pixel form neighbor list with minimal intensity distance
     :param dis: array with intensity distances (2D array)
     :return: position of the pixel with minimal intensity distance (tuple (x,y) with position in an array)
     """
@@ -44,7 +44,7 @@ def unseeded_pixel_pick(dis):
     return pick
 
 
-def unseeded_region_direct(reg, pick, nearest_region):
+def unseeded_region_direct(reg, pick, nearest_region): #treshold: Pick soll nur zugeordnet werden, wenn Distanz kleiner t ist
     """
     assigns pick to the region region with minimal intensity distance
     :param nearest_region: array with number of the region with smallest distance (2D array)
@@ -62,7 +62,7 @@ def unseeded_region_indirect_or_new(img, reg, pick, threshold):
     :param img: image with intensity values (2D array)
     :param reg: array with region numbers (2D array)
     :param pick: selected pixel (tuple)
-    :param threshold: Threshold for decision if pixel is in new region (int?)
+    :param threshold: Threshold for decision if pixel is in new region (int)
     :return: array with updated regions (2D array)
     """
     means = srg.mean_region(img, reg)
