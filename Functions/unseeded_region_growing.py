@@ -1,5 +1,5 @@
 import numpy as np
-from Functions import seeded_region_growing as srg
+from Functions import old_seeded_region_growing as srg
 
 # import skimage.io as sk
 # import matplotlib.pyplot as plt
