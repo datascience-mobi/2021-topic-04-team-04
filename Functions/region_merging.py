@@ -49,6 +49,7 @@ def find_neighbors_one_region(reg, region_number):
     neighboring_regions_unique = np.unique(neighboring_regions.flatten())
     pos_zero = np.where(neighboring_regions_unique == 0)
     neighboring_regions_unique = np.delete(neighboring_regions_unique, pos_zero[0])
+    #neighboring_regions_unique = neighboring_regions_unique.tolist()
     neighboring_regions_unique = neighboring_regions_unique.astype(int)
     return neighboring_regions_unique
 
@@ -149,7 +150,6 @@ def update_distances(changed_region1, changed_region2, inter_region_distances, r
 def update_neighboring_regions(inter_region_neighbors, changed_region1, changed_region2):
     inter_region_neighbors[changed_region1, :] = inter_region_neighbors[changed_region1, :] + inter_region_neighbors[
                                                                                               changed_region2, :]
-    inter_region_neighbors[:, changed_region2] = 0
     return inter_region_neighbors
 
 
@@ -234,7 +234,9 @@ def calculate_regions_size(regions):
     for region_number in range(0, max_region):
         region_count = np.sum(regions == region_number)
         region_sizes.append(region_count)
-        region_sizes = np.asarray(region_sizes)
+    region_sizes = np.asarray(region_sizes)
+    pos_empty_regions = np.where(region_sizes == 0)[0]
+    region_sizes[pos_empty_regions] = 1000000
     return region_sizes
 
 
@@ -249,12 +251,37 @@ def find_most_similar_region(means, smallest_region, inter_region_neighbors, img
     means = np.asarray(means)
     max_intensity = int(np.amax(img))
     distances = np.ones(means.shape)
-    neighboring_regions = np.where(inter_region_neighbors[smallest_region, :] == 1)[0]
+    neighboring_regions = np.where(inter_region_neighbors[smallest_region, :] != 0)[0]
     distances[neighboring_regions] = abs(means[neighboring_regions] - means[smallest_region]) / max_intensity
     smallest_distance = np.amin(distances)
     closest_neighbor = np.where(distances == smallest_distance)[0]
     closest_neighbor = closest_neighbor[0]
     return closest_neighbor  # number of region starts with 0
+
+
+def update_regions(reg, closest_neighbor, smallest_region):  # merging
+    pos_smallest_region = np.where(reg == int(smallest_region) + 1)
+    reg[pos_smallest_region[0], pos_smallest_region[1]] = closest_neighbor + 1
+    return reg
+
+
+def update_region_sizes(region_sizes, smallest_region, closest_neighbor):
+    region_sizes[closest_neighbor] = region_sizes[smallest_region] + region_sizes[closest_neighbor]
+    region_sizes[smallest_region] = 1000000
+    return region_sizes
+
+
+def region_merging_size(img, reg, inter_region_neighbors, means, threshold):
+    region_sizes = calculate_regions_size(reg)
+    smallest_region = find_smallest_region(region_sizes)
+    while region_sizes[smallest_region] < threshold:
+        closest_neighbor = find_most_similar_region(means,smallest_region, inter_region_neighbors, img)
+        reg = update_regions(reg, closest_neighbor, smallest_region)
+        means = update_mean_values(means, closest_neighbor, smallest_region, img, reg)
+        region_sizes = update_region_sizes(region_sizes, smallest_region, closest_neighbor)
+        inter_region_neighbors = update_neighboring_regions(inter_region_neighbors, closest_neighbor, smallest_region)
+    return reg
+
 
 
 if __name__ == '__main__':
