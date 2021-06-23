@@ -12,7 +12,7 @@ def unseeded_calculate_one_distance(means, pixel_intensity, region_number):
 
 
 def unseeded_calculate_one_border_distances(means, img, max_region, one_border_neighbors):
-    one_border_distances = np.ones(img.shape)
+    one_border_distances = np.full(img.shape, 500)
     for region_number in range(1, max_region + 1):
         pos_reg_bor = np.where(one_border_neighbors == region_number)
         one_border_distances[pos_reg_bor[0], pos_reg_bor[1]] = unseeded_calculate_one_distance(means,
@@ -41,7 +41,7 @@ def unseeded_update_one_distance(img, reg, means, new_pixel, one_border_neighbor
                                                                                    img[positions_to_update[0],
                                                                                        positions_to_update[1]],
                                                                                    reg[new_pixel])
-    one_border_distances[new_pixel] = 1
+    one_border_distances[new_pixel] = 500
     return one_border_distances
 
 
@@ -95,24 +95,22 @@ def unseeded_label_new_pixel(reg, left_distances, right_distances, top_distances
         else:
             region_max = int(max(reg.flatten()))
             reg[pos_min_dist] = region_max + 1
+            means.append(img[pos_min_dist])
 
     left_neighbors = srg.update_left_neighbors(reg, left_neighbors, pos_min_dist)
     right_neighbors = srg.update_right_neighbors(reg, right_neighbors, pos_min_dist)
     top_neighbors = srg.update_top_neighbors(reg, top_neighbors, pos_min_dist)
     bottom_neighbors = srg.update_bottom_neighbors(reg, bottom_neighbors, pos_min_dist)
 
-    return reg, pos_min_dist, left_neighbors, right_neighbors, top_neighbors, bottom_neighbors
+    return reg, pos_min_dist, left_neighbors, right_neighbors, top_neighbors, bottom_neighbors, means
 
 
 def unseeded_region_growing_algorithm(img, reg, t):
-    print(1)
     border_neighbors = srg.find_seed_neighbors(reg)
     left_neighbors = border_neighbors[0]
     right_neighbors = border_neighbors[1]
     top_neighbors = border_neighbors[2]
     bottom_neighbors = border_neighbors[3]
-
-    print(2)
 
     border_distances = unseeded_calculate_distances(img, reg, left_neighbors, right_neighbors, top_neighbors,
                                                     bottom_neighbors)
@@ -121,8 +119,6 @@ def unseeded_region_growing_algorithm(img, reg, t):
     right_distances = border_distances[2]
     top_distances = border_distances[3]
     bottom_distances = border_distances[4]
-
-    print(3)
 
     regions_new = unseeded_label_new_pixel(reg, left_distances, right_distances, top_distances, bottom_distances,
                                            left_neighbors, right_neighbors, top_neighbors, bottom_neighbors, t, means,
@@ -133,8 +129,6 @@ def unseeded_region_growing_algorithm(img, reg, t):
     right_neighbors = regions_new[3]
     top_neighbors = regions_new[4]
     bottom_neighbors = regions_new[5]
-
-    print(4)
 
     while srg.unlabeled_pixel_exist(reg):
         new_distances = unseeded_update_distances(img, reg, means, pos_min_dist, left_neighbors, right_neighbors,
@@ -156,7 +150,9 @@ def unseeded_region_growing_algorithm(img, reg, t):
         right_neighbors = regions_new[3]
         top_neighbors = regions_new[4]
         bottom_neighbors = regions_new[5]
+        means = regions_new[6]
 
-        print(np.count_nonzero(reg == 0))
+        #print(np.count_nonzero(reg == 0))
+        #print(pos_min_dist)
 
     return reg
