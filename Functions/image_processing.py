@@ -87,3 +87,9 @@ def add_border(array):
     array_with_border[1:array.shape[0]+1, 1:array.shape[1]+1] = array
     return array_with_border
 
+def remove_border(array):
+    array = np.delete(array, 0, axis=1)
+    array = np.delete(array, array.shape[1]-1, axis=1)
+    array = np.delete(array, 0, axis=0)
+    array = np.delete(array, array.shape[0]-1, axis=0)
+    return array
