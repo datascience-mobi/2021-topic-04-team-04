@@ -44,7 +44,8 @@ def is_border_pixel(pixel, img):
     :param img: Bild für welches der Rand geprüft wird
     :return: True für einen Randpixel, False für keinen Randpixel
     """
-    if pixel[0] - 1 >= 0 and pixel[1] - 1 >= 0 and pixel[0] + 1 <= img.shape[0] - 1 and pixel[1] + 1 <= img.shape[1] - 1:
+    if pixel[0] - 1 >= 0 and pixel[1] - 1 >= 0 and pixel[0] + 1 <= img.shape[0] - 1 and pixel[1] + 1 <= img.shape[
+        1] - 1:
         return False
     return True
 
@@ -78,18 +79,39 @@ def filter_iteration_deviation(img, pixel, size, mean):
     for filter_pixel in np.ndindex(size, size):
         filter_neighbors_row = pixel[0] + filter_pixel[0] - n
         filter_neighbors_col = pixel[1] + filter_pixel[1] - n
-        deviation += (img[filter_neighbors_row, filter_neighbors_col] - mean)**2
+        deviation += (img[filter_neighbors_row, filter_neighbors_col] - mean) ** 2
     return deviation
 
 
 def add_border(array):
-    array_with_border = np.zeros((array.shape[0]+2, array.shape[1]+2))
-    array_with_border[1:array.shape[0]+1, 1:array.shape[1]+1] = array
+    array_with_border = np.zeros((array.shape[0] + 2, array.shape[1] + 2))
+    array_with_border[1:array.shape[0] + 1, 1:array.shape[1] + 1] = array
     return array_with_border
+
 
 def remove_border(array):
     array = np.delete(array, 0, axis=1)
-    array = np.delete(array, array.shape[1]-1, axis=1)
+    array = np.delete(array, array.shape[1] - 1, axis=1)
     array = np.delete(array, 0, axis=0)
-    array = np.delete(array, array.shape[0]-1, axis=0)
+    array = np.delete(array, array.shape[0] - 1, axis=0)
     return array
+
+
+def histogram(img):
+    histo = plt.hist(img.flatten(), log=True)
+    plt.show(histo)
+
+
+def image_clipping(img, t1, t2):
+    img_copy = img.copy()
+    clipped_img = np.clip(img_copy, t1, t2)
+    return clipped_img
+
+
+def remove_bright_spots(img, t):
+    img_copy = img.copy()
+    for p in np.ndindex(img_copy.shape):
+        if img_copy[p] > t:
+            img_copy[p] = 60
+    return img_copy
+
