@@ -1,9 +1,8 @@
+import skimage.io as sk
 import numpy as np
-
-
-#  from Functions import image_processing as ip
-#  from Functions import seed_detection as sd
-#  import skimage.io as sk
+from Functions import image_processing as ip
+from Functions import seed_detection as sd
+from PIL import Image
 
 
 def calculate_left_neighbors(reg, seeds):
@@ -291,3 +290,17 @@ def region_growing(img, reg):
 
         # print(np.count_nonzero(reg == 0))
     return reg
+
+
+if __name__ == '__main__':
+    image = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")  # load image
+    img_s = image[300:400, 300:500]
+    img_result = sd.seeds(img_s, 0.4, 40)
+    img_result = sd.seed_merging(img_result)
+    img_result = sd.decrease_region_number(img_result, 50)
+
+    img_result = region_growing(img_s, img_result)
+    ip.show_image(img_result, 15, 8)
+
+    im = Image.fromarray(img_result)
+    im.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/srg_t01.tif")
