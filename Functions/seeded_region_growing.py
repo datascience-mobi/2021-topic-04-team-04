@@ -48,7 +48,7 @@ def find_seed_neighbors(reg):
     return left_neighbors, right_neighbors, top_neighbors, bottom_neighbors
 
 
-def mean_region(img, reg):
+def mean_region(img,reg):
     """
     :param img: image with intensity values (2D array)
     :param reg: array with pixle numbers (2D array)
