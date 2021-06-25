@@ -145,6 +145,7 @@ def update_distances(changed_region1, changed_region2, inter_region_distances, r
            (2D array)
     :return: updated inter_region distances (2d array)
     """
+
     neighboring_regions = np.where(inter_region_neighbors[changed_region1, :] != 0)[0]
     for col_number in neighboring_regions:
         if col_number > changed_region1:
@@ -209,7 +210,7 @@ def updates_region_numbers(inter_region_distances, reg, min_distance):
     :param reg: region numbers (2d array)
     :param min_distance: minimal distance of mean intensity values between to regions (float)
 
-    :return: reg: updated region numbers (2d array)1
+    :return: reg: updated region numbers (2d array)
     :return: pos_min_dist: position of minimal distance in inter_region_distances array (tuple(x,y))
     """
     pos_min_dist = position_of_minimal_distance(inter_region_distances, min_distance)
