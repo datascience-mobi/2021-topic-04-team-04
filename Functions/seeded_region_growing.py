@@ -48,8 +48,9 @@ def find_seed_neighbors(reg):
     return left_neighbors, right_neighbors, top_neighbors, bottom_neighbors
 
 
-def mean_region(reg):
+def mean_region(img, reg):
     """
+    :param img: intensity values (2D array)
     :param reg: array with pixle numbers (2D array)
     :return: list with mean values of the regions, region number 1 has index 0 (list)
     """
@@ -57,7 +58,7 @@ def mean_region(reg):
     region_max = int(max(reg.flatten()))  # calculates amount of regions
     for region_number in range(1, region_max + 1):  # iterates over every region
         pos_reg_number = np.where(reg == region_number)
-        reg_mean = np.mean(reg[pos_reg_number[0], pos_reg_number[1]])
+        reg_mean = np.mean(img[pos_reg_number[0], pos_reg_number[1]])
         mean_value.append(reg_mean)
     return mean_value  # returns list with average of every region
 
@@ -94,7 +95,7 @@ def calculate_one_border_distances(max_intensity, means, img, max_region, one_bo
 
 def calculate_distances(img, reg, left_neighbors, right_neighbors, top_neighbors, bottom_neighbors):
     max_intensity = np.amax(img)
-    means = mean_region(reg)
+    means = mean_region(img, reg)
     max_region = int(np.amax(reg))
 
     left_distances = calculate_one_border_distances(max_intensity, means, img, max_region, left_neighbors)

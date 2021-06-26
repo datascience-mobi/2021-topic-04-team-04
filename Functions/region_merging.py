@@ -70,7 +70,7 @@ def region_distance(img, reg):
     max_region = int(max(reg.flatten()))
     max_intensity = np.amax(img)
     inter_region_distances = np.ones((int(max_region), int(max_region)))
-    means = srg.mean_region(reg)
+    means = srg.mean_region(img, reg)
     inter_region_neighbors = find_neighboring_regions(reg)
 
     for row_number in range(0, int(max_region)):
