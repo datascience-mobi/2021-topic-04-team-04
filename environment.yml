@@ -3,3 +3,4 @@ dependencies:
   - numpy
   - scikit-image
   - pandas
+  - scipy
