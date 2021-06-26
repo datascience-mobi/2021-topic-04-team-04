@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy.ndimage as ndimage
+from medpy.filter.smoothing import anisotropic_diffusion
 
 
 def show_image(img, x, y):
@@ -118,19 +120,24 @@ def remove_bright_spots(img, t):
 
 def median_filter(img, s):
     img_copy = img.copy()
-    img_median = ndimage.median_filter(image, size=s)
+    img_median = ndimage.median_filter(img_copy, size=s)
     return img_median
 
 
 def mean_filter(img, s):
     img_copy = img.copy()
-    img_mean = ndimage.uniform_filter(image, size=s)
+    img_mean = ndimage.uniform_filter(img_copy, size=s)
     return img_mean
 
 
 def gaussian_filter(img, s):
     img_copy = img.copy()
-    img_gauss = ndimage.gaussian_filter(image, sigma=s)
+    img_gauss = ndimage.gaussian_filter(img_copy, sigma=s)
     return img_gauss
+
+def anisotropic_filter(img):
+    img_copy = img.copy()
+    img_anisotropic = anisotropic_diffusion(img_copy)
+    return img_anisotropic
 
 
