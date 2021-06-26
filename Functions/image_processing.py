@@ -110,6 +110,20 @@ def image_clipping(img, t1, t2):
     return clipped_img
 
 
+def image_clipping_extreme(img, t1, t2):
+    img_copy = img.copy()
+    maxi = max(img.flatten())
+    for p in np.ndindex(img_copy.shape):
+        if img_copy[p] < t1:
+            img_copy[p] = 0
+        if img_copy[p] > t2:
+            img_copy[p] = maxi
+        else:
+            img_copy[p] = img_copy[p]
+
+    return img_copy
+
+
 def remove_bright_spots(img, t):
     img_copy = img.copy()
     for p in np.ndindex(img_copy.shape):
