@@ -269,10 +269,14 @@ def region_growing(img, reg):
     right_neighbors = regions_new[3]
     top_neighbors = regions_new[4]
     bottom_neighbors = regions_new[5]
+
     i = 0
+
     while unlabeled_pixel_exist(reg):
+        
         i += 1
         print(i)
+
         new_distances = update_distances(img, reg, means, pos_min_dist, left_neighbors, right_neighbors, top_neighbors,
                                          bottom_neighbors, left_distances, right_distances, top_distances,
                                          bottom_distances)
@@ -296,7 +300,7 @@ def region_growing(img, reg):
 
 if __name__ == '__main__':
     image = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")  # load image
-    img_s = image[300:350, 450:500]
+    img_s = image[300:400, 300:500]
     img_result = sd.seeds(img_s, 0.4, 40)
     img_result = sd.seed_merging(img_result)
     img_result = sd.decrease_region_number(img_result, 50)
