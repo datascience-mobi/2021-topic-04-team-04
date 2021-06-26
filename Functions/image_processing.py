@@ -135,6 +135,7 @@ def gaussian_filter(img, s):
     img_gauss = ndimage.gaussian_filter(img_copy, sigma=s)
     return img_gauss
 
+
 def anisotropic_filter(img):
     img_copy = img.copy()
     img_anisotropic = anisotropic_diffusion(img_copy)
