@@ -48,20 +48,18 @@ def find_seed_neighbors(reg):
     return left_neighbors, right_neighbors, top_neighbors, bottom_neighbors
 
 
-def mean_region(img,reg):
+def mean_region(img, reg):
     """
-    :param img: image with intensity values (2D array)
+    :param img: intensity values (2D array)
     :param reg: array with pixle numbers (2D array)
     :return: list with mean values of the regions, region number 1 has index 0 (list)
     """
     mean_value = []
     region_max = int(max(reg.flatten()))  # calculates amount of regions
-    for count in range(1, region_max + 1):  # iterates over every region
-        intensity = []
-        for p in np.ndindex(img.shape):  # iterates over every pixel in the image
-            if reg[p] == count:
-                intensity.append(img[p])  # appends intensity value, if it is in the region
-        mean_value.append(np.mean(intensity))  # calculates mean value of region
+    for region_number in range(1, region_max + 1):  # iterates over every region
+        pos_reg_number = np.where(reg == region_number)
+        reg_mean = np.mean(img[pos_reg_number[0], pos_reg_number[1]])
+        mean_value.append(reg_mean)
     return mean_value  # returns list with average of every region
 
 

@@ -115,3 +115,22 @@ def remove_bright_spots(img, t):
             img_copy[p] = 60
     return img_copy
 
+
+def median_filter(img, s):
+    img_copy = img.copy()
+    img_median = ndimage.median_filter(image, size=s)
+    return img_median
+
+
+def mean_filter(img, s):
+    img_copy = img.copy()
+    img_mean = ndimage.uniform_filter(image, size=s)
+    return img_mean
+
+
+def gaussian_filter(img, s):
+    img_copy = img.copy()
+    img_gauss = ndimage.gaussian_filter(image, sigma=s)
+    return img_gauss
+
+
