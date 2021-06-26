@@ -152,7 +152,7 @@ def unseeded_region_growing_algorithm(img, reg, t):
         bottom_neighbors = regions_new[5]
         means = regions_new[6]
 
-        #print(np.count_nonzero(reg == 0))
-        #print(pos_min_dist)
+        print(np.count_nonzero(reg == 0))
+        #  print(pos_min_dist)
 
     return reg
