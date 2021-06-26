@@ -13,9 +13,9 @@ After implementing the seeded region growing algorithm, its performance will be 
 
 ### Datasets – N2DH-GOWT1, N2DL-HeLa and NIH3T3
 
-In order to run and test the implemented seeded region growing algorithm, three different datasets were used: N2DH-GOWT1, N2DL-HeLa and NIH3T3. The datasets consist of a total of 28 image files, in which different structures of the nucleus were stained using the fluorescent protein GFP. Attached to the data sets are gt-images in which the nuclei have already been segmented.
-Each dataset has specific challenges that need to be considered. 
+In order to run and test the implemented seeded region growing algorithm, three different datasets were used: N2DH-GOWT1, N2DL-HeLa and NIH3T3. The datasets consist of a total of 28 image files, in which different structures of the nucleus were stained using the fluorescent protein GFP. Attached to the data sets are gt-images where the nuclei have already been segmented. The images and gt-images of these datasets are often used to evaluate the performance of newly implemented algorithms.
+Each dataset has specific challenges that need to be considered.
 In the first dataset N2DH-GOWT1, transcription factor Oct 4 was stained by GFP in mouse embryonic stem cells. The cells are well in focus and do not overlap. There are no reflections or blurs. However, the stained cells differ greatly in brightness. Compared to the other data sets, N2DH-GOWT1 is considered to be the easiest to work with.
 N2DL-HeLa shows GFP labeled core histone 2b proteins from human cervical carcinomas. Overall, the cell density is high whereas the resolution is low, and the cells vary greatly in brightness. There are no interfering effects due to reflections or blurs.
 The last dataset NIH3T3 consists of mouse embryo fibroblasts. EGFP was used to label the CD-tagged protein. In NIH3T3 the cells are displayed in a very low contrast and differ strongly in their size and shape. Very bright regions, presumably caused by reflections from the microscope, probably make this data set the most challenging.
-### Ursprung der Datensätze muss noch hinzugefügt werden.
+
