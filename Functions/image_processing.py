@@ -110,11 +110,11 @@ def image_clipping(img, t1, t2):
     return clipped_img
 
 
-def remove_bright_spots(img, t):
+def remove_bright_spots(img, t1, t2):
     img_copy = img.copy()
     for p in np.ndindex(img_copy.shape):
-        if img_copy[p] > t:
-            img_copy[p] = 60
+        if img_copy[p] > t1:
+            img_copy[p] = t2
     return img_copy
 
 
