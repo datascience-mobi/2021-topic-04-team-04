@@ -50,7 +50,6 @@ def find_neighbors_one_region(reg, region_number):
     neighboring_regions_unique = np.unique(neighboring_regions.flatten())
     pos_zero = np.where(neighboring_regions_unique == 0)
     neighboring_regions_unique = np.delete(neighboring_regions_unique, pos_zero[0])
-    # neighboring_regions_unique = neighboring_regions_unique.tolist()
     neighboring_regions_unique = neighboring_regions_unique.astype(int)
     return neighboring_regions_unique
 
@@ -75,6 +74,7 @@ def region_distance(img, reg):
 
     for row_number in range(0, int(max_region)):
         neighboring_regions = np.where(inter_region_neighbors[row_number, :] == 1)[0]
+        print(neighboring_regions)
         for col_number in neighboring_regions:
             inter_region_distances[row_number][col_number] = distance_between_regions(row_number, col_number,
                                                                                       max_intensity, means)
@@ -274,7 +274,7 @@ def calculate_regions_size(regions):
     """
     max_region = np.amax(regions)
     region_sizes = []
-    for region_number in range(0, max_region):
+    for region_number in range(1, int(max_region)+1):
         region_count = np.sum(regions == region_number)
         region_sizes.append(region_count)
     region_sizes = np.asarray(region_sizes)
@@ -324,7 +324,7 @@ def update_regions(reg, closest_neighbor, smallest_region):  # merging
     :param smallest_region: region number of the smallest region (int)
     :return: updated region number array (2d array)
     """
-    pos_smallest_region = np.where(reg == int(smallest_region) + 1)
+    pos_smallest_region = np.where(reg == smallest_region + 1)
     reg[pos_smallest_region[0], pos_smallest_region[1]] = closest_neighbor + 1
     return reg
 
@@ -355,26 +355,30 @@ def region_merging_size(img, reg, inter_region_neighbors, means, threshold):
     """
     region_sizes = calculate_regions_size(reg)
     smallest_region = find_smallest_region(region_sizes)
+    i = 0
     while region_sizes[smallest_region] < threshold:
+        i += 1
+        print(i)
         closest_neighbor = find_most_similar_region(means, smallest_region, inter_region_neighbors, img)
         reg = update_regions(reg, closest_neighbor, smallest_region)
         means = update_mean_values(means, closest_neighbor, smallest_region, img, reg)
         region_sizes = update_region_sizes(region_sizes, smallest_region, closest_neighbor)
         inter_region_neighbors = update_neighboring_regions(inter_region_neighbors, closest_neighbor, smallest_region)
+        smallest_region = find_smallest_region(region_sizes)
     return reg
 
 
-if __name__ == '__main__':
-    image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")  # load image
-    image_intensity = image_intensity[300:500, 300:500]
-    image_r = sd.seeds(image_intensity, 0.1, 1)
-    image_r = sd.seed_merging(image_r)
-    image_r = srg.region_growing(image_intensity, image_r)
-    ip.show_image(image_r, 15, 8)
+#if __name__ == '__main__':
+    #image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")  # load image
+    #image_intensity = image_intensity[300:500, 300:500]
+    #image_r = sd.seeds(image_intensity, 0.1, 1)
+    #image_r = sd.seed_merging(image_r)
+    #image_r = srg.region_growing(image_intensity, image_r)
+    #ip.show_image(image_r, 15, 8)
 
-    image_r_copy = image_r.copy()
-    image_r_copy = distance_merging_while(image_r_copy, 0.05, image_intensity)
-    ip.show_image(image_r_copy[0], 15, 8)
+    #image_r_copy = image_r.copy()
+    #image_r_copy = distance_merging_while(image_r_copy, 0.05, image_intensity)
+    #ip.show_image(image_r_copy[0], 15, 8)
 
-    im = Image.fromarray(image_r_copy[0])
-    im.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/srg_t01_merged.tif")
+    #im = Image.fromarray(image_r_copy[0])
+    #im.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/srg_t01_merged.tif")
