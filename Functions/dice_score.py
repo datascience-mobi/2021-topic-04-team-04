@@ -2,14 +2,14 @@ import skimage.io as sk
 import numpy as np
 
 
-def find_background_number(regions):
+def find_background_number(reg):
     """
     determines region number of background as it is the biggest region
-    :param regions: segmented image with region number (2D array)
+    :param reg: segmented image with region number (2D array)
     :return: number of background/ region with maximal number of elements (int)
     """
-    regions = regions.astype(int)
-    background_number = np.bincount(regions.flatten()).argmax()
+    reg = reg.astype(int)
+    background_number = np.bincount(reg.flatten()).argmax()
     return background_number
 
 
@@ -20,13 +20,12 @@ def segmented_image_clip(segmented_img, background_region):
     :param background_region: region number of background of segmented_image (int)
     :return: clipped image where all cells have value 1 and background has value 0 (2D array)
     """
-    for i in range(0, segmented_img.shape[0]):
-        for j in range(0, segmented_img.shape[1]):
-            region = segmented_img[i, j]
-            if region == background_region:
-                segmented_img[i, j] = 0
-            else:
-                segmented_img[i, j] = 1
+    for pixel in np.ndindex(segmented_image.shape):
+        region = segmented_img[pixel]
+        if region == background_region:
+            segmented_img[pixel] = 0
+        else:
+            segmented_img[pixel] = 1
     return segmented_img
 
 
@@ -55,14 +54,14 @@ def intersection_count(segmented_img, gt, region_number):
     return intersection_number
 
 
-def region_count(regions_image, region_number):
+def region_count(segmented_img, region_number):
     """
     calculates number of elements in a region
-    :param regions_image: image with region numbers (2D array)
+    :param segmented_img: image with region numbers (2D array)
     :param region_number: region for which number of elements should be counted (int)
     :return: number of elements in the region (int)
     """
-    count_region = np.sum(regions_image == region_number)
+    count_region = np.sum(segmented_img == region_number)
     return count_region
 
 
