@@ -77,7 +77,8 @@ def otsu_thresholding(img):
     :param img: intensity values of the image (2d array)
     :return: threshold for seed detection criteria similarity (float)
     """
-    otsu_threshold = threshold_otsu(img)
+    otsu_threshold = threshold_otsu(img)/255
+    print(otsu_threshold)
     return otsu_threshold
 
 

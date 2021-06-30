@@ -65,7 +65,7 @@ def region_distance(img, reg):
     """
     max_region = int(max(reg.flatten()))
     max_intensity = np.amax(img)
-    inter_region_distances = np.ones((int(max_region), int(max_region)))
+    inter_region_distances = np.ones((max_region, max_region))
     means = srg.mean_region(img, reg)
     inter_region_neighbors = find_neighboring_regions(reg)
 
@@ -342,6 +342,12 @@ def region_merging_size(img, reg, inter_region_neighbors, means, threshold):
         smallest_region = find_smallest_region(region_sizes)
     return reg
 
+
+def region_merging(reg, img, intensity_threshold, size_threshold):
+    results_region_merging_similarity = distance_merging_while(reg, intensity_threshold, img)
+    image_rm_similarity, inter_region_neighbors, means = results_region_merging_similarity
+    image_rm_size = region_merging_size(img, image_rm_similarity, inter_region_neighbors, means, size_threshold)
+    return image_rm_size
 
 if __name__ == '__main__':
     image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")  # load image
