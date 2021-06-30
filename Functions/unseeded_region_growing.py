@@ -21,7 +21,7 @@ def unseeded_calculate_one_distance(means, pixel_intensity, region_number):
 
 def unseeded_calculate_one_border_distances(means, img, max_region, one_border_neighbors):
     """
-
+    calculates the distance of a pixel to the regions of the neighbors of one side
     :param means: list of means of the regions (list)
     :param img: array with intensity values (2D array)
     :param max_region: highest region number (int)
@@ -38,7 +38,7 @@ def unseeded_calculate_one_border_distances(means, img, max_region, one_border_n
 
 def unseeded_calculate_distances(img, reg, left_neighbors, right_neighbors, top_neighbors, bottom_neighbors):
     """
-
+    creates four arrays with the distances of the pixels to their neighboring regions to all sides
     :param img: array with intensity values (2D array)
     :param reg: array with region numbers (2D array)
     :param left_neighbors: array with the region numbers of the neighbors to the left side (2D array)
@@ -60,7 +60,7 @@ def unseeded_calculate_distances(img, reg, left_neighbors, right_neighbors, top_
 
 def unseeded_update_one_distance(img, reg, means, new_pixel, one_border_neighbors, one_border_distances):
     """
-
+    updates the distance array of one direction
     :param img: array with intensity values (2D array)
     :param reg: array with region numbers (2D array)
     :param means: list of means of the regions (list)
@@ -81,7 +81,7 @@ def unseeded_update_one_distance(img, reg, means, new_pixel, one_border_neighbor
 def unseeded_update_distances(img, reg, means, new_pixel, left_neighbors, right_neighbors, top_neighbors,
                               bottom_neighbors, left_distances, right_distances, top_distances, bottom_distances):
     """
-
+    updates the list of means and the four distance arrays for all directions
     :param img: array with intensity values (2D array)
     :param reg: array with region numbers (2D array)
     :param means: list of means of the regions (list)
@@ -90,10 +90,10 @@ def unseeded_update_distances(img, reg, means, new_pixel, left_neighbors, right_
     :param right_neighbors: array with the region numbers of the neighbors to the right side (2D array)
     :param top_neighbors: array with the region numbers of the neighbors to the upper side (2D array)
     :param bottom_neighbors: array with the region numbers of the neighbors to lower side (2D array)
-    :param left_distances: array with the calculated distances of the pixel to left neighbors (2D array)
-    :param right_distances: array with the calculated distances of the pixel to right neighbors (2D array)
-    :param top_distances: array with the calculated distances of the pixel to upper neighbors (2D array)
-    :param bottom_distances: array with the calculated distances of the pixel to lower neighbors (2D array)
+    :param left_distances: array with the calculated distances of the pixel to region of left neighbors (2D array)
+    :param right_distances: array with the calculated distances of the pixel to region of right neighbors (2D array)
+    :param top_distances: array with the calculated distances of the pixel to region of upper neighbors (2D array)
+    :param bottom_distances: array with the calculated distances of the pixel to region of lower neighbors (2D array)
     :return: four updated distance arrays (2D arrays), means: list of means (list)
     """
     means = srg.update_list_of_means(means, img, reg, new_pixel)
@@ -111,10 +111,10 @@ def unseeded_choose_distance_array(border_number, left_distances, right_distance
     """
     chooses one of the four distance arrays by the number of the array
     :param border_number: number of the array which should be used (int)
-    :param left_distances: array with the calculated distances of the pixel to left neighbors (2D array)
-    :param right_distances: array with the calculated distances of the pixel to right neighbors (2D array)
-    :param top_distances: array with the calculated distances of the pixel to upper neighbors (2D array)
-    :param bottom_distances: array with the calculated distances of the pixel to lower neighbors (2D array)
+    :param left_distances: array with the calculated distances of the pixel to region of left neighbors (2D array)
+    :param right_distances: array with the calculated distances of the pixel to region of right neighbors (2D array)
+    :param top_distances: array with the calculated distances of the pixel to region of upper neighbors (2D array)
+    :param bottom_distances: array with the calculated distances of the pixel to region of lower neighbors (2D array)
     :return: name of the distance array which should be used (name of variable)
     """
     if border_number == 0:
@@ -129,12 +129,13 @@ def unseeded_choose_distance_array(border_number, left_distances, right_distance
 def unseeded_label_new_pixel(reg, left_distances, right_distances, top_distances, bottom_distances, left_neighbors,
                              right_neighbors, top_neighbors, bottom_neighbors, t, means, img):
     """
-
+    determines the pixel with the smallest distance and decides how it should be labeled to a neighboring region,
+    another region or should be a new region and updates the neighbor arrays for all directions
     :param reg: array with region numbers (2D array)
-    :param left_distances: array with the calculated distances of the pixel to left neighbors (2D array)
-    :param right_distances: array with the calculated distances of the pixel to right neighbors (2D array)
-    :param top_distances: array with the calculated distances of the pixel to upper neighbors (2D array)
-    :param bottom_distances: array with the calculated distances of the pixel to lower neighbors (2D array)
+    :param left_distances: array with the calculated distances of the pixel to region of left neighbors (2D array)
+    :param right_distances: array with the calculated distances of the pixel to region of right neighbors (2D array)
+    :param top_distances: array with the calculated distances of the pixel to region of upper neighbors (2D array)
+    :param bottom_distances: array with the calculated distances of the pixel to region of lower neighbors (2D array)
     :param left_neighbors: array with the region numbers of the neighbors to the left side (2D array)
     :param right_neighbors: array with the region numbers of the neighbors to the right side (2D array)
     :param top_neighbors: array with the region numbers of the neighbors to the upper side (2D array)
