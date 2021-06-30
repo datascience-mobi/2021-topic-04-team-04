@@ -130,7 +130,14 @@ def unseeded_region_growing_algorithm(img, reg, t):
     top_neighbors = regions_new[4]
     bottom_neighbors = regions_new[5]
 
+    i = 0
+
     while srg.unlabeled_pixel_exist(reg):
+
+        i += 1
+        if i % 1000 == 0:
+            print(i)
+
         new_distances = unseeded_update_distances(img, reg, means, pos_min_dist, left_neighbors, right_neighbors,
                                                   top_neighbors,
                                                   bottom_neighbors, left_distances, right_distances, top_distances,
@@ -152,7 +159,7 @@ def unseeded_region_growing_algorithm(img, reg, t):
         bottom_neighbors = regions_new[5]
         means = regions_new[6]
 
-        print(np.count_nonzero(reg == 0))
+        #  print(np.count_nonzero(reg == 0))
         #  print(pos_min_dist)
 
     return reg
