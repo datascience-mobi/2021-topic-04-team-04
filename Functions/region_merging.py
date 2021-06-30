@@ -1,12 +1,11 @@
 import numpy as np
-from Functions import seeded_region_growing as srg
-from Functions import image_processing as ip
-# from Functions import old_seeded_region_growing as old_srg
-
-
-from PIL import Image
-from Functions import seed_detection as sd
 import skimage.io as sk
+from Functions import image_processing as ip
+from Functions import seeded_region_growing as srg
+
+
+#  from Functions import seed_detection as sd
+#  from PIL import Image
 
 
 def find_neighboring_regions(reg):
@@ -21,7 +20,6 @@ def find_neighboring_regions(reg):
     for region_number in range(1, int(max_region) + 1):
         neighboring_regions = find_neighbors_one_region(reg, region_number)
         inter_region_neighbors[int(region_number) - 1, neighboring_regions - 1] = 1
-    inter_region_neighbors = np.triu(inter_region_neighbors)
     return inter_region_neighbors
 
 
@@ -32,24 +30,24 @@ def find_neighbors_one_region(reg, region_number):
     :param region_number: number of a region (int)
     :return: array with all region numbers of neighbors from region_number (2D array)
     """
-    neighboring_regions = np.zeros((reg.shape[0] + 2, reg.shape[1] + 2))  # +2 because of added border pixels
-    reg = ip.add_border(reg)  # adds zeros at every border to create neighbors
-    reg = reg.astype(int)
-    pos_pixel_region = np.where(reg == region_number)
-
-    neighboring_regions[pos_pixel_region[0], pos_pixel_region[1] - 1] = reg[
+    neighboring_regions = np.zeros((reg.shape[0] + 2, reg.shape[1] + 2))
+    reg_with_border = ip.add_border(reg)
+    reg_with_border = reg_with_border.astype(int)
+    pos_pixel_region = np.where(reg_with_border == region_number)
+    neighboring_regions[pos_pixel_region[0], pos_pixel_region[1] - 1] = reg_with_border[
         pos_pixel_region[0], pos_pixel_region[1] - 1]
-    neighboring_regions[pos_pixel_region[0], pos_pixel_region[1] + 1] = reg[
+    neighboring_regions[pos_pixel_region[0], pos_pixel_region[1] + 1] = reg_with_border[
         pos_pixel_region[0], pos_pixel_region[1] + 1]
-    neighboring_regions[pos_pixel_region[0] - 1, pos_pixel_region[1]] = reg[
+    neighboring_regions[pos_pixel_region[0] - 1, pos_pixel_region[1]] = reg_with_border[
         pos_pixel_region[0] - 1, pos_pixel_region[1]]
-    neighboring_regions[pos_pixel_region[0] + 1, pos_pixel_region[1]] = reg[
+    neighboring_regions[pos_pixel_region[0] + 1, pos_pixel_region[1]] = reg_with_border[
         pos_pixel_region[0] + 1, pos_pixel_region[1]]
 
     neighboring_regions[pos_pixel_region[0], pos_pixel_region[1]] = 0
     neighboring_regions_unique = np.unique(neighboring_regions.flatten())
     pos_zero = np.where(neighboring_regions_unique == 0)
     neighboring_regions_unique = np.delete(neighboring_regions_unique, pos_zero[0])
+    #  neighboring_regions_unique = neighboring_regions_unique.tolist()
     neighboring_regions_unique = neighboring_regions_unique.astype(int)
     return neighboring_regions_unique
 
@@ -65,7 +63,6 @@ def region_distance(img, reg):
     mean values of all regions (list of floats)
     inter_region_neighbors: all neighbors have 1 in an array where region numbers are row and col numbers (2d array)
     """
-
     max_region = int(max(reg.flatten()))
     max_intensity = np.amax(img)
     inter_region_distances = np.ones((int(max_region), int(max_region)))
@@ -74,22 +71,16 @@ def region_distance(img, reg):
 
     for row_number in range(0, int(max_region)):
         neighboring_regions = np.where(inter_region_neighbors[row_number, :] == 1)[0]
-        print(neighboring_regions)
         for col_number in neighboring_regions:
             inter_region_distances[row_number][col_number] = distance_between_regions(row_number, col_number,
                                                                                       max_intensity, means)
+    inter_region_distances = np.triu(inter_region_distances)
+    lower_triangle = np.where(inter_region_distances == 0)
+    inter_region_distances[lower_triangle[0], lower_triangle[1]] = 1
     return inter_region_distances, means, inter_region_neighbors
 
 
 def distance_between_regions(region1, region2, max_intensity, means):
-    """
-    calculates the intensity distance between two regions
-    :param region1: specific region number (int)
-    :param region2: specific region number (int)
-    :param max_intensity: maximal intensity value of the image (float)
-    :param means: mean values of all regions (list of floats)
-    :return: distance between the two regions (float)
-    """
     distance = abs(means[region1] - means[region2]) / max_intensity
     return distance
 
@@ -116,47 +107,40 @@ def region_distance_new(img, reg, pos_min_dist, means, inter_region_distances, i
                          pos_min_dist[1] is region_number to be removed)
     :param means: mean values of all regions (list of floats)
     :param inter_region_distances: distances between mean intensity values of regions (2d array)
-    :param inter_region_neighbors: all neighbors have 1 in an array where region numbers are row and col numbers
-           (2D array)
+    :param inter_region_neighbors:
     :return: inter_region_distances: updated distances between mean intensity values of regions
     """
-
-    region_count = inter_region_distances.shape[0]
     maximal_intensity = np.amax(img)
-    changed_region1 = int(pos_min_dist[0])  # region number that the merged region gets
-    changed_region2 = int(pos_min_dist[1])  # region that is merged to the other one
+    changed_region1 = int(pos_min_dist[0])  # Regions Nummer 1 die übernommen wird
+    changed_region2 = int(pos_min_dist[1])
     means = update_mean_values(means, changed_region1, changed_region2, img, reg)
-    inter_region_distances = update_distances(changed_region1, changed_region2, inter_region_distances, region_count,
-                                              means, maximal_intensity, inter_region_neighbors)
+    inter_region_distances = update_distances(changed_region1, changed_region2, inter_region_distances, means,
+                                              maximal_intensity, inter_region_neighbors)
     return inter_region_distances
 
 
-def update_distances(changed_region1, changed_region2, inter_region_distances, region_count, means, maximal_intensity,
+def update_distances(changed_region1, changed_region2, inter_region_distances, means, maximal_intensity,
                      inter_region_neighbors):
     """
-    updates distance values of changed regions, value 500 for removed regions
+    updates distance values of changed regions, value 1 for removed regions
     :param changed_region1: resulting region number for merged region
     :param changed_region2: region number which is going to be removed
     :param inter_region_distances: distances between mean intensity values of regions (2d array)
-    :param region_count: amount of different regions at beginning of merging process (int)
-    :param means: mean intensity values of regions (list of floats)
+    :param means: mean intensity values of regions (list)
     :param maximal_intensity: maximal intensity value of image
-    :param inter_region_neighbors: all neighbors have 1 in an array where region numbers are row and col numbers
-           (2D array)
+    :param inter_region_neighbors:
     :return: updated inter_region distances (2d array)
     """
-
     neighboring_regions = np.where(inter_region_neighbors[changed_region1, :] != 0)[0]
-    for col_number in neighboring_regions:
-        if col_number > changed_region1:
-            inter_region_distances[changed_region1][col_number] = distance_between_regions(changed_region1, col_number,
-                                                                                           maximal_intensity, means)
-    for row_number in neighboring_regions:
-        if row_number < changed_region1:
-            inter_region_distances[row_number][changed_region1] = distance_between_regions(changed_region1, row_number,
-                                                                                           maximal_intensity, means)
-    inter_region_distances[changed_region2][0:region_count] = 500
-    inter_region_distances[0:region_count][changed_region2] = 500
+    for element in neighboring_regions:
+        if element > changed_region1:
+            inter_region_distances[changed_region1, element] = distance_between_regions(changed_region1, element,
+                                                                                        maximal_intensity, means)
+        elif element < changed_region1:
+            inter_region_distances[element, changed_region1] = distance_between_regions(changed_region1, element,
+                                                                                        maximal_intensity, means)
+    inter_region_distances[changed_region2, :] = 1
+    inter_region_distances[:, changed_region2] = 1
     return inter_region_distances
 
 
@@ -171,21 +155,26 @@ def update_neighboring_regions(inter_region_neighbors, changed_region1, changed_
     """
     inter_region_neighbors[changed_region1, :] = inter_region_neighbors[changed_region1, :] + inter_region_neighbors[
                                                                                               changed_region2, :]
+    neighbors_changed_region2 = np.where(inter_region_neighbors[changed_region2, :] == 1)[0]
+    inter_region_neighbors[neighbors_changed_region2, changed_region1] = 1
+    inter_region_neighbors[changed_region2, :] = 0
+    inter_region_neighbors[:, changed_region2] = 0
+    inter_region_neighbors[changed_region1, changed_region1] = 0
     return inter_region_neighbors
 
 
 def update_mean_values(means, changed_region1, changed_region2, img, reg):
     """
     updates mean value for merged regions in list of mean values, value 500 for unused means
-    :param means: mean intensity values of regions (list of floats)
+    :param means: mean intensity values of regions (list of ints)
     :param changed_region1: region number for merged region (int)
     :param changed_region2: region number to be removed (int)
     :param img: intensity values (2d array)
     :param reg: region numbers (2d array)
-    :return: updated mean values (list of floats)
+    :return:
     """
     means[changed_region2] = 500
-    means[changed_region1] = one_merged_region_mean(img, reg, changed_region1 + 1)
+    means[int(changed_region1)] = one_merged_region_mean(img, reg, int(changed_region1) + 1)
     return means
 
 
@@ -208,9 +197,9 @@ def updates_region_numbers(inter_region_distances, reg, min_distance):
     changes region number to region number of merged region
     :param inter_region_distances: distances between mean intensity values of regions (2d array)
     :param reg: region numbers (2d array)
-    :param min_distance: minimal distance of mean intensity values between to regions (float)
+    :param min_distance: minimal distance of mean intensity values between to regions
 
-    :return: reg: updated region numbers (2d array)
+    :return: reg: updated region numbers (2d array)1
     :return: pos_min_dist: position of minimal distance in inter_region_distances array (tuple(x,y))
     """
     pos_min_dist = position_of_minimal_distance(inter_region_distances, min_distance)
@@ -230,22 +219,22 @@ def distance_merging_while(reg, threshold, img):
     :param threshold: distance intensity value below which regions are merged (float between 0 and 1)
     :param img: intensity value (2d array)
     :return: merged regions by intensity similarity (2d array)
-             mean intensity values of every region (2d array)
-             array where all neighboring regions get value 1 in an array where col and row numbers are regions
-
     """
-
     result_region_distance = region_distance(img, reg)
     inter_region_distances = result_region_distance[0]
     means = result_region_distance[1]
     inter_region_neighbors = result_region_distance[2]
 
     min_distance = np.nanmin(inter_region_distances)
+    # i = 0
     while minimal_distance_is_similar(threshold, min_distance):
+        # print(min_distance)
+        # i += 1
+        # print(i)
         updated_regions = updates_region_numbers(inter_region_distances, reg, min_distance)
         reg = updated_regions[0]
         pos_min_dist = updated_regions[1]
-
+        # print(pos_min_dist)
         inter_region_neighbors = update_neighboring_regions(inter_region_neighbors, pos_min_dist[0], pos_min_dist[1])
         inter_region_distances = region_distance_new(img, reg, pos_min_dist, means, inter_region_distances,
                                                      inter_region_neighbors)
@@ -274,12 +263,12 @@ def calculate_regions_size(regions):
     """
     max_region = np.amax(regions)
     region_sizes = []
-    for region_number in range(1, int(max_region)+1):
+    for region_number in range(1, int(max_region) + 1):
         region_count = np.sum(regions == region_number)
         region_sizes.append(region_count)
-    region_sizes = np.asarray(region_sizes)
+    region_sizes = np.asarray(region_sizes, float)
     pos_empty_regions = np.where(region_sizes == 0)[0]
-    region_sizes[pos_empty_regions] = 1000000
+    region_sizes[pos_empty_regions] = np.nan
     return region_sizes
 
 
@@ -289,7 +278,7 @@ def find_smallest_region(region_sizes):
     :param region_sizes: list of size of every region (list of ints)
     :return: region number of the smallest region (int)
     """
-    smallest_size = np.amin(region_sizes)
+    smallest_size = np.nanmin(region_sizes)
     smallest_region = np.where(region_sizes == smallest_size)[0]
     smallest_region = smallest_region[0]
     return smallest_region
@@ -332,13 +321,13 @@ def update_regions(reg, closest_neighbor, smallest_region):  # merging
 def update_region_sizes(region_sizes, smallest_region, closest_neighbor):
     """
     updates region_sizes
-    :param region_sizes: size of every region (list with ints)
+    :param region_sizes: size of every region (1D array with ints)
     :param smallest_region: region number of the smallest region (int)
     :param closest_neighbor: region number of the region with the most similar mean intensity to smallest region (int)
     :return: updates list with region size of every region (list with ints)
     """
     region_sizes[closest_neighbor] = region_sizes[smallest_region] + region_sizes[closest_neighbor]
-    region_sizes[smallest_region] = 1000000
+    region_sizes[smallest_region] = np.nan
     return region_sizes
 
 
@@ -358,27 +347,29 @@ def region_merging_size(img, reg, inter_region_neighbors, means, threshold):
     i = 0
     while region_sizes[smallest_region] < threshold:
         i += 1
-        print(i)
+        # print(i)
         closest_neighbor = find_most_similar_region(means, smallest_region, inter_region_neighbors, img)
+        # print(smallest_region)
+        # print(closest_neighbor)
         reg = update_regions(reg, closest_neighbor, smallest_region)
         means = update_mean_values(means, closest_neighbor, smallest_region, img, reg)
         region_sizes = update_region_sizes(region_sizes, smallest_region, closest_neighbor)
         inter_region_neighbors = update_neighboring_regions(inter_region_neighbors, closest_neighbor, smallest_region)
         smallest_region = find_smallest_region(region_sizes)
+        # print(region_sizes)
     return reg
 
 
-#if __name__ == '__main__':
-    #image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")  # load image
-    #image_intensity = image_intensity[300:500, 300:500]
-    #image_r = sd.seeds(image_intensity, 0.1, 1)
-    #image_r = sd.seed_merging(image_r)
-    #image_r = srg.region_growing(image_intensity, image_r)
-    #ip.show_image(image_r, 15, 8)
+if __name__ == '__main__':
+    image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")  # load image
+    image_intensity = image_intensity[300:350, 450:500]
+    image_r = sk.imread("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/srg_t01_merged2_marie.tif")
 
-    #image_r_copy = image_r.copy()
-    #image_r_copy = distance_merging_while(image_r_copy, 0.05, image_intensity)
-    #ip.show_image(image_r_copy[0], 15, 8)
+    image_r_copy = image_r.copy()
+    image_r_copy = distance_merging_while(image_r_copy, 0.1, image_intensity)
+    image_result = image_r_copy[0]
+    ip.show_image(image_result, 15, 8)
 
-    #im = Image.fromarray(image_r_copy[0])
-    #im.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/srg_t01_merged.tif")
+    image_result2 = image_result.copy()
+    image_result2 = region_merging_size(image_intensity, image_result2, image_r_copy[1], image_r_copy[2], 100)
+    ip.show_image(image_result2, 15, 8)

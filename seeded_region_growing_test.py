@@ -6,15 +6,15 @@ from PIL import Image
 from Functions import seeded_region_growing as srg
 
 
-image_intensity = sk.imread("Data/N2DH-GOWT1/img/t02.tif")  # load image
+image_intensity = sk.imread(r"C:\Users\marie\Documents\Studium\Semester4\Bioinfo\Projekt\Data\N2DH-GOWT1\img\t02.tif")  # load image
 #image_intensity = image_intensity[300:350, 450:500]
 image_r = sd.seeds(image_intensity, 0.1, 1)
 image_r = sd.seed_merging(image_r)
 image_seeds = Image.fromarray(image_r)
-image_seeds.save("Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/srg_t02_seeds.tif")
+image_seeds.save(r"C:\Users\marie\Documents\Studium\Semester4\Bioinfo\Projekt\Result_Pictures\Seeded_Region_Growing\N2DH-GOWT1\srg_t02_seeds.tif")
 
 image_r = srg.region_growing(image_intensity, image_r)
 ip.show_image(image_r, 15, 8)
 
 im = Image.fromarray(image_r)
-im.save("Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/srg_t02.tif")
+im.save(r"C:\Users\marie\Documents\Studium\Semester4\Bioinfo\Projekt\Result_Pictures\Seeded_Region_Growing\N2DH-GOWT1\srg_t02.tif")
