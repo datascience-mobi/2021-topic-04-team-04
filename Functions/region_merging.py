@@ -203,9 +203,8 @@ def updates_region_numbers(inter_region_distances, reg, min_distance):
     :return: pos_min_dist: position of minimal distance in inter_region_distances array (tuple(x,y))
     """
     pos_min_dist = position_of_minimal_distance(inter_region_distances, min_distance)
-
-    pixel_to_change = np.where(reg == pos_min_dist[
-        1] + 1)  # column in inter_region_distances is region to be changed(column number bigger than row number)
+    pixel_to_change = np.where(reg == pos_min_dist[1] + 1)
+    #  column in inter_region_distances is region to be changed(column number bigger than row number)
     pixel_to_change_rows = pixel_to_change[0]
     pixel_to_change_cols = pixel_to_change[1]
     reg[pixel_to_change_rows, pixel_to_change_cols] = pos_min_dist[0] + 1
@@ -220,21 +219,11 @@ def distance_merging_while(reg, threshold, img):
     :param img: intensity value (2d array)
     :return: merged regions by intensity similarity (2d array)
     """
-    result_region_distance = region_distance(img, reg)
-    inter_region_distances = result_region_distance[0]
-    means = result_region_distance[1]
-    inter_region_neighbors = result_region_distance[2]
-
+    inter_region_distances, means, inter_region_neighbors = region_distance(img, reg)
     min_distance = np.nanmin(inter_region_distances)
-    # i = 0
+
     while minimal_distance_is_similar(threshold, min_distance):
-        # print(min_distance)
-        # i += 1
-        # print(i)
-        updated_regions = updates_region_numbers(inter_region_distances, reg, min_distance)
-        reg = updated_regions[0]
-        pos_min_dist = updated_regions[1]
-        # print(pos_min_dist)
+        reg, pos_min_dist = updates_region_numbers(inter_region_distances, reg, min_distance)
         inter_region_neighbors = update_neighboring_regions(inter_region_neighbors, pos_min_dist[0], pos_min_dist[1])
         inter_region_distances = region_distance_new(img, reg, pos_min_dist, means, inter_region_distances,
                                                      inter_region_neighbors)
@@ -344,19 +333,13 @@ def region_merging_size(img, reg, inter_region_neighbors, means, threshold):
     """
     region_sizes = calculate_regions_size(reg)
     smallest_region = find_smallest_region(region_sizes)
-    i = 0
     while region_sizes[smallest_region] < threshold:
-        i += 1
-        # print(i)
         closest_neighbor = find_most_similar_region(means, smallest_region, inter_region_neighbors, img)
-        # print(smallest_region)
-        # print(closest_neighbor)
         reg = update_regions(reg, closest_neighbor, smallest_region)
         means = update_mean_values(means, closest_neighbor, smallest_region, img, reg)
         region_sizes = update_region_sizes(region_sizes, smallest_region, closest_neighbor)
         inter_region_neighbors = update_neighboring_regions(inter_region_neighbors, closest_neighbor, smallest_region)
         smallest_region = find_smallest_region(region_sizes)
-        # print(region_sizes)
     return reg
 
 

@@ -1,6 +1,7 @@
 import numpy as np
 from Functions import seeded_region_growing as srg
 
+
 #  from Functions import image_processing as ip
 #  from PIL import Image
 #  import skimage.io as sk
@@ -138,28 +139,16 @@ def unseeded_region_growing_algorithm(img, reg, t):
         if i % 1000 == 0:
             print(i)
 
-        new_distances = unseeded_update_distances(img, reg, means, pos_min_dist, left_neighbors, right_neighbors,
-                                                  top_neighbors,
-                                                  bottom_neighbors, left_distances, right_distances, top_distances,
-                                                  bottom_distances)
-        left_distances = new_distances[0]
-        right_distances = new_distances[1]
-        top_distances = new_distances[2]
-        bottom_distances = new_distances[3]
-        means = new_distances[4]
+        left_distances, right_distances, top_distances, bottom_distances, means = \
+            unseeded_update_distances(img, reg, means, pos_min_dist, left_neighbors, right_neighbors, top_neighbors,
+                                      bottom_neighbors, left_distances, right_distances, top_distances,
+                                      bottom_distances)
 
-        regions_new = unseeded_label_new_pixel(reg, left_distances, right_distances, top_distances, bottom_distances,
-                                               left_neighbors, right_neighbors, top_neighbors, bottom_neighbors, t,
-                                               means, img)
-        reg = regions_new[0]
-        pos_min_dist = regions_new[1]
-        left_neighbors = regions_new[2]
-        right_neighbors = regions_new[3]
-        top_neighbors = regions_new[4]
-        bottom_neighbors = regions_new[5]
-        means = regions_new[6]
+        reg, pos_min_dist, left_neighbors, right_neighbors, top_neighbors, bottom_neighbors, means = \
+            unseeded_label_new_pixel(reg, left_distances, right_distances, top_distances, bottom_distances,
+                                     left_neighbors, right_neighbors, top_neighbors, bottom_neighbors, t,
+                                     means, img)
 
         #  print(np.count_nonzero(reg == 0))
-        #  print(pos_min_dist)
 
     return reg
