@@ -6,6 +6,12 @@ from PIL import Image
 
 
 def calculate_left_neighbors(reg, seeds):
+    """
+    determines the left neighbor pixel of every seed
+    :param reg: array with region numbers (2d array)
+    :param seeds: array where every seed has the value 1 and every other pixel the value 0 (2d array)
+    :return: array saving left pixel of every seed (2d array)
+    """
     left_neighbors = np.zeros((reg.shape[0], reg.shape[1] + 1))
     left_neighbors[seeds[0], seeds[1]] = reg[seeds[0], seeds[1]]
     left_neighbors = np.delete(left_neighbors, 0, axis=1)
@@ -50,8 +56,9 @@ def find_seed_neighbors(reg):
 
 def mean_region(img, reg):
     """
+    calculates mean intensity value of every region
     :param img: intensity values (2D array)
-    :param reg: array with pixle numbers (2D array)
+    :param reg: array with pixel numbers (2D array)
     :return: list with mean values of the regions, region number 1 has index 0 (list)
     """
     mean_value = []
@@ -74,7 +81,7 @@ def one_region_mean(img, reg, new_pixel):
 
     pos_new_reg = np.where(reg == reg[new_pixel])
     single_mean = np.mean(img[pos_new_reg[0], pos_new_reg[1]])
-    return single_mean  # returns mean value of changed regio
+    return single_mean
 
 
 def calculate_one_distance(max_intensity, means, pixel_intensity, region_number):
@@ -298,15 +305,15 @@ def region_growing(img, reg):
 
 
 if __name__ == '__main__':
-    image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t02.tif")  # load image
-    #image_intensity = image_intensity[300:350, 450:500]
+    image_intensity = sk.imread("../Data/N2DL-HeLa/img/t75.tif")  # load image
+    # image_intensity = image_intensity[300:350, 450:500]
     image_r = sd.seeds(image_intensity, 0.1, 1)
     image_r = sd.seed_merging(image_r)
     image_seeds = Image.fromarray(image_r)
-    image_seeds.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/srg_t02_seeds.tif")
+    image_seeds.save("../Result_Pictures/Seeded_Region_Growing/N2DL-HeLa/srg_t75_seeds.tif")
 
     image_r = region_growing(image_intensity, image_r)
     ip.show_image(image_r, 15, 8)
 
     im = Image.fromarray(image_r)
-    im.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/srg_t02.tif")
+    im.save("../Result_Pictures/Seeded_Region_Growing/N2DL-HeLa/srg_t75tif")
