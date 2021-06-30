@@ -307,7 +307,7 @@ def region_growing(img, reg):
 if __name__ == '__main__':
     image_intensity = sk.imread("../Data/N2DL-HeLa/img/t75.tif")  # load image
     # image_intensity = image_intensity[300:350, 450:500]
-    image_r = sd.seeds(image_intensity, 0.1, 1)
+    image_r = sd.seeds(image_intensity, 1)
     image_r = sd.seed_merging(image_r)
     image_seeds = Image.fromarray(image_r)
     image_seeds.save("../Result_Pictures/Seeded_Region_Growing/N2DL-HeLa/srg_t75_seeds.tif")

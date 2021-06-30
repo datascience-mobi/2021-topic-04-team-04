@@ -74,22 +74,22 @@ def euclidean_n(img, size):
 def otsu_thresholding(img):
     """
     defines the optimal otsu-threshold for the image
-    :param img:
+    :param img: intensity values of the image (2d array)
     :return: threshold for seed detection criteria similarity (float)
     """
     otsu_threshold = threshold_otsu(img)
     return otsu_threshold
 
 
-def seeds(img, threshold_similarity, threshold_distance):
+def seeds(img, threshold_distance):
     """ automatic seed selection algorithm
     :param img: intensity values of image (2d array)
-    :param threshold_similarity: threshold for the similarity, calculated with otsu-method (float)
     :param threshold_distance: Threshold for the relative euclidean distance
     :return: all seeds get intensity value 1 every other pixel has intensity value 0 (2d array)
              every border pixel is here detected as a seed but will be removed in seed merging
     """
     result = np.zeros(img.shape)
+    threshold_similarity = otsu_thresholding(img)
     sd_seeds = standard_deviation(img, 3)
     sd_flat = sd_seeds.flatten()
     similarity_seeds = 1 - sd_seeds / max(sd_flat)  # calculates similarity of every pixel to its neighbors
