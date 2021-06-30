@@ -298,15 +298,15 @@ def region_growing(img, reg):
 
 
 if __name__ == '__main__':
-    image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")  # load image
+    image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t02.tif")  # load image
     #image_intensity = image_intensity[300:350, 450:500]
     image_r = sd.seeds(image_intensity, 0.1, 1)
     image_r = sd.seed_merging(image_r)
     image_seeds = Image.fromarray(image_r)
-    image_seeds.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/srg_t01_seeds.tif")
+    image_seeds.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/srg_t02_seeds.tif")
 
     image_r = region_growing(image_intensity, image_r)
     ip.show_image(image_r, 15, 8)
 
     im = Image.fromarray(image_r)
-    im.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/srg_t01.tif")
+    im.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/srg_t02.tif")
