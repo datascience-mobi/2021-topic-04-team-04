@@ -273,7 +273,8 @@ def region_growing(img, reg):
     while unlabeled_pixel_exist(reg):
         
         i += 1
-        print(i)
+        if i % 1000 == 0:
+            print(i)
 
         new_distances = update_distances(img, reg, means, pos_min_dist, left_neighbors, right_neighbors, top_neighbors,
                                          bottom_neighbors, left_distances, right_distances, top_distances,
@@ -297,14 +298,12 @@ def region_growing(img, reg):
 
 
 if __name__ == '__main__':
-    image = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")  # load image
-    img_s = image[300:400, 300:500]
-    img_result = sd.seeds(img_s, 0.4, 40)
-    img_result = sd.seed_merging(img_result)
-    img_result = sd.decrease_region_number(img_result, 50)
+    image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")  # load image
+    #image_intensity = image_intensity[300:350, 450:500]
+    image_r = sd.seeds(image_intensity, 0.1, 1)
+    image_r = sd.seed_merging(image_r)
+    image_r = region_growing(image_intensity, image_r)
+    ip.show_image(image_r, 15, 8)
 
-    img_result = region_growing(img_s, img_result)
-    ip.show_image(img_result, 15, 8)
-
-    im = Image.fromarray(img_result)
+    im = Image.fromarray(image_r)
     im.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/srg_t01.tif")
