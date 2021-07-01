@@ -110,16 +110,16 @@ def seed_merging(img):
     """
     regions = np.zeros(img.shape)  # creates new array for region numbers for every image pixel
     count = 1  # keep track of region number
-    for p in np.ndindex(img.shape):  # iterates over every pixel of the image
-        if img[p] == 1:  # tests if pixel is seed
-            if not ip.is_border_pixel(p, img):  # no calculation of border pixels
-                for q in np.ndindex(3, 3):  # iterates over 3x3 neighborhood
-                    i = p[0] - 1 + q[0]
-                    j = p[1] - 1 + q[1]
-                    if regions[i, j] != 0:  # tests if neighbors are also seeds
-                        regions[p] = regions[i, j]  # merge neighboring seeds; Zuordnung zur letzten Region
-                if regions[p] == 0:  # tests if no neighbors are seeds
-                    regions[p] = count  # creates new region from new seed
+    neighbors = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    for pixel in np.ndindex(img.shape):  # iterates over every pixel of the image
+        if img[pixel] == 1:  # tests if pixel is seed
+            if not ip.is_border_pixel(pixel, img):  # no calculation of border pixels
+                for element in neighbors:  # iterates over neighbors
+                    neighbor = (pixel[0] + element[0], pixel[1] + element[1])
+                    if regions[neighbor] != 0:  # tests if neighbors are also seeds
+                        regions[pixel] = regions[neighbor]  # merge neighboring seeds; Zuordnung zur letzten Region
+                if regions[pixel] == 0:  # tests if no neighbors are seeds
+                    regions[pixel] = count  # creates new region from new seed
                     count += 1
     return regions
 
