@@ -234,7 +234,7 @@ def label(reg, dis, nearest_reg, neighbors):
     reg[pos_min_dist] = nearest_reg[pos_min_dist]
     neighbors.remove(pos_min_dist)
     dis[pos_min_dist] = 1
-    print(len(neighbors))
+    #print(len(neighbors))
     return reg, pos_min_dist, neighbors, dis
 
 
@@ -266,7 +266,12 @@ def region_growing(img, reg):
     distances = regions_new[3]
     neighbors = add_missing_neighbors(img, regions_new[1], neighbors, reg)
 
+    i = 0
     while unlabeled_pixel_exist(neighbors):
+        i += 1
+        if i % 1000 == 0:
+            print(i)
+
         dist = new_distance(img, regions_new[0], dist[1], distances, regions_new[1], neighbors,
                             dist[2])
         regions_new = label(regions_new[0], dist[0], dist[1], neighbors)  # labels next pixel
@@ -309,7 +314,7 @@ if __name__ == '__main__':
     img_s = image[300:400, 300:500]
     img_result = sd.seeds(img_s, 40)
     img_result = sd.seed_merging(img_result)
-    img_result = sd.decrease_region_number(img_result, 50)
+    #img_result = sd.decrease_region_number(img_result, 50)
 
     img_result = region_growing(img_s, img_result)
     ip.show_image(img_result, 15, 8)
