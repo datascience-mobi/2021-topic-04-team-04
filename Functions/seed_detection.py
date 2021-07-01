@@ -4,6 +4,7 @@ from collections import Counter
 from Functions import image_processing as ip
 from skimage.filters import threshold_otsu
 
+
 # import skimage.io as sk
 
 
@@ -77,7 +78,7 @@ def otsu_thresholding(img):
     :param img: intensity values of the image (2d array)
     :return: threshold for seed detection criteria similarity (float)
     """
-    otsu_threshold = threshold_otsu(img)/np.amax(img)
+    otsu_threshold = threshold_otsu(img) / np.amax(img)
     # otsu_threshold = 0.1
     print(otsu_threshold)
     return otsu_threshold
@@ -123,18 +124,24 @@ def seed_merging(img):
     return regions
 
 
-def decrease_region_number(img, threshold):
-    """ reduce number of starting regions for region growing, only considering regions with more than T seeds
-    :param img: array with merged seeds (2d array)
-    :param threshold: Threshold für die size of seed regions (int)
-    :return: array with big seeds (2d array)
+
+
+def reduce_region_number(reg, threshold):
     """
-    count = Counter(img.flatten())  # counts number of seeds in region
-    d_seeds = img.copy()
-    for i in range(1, int(np.amax(img))):  # iterates over every region
-        if count[i] <= threshold:  # if number of seeds is smaller than threshold, delete region
-            for p in np.ndindex(img.shape):
-                if img[p] == i:
-                    d_seeds[p] = 0
-    print(d_seeds)
-    return d_seeds
+    reduces number of seeds
+    :param reg: region numbers (2d array)
+    :param threshold: seed regions smaller than threshold are removed (int)
+    :return: region numbers (2d array)
+    """
+    region_count = int(np.max(reg))
+    counter = 1
+    for region_number in range(1, region_count + 1):
+        pos_of_reg = np.where(reg == region_number)
+        size = len(pos_of_reg[0])
+        if size >= threshold:
+            reg[pos_of_reg[0], pos_of_reg[1]] = counter
+            counter += 1
+        else:
+            reg[pos_of_reg[0], pos_of_reg[1]] = 0
+    print(np.unique(reg.flatten()))
+    return reg
