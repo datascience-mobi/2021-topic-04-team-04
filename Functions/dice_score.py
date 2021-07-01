@@ -20,7 +20,7 @@ def segmented_image_clip(segmented_img, background_region):
     :param background_region: region number of background of segmented_image (int)
     :return: clipped image where all cells have value 1 and background has value 0 (2D array)
     """
-    for pixel in np.ndindex(segmented_image.shape):
+    for pixel in np.ndindex(segmented_img.shape):
         region = segmented_img[pixel]
         if region == background_region:
             segmented_img[pixel] = 0

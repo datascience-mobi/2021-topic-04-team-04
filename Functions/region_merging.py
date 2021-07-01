@@ -160,10 +160,9 @@ def update_neighboring_regions(inter_region_neighbors, changed_region1, changed_
     :param changed_region2: region that doesn't exist anymore because of merging (-1 to match the index) (int)
     :return: updated inter_region_neighbors (2D array)
     """
-    inter_region_neighbors[changed_region1, :] = inter_region_neighbors[changed_region1, :] + inter_region_neighbors[
-                                                                                              changed_region2, :]
     neighbors_changed_region2 = np.where(inter_region_neighbors[changed_region2, :] == 1)[0]
     inter_region_neighbors[neighbors_changed_region2, changed_region1] = 1
+    inter_region_neighbors[changed_region1, neighbors_changed_region2] = 1
     inter_region_neighbors[changed_region2, :] = 0
     inter_region_neighbors[:, changed_region2] = 0
     inter_region_neighbors[changed_region1, changed_region1] = 0
