@@ -5,7 +5,7 @@ from Functions import seeded_region_growing as srg
 
 
 #  from Functions import seed_detection as sd
-#  from PIL import Image
+from PIL import Image
 
 
 def find_neighboring_regions(reg):
@@ -350,9 +350,9 @@ def region_merging(reg, img, intensity_threshold, size_threshold):
     return image_rm_size
 
 if __name__ == '__main__':
-    image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")  # load image
-    image_intensity = image_intensity[300:350, 450:500]
-    image_r = sk.imread("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/srg_t01_merged2_marie.tif")
+    image_intensity = sk.imread("../Data/N2DL-HeLa/img/t75.tif")  # load image
+    # image_intensity = image_intensity[300:350, 450:500]
+    image_r = sk.imread("../Result_Pictures/Seeded_Region_Growing/N2DL-HeLa/srg_t75.tif")
 
     image_r_copy = image_r.copy()
     image_r_copy = distance_merging_while(image_r_copy, 0.1, image_intensity)
@@ -362,3 +362,6 @@ if __name__ == '__main__':
     image_result2 = image_result.copy()
     image_result2 = region_merging_size(image_intensity, image_result2, image_r_copy[1], image_r_copy[2], 100)
     ip.show_image(image_result2, 15, 8)
+
+    im = Image.fromarray(image_result2)
+    im.save("../Result_Pictures/Seeded_Region_Growing/N2DL-HeLa/srg_t75_merged.tif")

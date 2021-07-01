@@ -13,7 +13,7 @@ def standard_deviation(img, size):
     :param size: size of the filter mask (int)
     :return: array with standard deviation of every pixel (2d array)
     """
-    result = np.zeros(img.shape)  # create empty array (zeros)
+    standard_deviation = np.zeros(img.shape)
     n = (size - 1) // 2
     for p in np.ndindex(img.shape):  # iterates over every pixel
         neighborhood_sum = 0
@@ -29,8 +29,8 @@ def standard_deviation(img, size):
                 j = p[1] - n + q[1]
                 deviation += (img[i, j] - mean) ** 2  # calculate deviation from mean
 
-            result[p] = m.sqrt(1 / (size ** 2) * deviation)  # calculate standard deviation
-    return result
+            standard_deviation[p] = m.sqrt(1 / (size ** 2) * deviation)  # calculate standard deviation
+    return standard_deviation
 
 
 def euclidean_relative(img, size):
@@ -39,7 +39,7 @@ def euclidean_relative(img, size):
     :param size: size of the filter mask/ neighborhood (int)
     :return: array with maximal euclidean distance of every pixel (2d array)
     """
-    result = np.zeros(img.shape)
+    maximal_euclidean_distance = np.zeros(img.shape)
     n = (size - 1) // 2
     for p in np.ndindex(img.shape):
         neighborhood_distance = []
@@ -48,8 +48,8 @@ def euclidean_relative(img, size):
                 i = p[0] - n + q[0]
                 j = p[1] - n + q[1]
                 neighborhood_distance.append((img[p] - img[i, j]) / img[p])  # adds relative euclidean distance to list
-            result[p] = max(neighborhood_distance)  # chooses maximum distance
-    return result
+            maximal_euclidean_distance[p] = max(neighborhood_distance)  # chooses maximum distance
+    return maximal_euclidean_distance
 
 
 def euclidean_n(img, size):
@@ -77,7 +77,8 @@ def otsu_thresholding(img):
     :param img: intensity values of the image (2d array)
     :return: threshold for seed detection criteria similarity (float)
     """
-    otsu_threshold = threshold_otsu(img)/255
+    otsu_threshold = threshold_otsu(img)/np.amax(img)
+    # otsu_threshold = 0.1
     print(otsu_threshold)
     return otsu_threshold
 
@@ -135,4 +136,5 @@ def decrease_region_number(img, threshold):
             for p in np.ndindex(img.shape):
                 if img[p] == i:
                     d_seeds[p] = 0
+    print(d_seeds)
     return d_seeds
