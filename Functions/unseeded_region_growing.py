@@ -47,7 +47,7 @@ def unseeded_calculate_distances(img, reg, left_neighbors, right_neighbors, top_
     :param bottom_neighbors: array with the region numbers of the neighbors to lower side (2D array)
     :return: means: list of means (list), and four arrays with the calculated distances to all the sides (2D arrays)
     """
-    means = srg.mean_region(img, reg)
+    means = np.asarray(srg.mean_region(img, reg))
     max_region = int(np.amax(reg))
 
     left_distances = unseeded_calculate_one_border_distances(means, img, max_region, left_neighbors)
@@ -156,16 +156,15 @@ def unseeded_label_new_pixel(reg, left_distances, right_distances, top_distances
     if one_border_distances[pos_min_dist] < t:
         reg[pos_min_dist] = one_border_neighbors[pos_min_dist]
     else:
-        distance_list = []
-        for m in means:
-            distance_list.append(np.abs(img[pos_min_dist] - m))
-        minimum = min(distance_list)
+        distances = np.abs(img[pos_min_dist] - means)
+        minimum = np.amin(distances)
+        pos_minimum = np.where(distances == minimum)[0]
         if minimum < t:
-            reg[pos_min_dist] = distance_list.index(minimum) + 1
+            reg[pos_min_dist] = pos_minimum[0] + 1
         else:
             region_max = int(max(reg.flatten()))
             reg[pos_min_dist] = region_max + 1
-            means.append(img[pos_min_dist])
+            means = np.append(means, img[pos_min_dist])
 
     left_neighbors = srg.update_left_neighbors(reg, left_neighbors, pos_min_dist)
     right_neighbors = srg.update_right_neighbors(reg, right_neighbors, pos_min_dist)
@@ -175,15 +174,18 @@ def unseeded_label_new_pixel(reg, left_distances, right_distances, top_distances
     return reg, pos_min_dist, left_neighbors, right_neighbors, top_neighbors, bottom_neighbors, means
 
 
-def unseeded_region_growing_algorithm(img, reg, t):
+def unseeded_region_growing_algorithm(img, start_pixel, t):
     """
     performs the unseeded region growing algorithm on an image, with a set region array with a startpixel and
     a threshold to decide whether a pixel is similar enough to be added to a certain region
+    :param start_pixel: pixel which defines the starting seed (tuple)
     :param img: array with intensity values (2D array)
-    :param reg: array with region numbers (2D array)
     :param t: threshold to decide whether a pixel is similar enough to a region (float)
     :return: array with region numbers (2D array)
     """
+    reg = np.zeros(img.shape, int)  # array with region number
+    reg[start_pixel] = 1
+
     left_neighbors, right_neighbors, top_neighbors, bottom_neighbors = srg.find_seed_neighbors(reg)
 
     means, left_distances, right_distances, top_distances, bottom_distances = \
@@ -198,7 +200,7 @@ def unseeded_region_growing_algorithm(img, reg, t):
     while srg.unlabeled_pixel_exist(reg):
 
         i += 1
-        if i % 1000 == 0:
+        if i % 5000 == 0:
             print(i)
 
         left_distances, right_distances, top_distances, bottom_distances, means = \

@@ -425,7 +425,7 @@ def region_growing(img, reg):
     while unlabeled_pixel_exist(reg):
         
         i += 1
-        if i % 1000 == 0:
+        if i % 5000 == 0:
             print(i)
 
         left_distances, right_distances, top_distances, bottom_distances = \

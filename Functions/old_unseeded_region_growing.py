@@ -78,17 +78,25 @@ def old_unseeded_region_indirect_or_new(img, reg, pick, threshold):
     return reg
 
 
-def old_unseeded_region_growing_algorithm(img, reg, t):
+def old_unseeded_region_growing_algorithm(img, start_pixel, t):
     """
     performs the unseeded region growing algorithm on an image, a regions array with the startpixel has to be
     defined in advance and a threshold to decide whether a pixel is similar enough to a region to be labeled
+    :param start_pixel: position of first seed (tuple)
     :param img: array with intensity values (2D array)
-    :param reg: array with region number of the start pixel (2D array)
     :param t: threshold to decide if a pixel is similar enough to a region (float)
     :return: array with region numbers (2D array)
     """
+    reg = np.zeros(img.shape, int)  # array with region number
+    reg[start_pixel] = 1
+
     neighbors = old_srg.find_neighbors(reg)
+    i = 0
     while len(neighbors) > 0:
+        i += 1
+        if i % 1000 == 0:
+            print(i)
+
         dis, nearest_region = old_unseeded_distance(img, neighbors, reg)
         pick = old_unseeded_pixel_pick(dis)
         if dis[pick] < t:
@@ -101,5 +109,4 @@ def old_unseeded_region_growing_algorithm(img, reg, t):
                 neighbors.append(j)
         neighbors.remove(pick)
         dis[pick] = 500
-        print(len(neighbors))
     return reg
