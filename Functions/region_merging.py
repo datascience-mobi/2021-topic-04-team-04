@@ -12,8 +12,9 @@ def find_neighboring_regions(reg):
     """
     determines adjacent regions of every region in an array where columns and row represent regions
     :param reg: array with region numbers (2D array)
-    :return: upper triangle array where every row & column represents one region, if regions are adjacent they get the
-             value 1, if the regions are not neighboring the value is 0
+    :return: 2D array where the rows are the regions and the columns are the neighboring regions.
+    If a region is a neighbor, a 1 is written in the cell, if not a 0. Example: 4 is a neighbor of 2: row 2 col 4: 1
+    At the beginning, this array is symmetrical (2D array)
     """
     max_region = max(reg.flatten())
     inter_region_neighbors = np.zeros((int(max_region), int(max_region)))
@@ -28,7 +29,7 @@ def find_neighbors_one_region(reg, region_number):
     finds all neighbors for a specific region (region_number)
     :param reg: array with region numbers (2D array)
     :param region_number: number of a region (int)
-    :return: array with all region numbers of neighbors from region_number (2D array)
+    :return: array with all region numbers of neighbors from region_number (1D array)
     """
     neighboring_regions = np.zeros((reg.shape[0] + 2, reg.shape[1] + 2))
     reg_with_border = ip.add_border(reg)
@@ -47,7 +48,6 @@ def find_neighbors_one_region(reg, region_number):
     neighboring_regions_unique = np.unique(neighboring_regions.flatten())
     pos_zero = np.where(neighboring_regions_unique == 0)
     neighboring_regions_unique = np.delete(neighboring_regions_unique, pos_zero[0])
-    #  neighboring_regions_unique = neighboring_regions_unique.tolist()
     neighboring_regions_unique = neighboring_regions_unique.astype(int)
     return neighboring_regions_unique
 
@@ -55,13 +55,13 @@ def find_neighbors_one_region(reg, region_number):
 def region_distance(img, reg):
     """
     calculates distance between all regions
-    :param img: intensity values (2d array)
-    :param reg: region numbers (2d array)
-    :return: 2d array with distances between all regions, only in upper pyramid
+    :param img: intensity values (2D array)
+    :param reg: region numbers (2D array)
+    :return: 2D array with distances between all regions, only in upper triangle
     (region numbers are row and col number)
-    inter_region_distances is upper triangle matrix with mean intensity distances between regions (2d array)
+    inter_region_distances is upper triangle matrix with mean intensity distances between regions (2D array)
     mean values of all regions (list of floats)
-    inter_region_neighbors: all neighbors have 1 in an array where region numbers are row and col numbers (2d array)
+    inter_region_neighbors: all neighbors have 1 in an array where region numbers are row and col numbers (2D array)
     """
     max_region = int(max(reg.flatten()))
     max_intensity = np.amax(img)
@@ -81,6 +81,14 @@ def region_distance(img, reg):
 
 
 def distance_between_regions(region1, region2, max_intensity, means):
+    """
+    calculates the distance between two regions
+    :param region1: number of region1 -1 (matches the index in the distance, neighbors array, region 1 has index 0, int)
+    :param region2: number of region1 -2 (matches the index in the distance, neighbors array, region 1 has index 0, int)
+    :param max_intensity: maximal intensity (float)
+    :param means: list of means (list of floats)
+    :return: distance between the two regions (float)
+    """
     distance = abs(means[region1] - means[region2]) / max_intensity
     return distance
 
@@ -88,8 +96,8 @@ def distance_between_regions(region1, region2, max_intensity, means):
 def one_merged_region_mean(img, reg, region_number):
     """
     calculates the mean of changed region
-    :param img: intensity values (2d array)
-    :param reg: region numbers (2d array)
+    :param img: intensity values (2D array)
+    :param reg: region numbers (2D array)
     :param region_number: number of the changed region (int)
     :return: mean value of changed position (float)
     """
@@ -101,14 +109,13 @@ def one_merged_region_mean(img, reg, region_number):
 def region_distance_new(img, reg, pos_min_dist, means, inter_region_distances, inter_region_neighbors):
     """
     updates array of distances of mean intensity values between all changed regions
-    :param img: intensity values (2d array)
-    :param reg: region numbers (2d array)
-    :param pos_min_dist: region number of changed regions (tuple(x,y), pos_min_dist[0] is resulting region number,
-                         pos_min_dist[1] is region_number to be removed)
+    :param img: intensity values (2D array)
+    :param reg: region numbers (2D array)
+    :param pos_min_dist: tuple with the smallest distance (coordinates are the two regions, both -1 to match the index)
     :param means: mean values of all regions (list of floats)
-    :param inter_region_distances: distances between mean intensity values of regions (2d array)
-    :param inter_region_neighbors:
-    :return: inter_region_distances: updated distances between mean intensity values of regions
+    :param inter_region_distances: distances between mean intensity values of regions (2D array)
+    :param inter_region_neighbors: rows are the regions and the columns are the neighboring regions (2D array)
+    :return: inter_region_distances: updated distances between mean intensity values of regions (2D array)
     """
     maximal_intensity = np.amax(img)
     changed_region1 = int(pos_min_dist[0])  # Regions Nummer 1 die übernommen wird
@@ -123,13 +130,13 @@ def update_distances(changed_region1, changed_region2, inter_region_distances, m
                      inter_region_neighbors):
     """
     updates distance values of changed regions, value 1 for removed regions
-    :param changed_region1: resulting region number for merged region
-    :param changed_region2: region number which is going to be removed
-    :param inter_region_distances: distances between mean intensity values of regions (2d array)
+    :param changed_region1: resulting region number for merged region (-1 to match the index) (int)
+    :param changed_region2: region number which is going to be removed (-1 to match the index) (int)
+    :param inter_region_distances: distances between mean intensity values of regions (2D array)
     :param means: mean intensity values of regions (list)
-    :param maximal_intensity: maximal intensity value of image
-    :param inter_region_neighbors:
-    :return: updated inter_region distances (2d array)
+    :param maximal_intensity: maximal intensity value of image (float)
+    :param inter_region_neighbors: rows are the regions and the columns are the neighboring regions (2D array)
+    :return: updated inter_region distances (2D array)
     """
     neighboring_regions = np.where(inter_region_neighbors[changed_region1, :] != 0)[0]
     for element in neighboring_regions:
@@ -147,11 +154,11 @@ def update_distances(changed_region1, changed_region2, inter_region_distances, m
 def update_neighboring_regions(inter_region_neighbors, changed_region1, changed_region2):
     """
     updates neighboring regions of changed regions
-    :param inter_region_neighbors: all neighbors have 1 in an array where region numbers are row and col numbers
-           (2D array)
-    :param changed_region1: merged region number (int)
-    :param changed_region2: region that doesn't exist anymore because of merging (int)
-    :return: updates inter_region_neighbors
+    :param inter_region_neighbors: all neighbors have values from 1 or higher in an array where region numbers are row
+    and col numbers (2D array)
+    :param changed_region1: merged region number (-1 to match the index) (int)
+    :param changed_region2: region that doesn't exist anymore because of merging (-1 to match the index) (int)
+    :return: updated inter_region_neighbors (2D array)
     """
     inter_region_neighbors[changed_region1, :] = inter_region_neighbors[changed_region1, :] + inter_region_neighbors[
                                                                                               changed_region2, :]
@@ -166,27 +173,26 @@ def update_neighboring_regions(inter_region_neighbors, changed_region1, changed_
 def update_mean_values(means, changed_region1, changed_region2, img, reg):
     """
     updates mean value for merged regions in list of mean values, value 500 for unused means
-    :param means: mean intensity values of regions (list of ints)
-    :param changed_region1: region number for merged region (int)
-    :param changed_region2: region number to be removed (int)
-    :param img: intensity values (2d array)
-    :param reg: region numbers (2d array)
-    :return:
+    :param means: means of intensity for regions (list of floats)
+    :param changed_region1: region number for merged region (-1 to match the index) (int)
+    :param changed_region2: region number to be removed (-1 to match the index) (int)
+    :param img: intensity values (2D array)
+    :param reg: region numbers (2D array)
+    :return: updated list of means (list of floats)
     """
     means[changed_region2] = 500
     means[int(changed_region1)] = one_merged_region_mean(img, reg, int(changed_region1) + 1)
     return means
 
 
-def position_of_minimal_distance(dis, min_distance):
+def position_of_minimal_distance(inter_region_distances, min_distance):
     """
     searches the two regions with the minimal difference of the intensity value
-    :param dis: mean intensity distances between all regions (2D array where col and row numbers are regions)
-    :param min_distance: minimal distance between
-    :return: tuple with the position that shows the regions with the minimal distance (in an array where col and row
-             numbers are regions) (tuple of a position (x,y)
+    :param inter_region_distances: distances between mean intensity values of regions (2D array)
+    :param min_distance: minimum of inter_region_distance array (float)
+    :return: tuple with the position that shows the regions with the minimal distance mean (both - to match the index)
     """
-    minimal_distances = np.where(dis == min_distance)
+    minimal_distances = np.where(inter_region_distances == min_distance)
     pos_min_dist = list(zip(minimal_distances[0], minimal_distances[1]))[0]
     pos_min_dist = (int(pos_min_dist[0]), int(pos_min_dist[1]))
     return pos_min_dist
@@ -195,12 +201,11 @@ def position_of_minimal_distance(dis, min_distance):
 def updates_region_numbers(inter_region_distances, reg, min_distance):
     """
     changes region number to region number of merged region
-    :param inter_region_distances: distances between mean intensity values of regions (2d array)
-    :param reg: region numbers (2d array)
-    :param min_distance: minimal distance of mean intensity values between to regions
-
-    :return: reg: updated region numbers (2d array)1
-    :return: pos_min_dist: position of minimal distance in inter_region_distances array (tuple(x,y))
+    :param inter_region_distances: distances between mean intensity values of regions (2D array)
+    :param reg: region numbers (2D array)
+    :param min_distance: minimal distance of mean intensity values between the regions (float)
+    :return: reg: updated region numbers (2D array)
+    :return: pos_min_dist: position of minimal distance in inter_region_distances array (tuple)
     """
     pos_min_dist = position_of_minimal_distance(inter_region_distances, min_distance)
     pixel_to_change = np.where(reg == pos_min_dist[1] + 1)
@@ -214,10 +219,10 @@ def updates_region_numbers(inter_region_distances, reg, min_distance):
 def distance_merging_while(reg, threshold, img):
     """
     region merging algorithm by similarity of mean intensity values of regions
-    :param reg: region numbers (2d array)
+    :param reg: region numbers (2D array)
     :param threshold: distance intensity value below which regions are merged (float between 0 and 1)
-    :param img: intensity value (2d array)
-    :return: merged regions by intensity similarity (2d array)
+    :param img: intensity value (2D array)
+    :return: merged regions by intensity similarity (2D array)
     """
     inter_region_distances, means, inter_region_neighbors = region_distance(img, reg)
     min_distance = np.nanmin(inter_region_distances)
@@ -235,8 +240,8 @@ def minimal_distance_is_similar(threshold, min_distance):
     """
     compares minimal distance between 2 regions to a threshold
     :param threshold: distance intensity value below which regions are merged (float between 0 and 1)
-    :param min_distance: minimal distance of mean intensity values between to regions (float)
-    :return: TRUE when minimal distance is below the threshold and FALSE if nor
+    :param min_distance: minimal distance of mean intensity values between the regions (float)
+    :return: True when minimal distance is below the threshold and False if not
     """
     if min_distance < threshold:
         return True
@@ -247,8 +252,8 @@ def calculate_regions_size(regions):
     """
     calculates number of assigned pixels of every region
     :param regions: array with region numbers (2D array)
-    :return: list with region size of every region (list with ints)
-    if region is empty because it is already merged to another one the number 1000000 is assigned (no merging)
+    :return: array with region size of every region (1D array with ints) (index is -1: region 1 has index 0)
+    if region is empty because it is already merged to another one the value nan is assigned (no merging)
     """
     max_region = np.amax(regions)
     region_sizes = []
@@ -264,8 +269,8 @@ def calculate_regions_size(regions):
 def find_smallest_region(region_sizes):
     """
     determines smallest region
-    :param region_sizes: list of size of every region (list of ints)
-    :return: region number of the smallest region (int)
+    :param region_sizes: array of size of every region (1D array with ints)
+    :return: region number of the smallest region (int) (-1 to match index)
     """
     smallest_size = np.nanmin(region_sizes)
     smallest_region = np.where(region_sizes == smallest_size)[0]
@@ -277,11 +282,11 @@ def find_most_similar_region(means, smallest_region, inter_region_neighbors, img
     """
     determines the region with the most similar mean intensity value of the smallest region
     :param means: mean values of all regions (list of floats)
-    :param smallest_region: region number of the smallest region (int)
-    :param inter_region_neighbors: array showing neighboring regions with 1 in an array where col and row numbers are
-                                   regions (2d array)
-    :param img: array with intensity values (2d array with floats)
-    :return: region number with the most similar mean intensity value of the smallest region (int)
+    :param smallest_region: region number of the smallest region (int) (-1 to match index)
+    :param inter_region_neighbors: all neighbors have values from 1 or higher in an array where region numbers are row
+    and col numbers (2D array)
+    :param img: array with intensity values (2D array)
+    :return: region number with the most similar mean intensity value of the smallest region (int) (-1 to match index)
     """
     means = np.asarray(means)
     max_intensity = int(np.amax(img))
@@ -297,10 +302,11 @@ def find_most_similar_region(means, smallest_region, inter_region_neighbors, img
 def update_regions(reg, closest_neighbor, smallest_region):  # merging
     """
     updates region numbers
-    :param reg: array with region numbers (2d array)
+    :param reg: array with region numbers (2D array)
     :param closest_neighbor: region number of the region with the most similar mean intensity to smallest region (int)
-    :param smallest_region: region number of the smallest region (int)
-    :return: updated region number array (2d array)
+    (-1 to match index)
+    :param smallest_region: region number of the smallest region (int) (-1 to match index)
+    :return: updated region number array (2D array)
     """
     pos_smallest_region = np.where(reg == smallest_region + 1)
     reg[pos_smallest_region[0], pos_smallest_region[1]] = closest_neighbor + 1
@@ -311,9 +317,10 @@ def update_region_sizes(region_sizes, smallest_region, closest_neighbor):
     """
     updates region_sizes
     :param region_sizes: size of every region (1D array with ints)
-    :param smallest_region: region number of the smallest region (int)
+    :param smallest_region: region number of the smallest region (int) (-1 to match index)
     :param closest_neighbor: region number of the region with the most similar mean intensity to smallest region (int)
-    :return: updates list with region size of every region (list with ints)
+    (-1 to match index)
+    :return: updates array with region size of every region (1D array with ints)
     """
     region_sizes[closest_neighbor] = region_sizes[smallest_region] + region_sizes[closest_neighbor]
     region_sizes[smallest_region] = np.nan
@@ -323,13 +330,13 @@ def update_region_sizes(region_sizes, smallest_region, closest_neighbor):
 def region_merging_size(img, reg, inter_region_neighbors, means, threshold):
     """
     region merging algorithm by size of regions
-    :param img: array with intensity values (2d array)
-    :param reg: array with region numbers (2d array)
-    :param inter_region_neighbors: array showing neighboring regions with 1 in an array where col and row numbers are
-                                   regions (2d array)
+    :param img: array with intensity values (2D array)
+    :param reg: array with region numbers (2D array)
+    :param inter_region_neighbors: all neighbors have values from 1 or higher in an array where region numbers are row
+    and col numbers (2D array)
     :param means: mean values of all regions (list of floats)
     :param threshold: size value below which regions are merged (int)
-    :return: merged regions by size (2d array)
+    :return: merged regions by size (2D array)
     """
     region_sizes = calculate_regions_size(reg)
     smallest_region = find_smallest_region(region_sizes)
@@ -343,11 +350,20 @@ def region_merging_size(img, reg, inter_region_neighbors, means, threshold):
     return reg
 
 
-def region_merging(reg, img, intensity_threshold, size_threshold):
-    results_region_merging_similarity = distance_merging_while(reg, intensity_threshold, img)
+def region_merging(reg, img, distance_threshold, size_threshold):
+    """
+    performs the distance region merging algorithm and the size region merging algorithm after each other
+    :param reg: array with region numbers (2D array)
+    :param img: array with intensity values (2D array)
+    :param distance_threshold: regions with more intensity similarity than the threshold will be merged (float)
+    :param size_threshold: regions that are smaller than this threshold will be merged (int)
+    :return:
+    """
+    results_region_merging_similarity = distance_merging_while(reg, distance_threshold, img)
     image_rm_similarity, inter_region_neighbors, means = results_region_merging_similarity
     image_rm_size = region_merging_size(img, image_rm_similarity, inter_region_neighbors, means, size_threshold)
     return image_rm_size
+
 
 if __name__ == '__main__':
     image_intensity = sk.imread("../Data/N2DL-HeLa/img/t75.tif")  # load image
