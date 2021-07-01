@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import scipy.ndimage as ndimage
 import matplotlib.pyplot as plt
@@ -10,17 +9,14 @@ def show_images_side_by_side(img1, img2, img3):
     f = plt.figure(figsize=(12, 7))
     f.add_subplot(1, 3, 1)
     plt.imshow(img1, "gray")
-    #plt.colorbar()
 
     f.add_subplot(1, 3, 2)
     plt.imshow(img2, "gray")
-    #plt.colorbar()
 
     f.add_subplot(1, 3, 3)
     plt.imshow(img3, "gray")
 
     plt.show()
-
 
 
 def show_image(img, x, y):
