@@ -1,11 +1,10 @@
 import numpy as np
 import math as m
-from collections import Counter
 from Functions import image_processing as ip
 from skimage.filters import threshold_otsu
 
-
 # import skimage.io as sk
+#  from collections import Counter
 
 
 def standard_deviation(img, size):
@@ -14,7 +13,7 @@ def standard_deviation(img, size):
     :param size: size of the filter mask (int)
     :return: array with standard deviation of every pixel (2d array)
     """
-    standard_deviation = np.zeros(img.shape)
+    standard_dev = np.zeros(img.shape)
     n = (size - 1) // 2
     for p in np.ndindex(img.shape):  # iterates over every pixel
         neighborhood_sum = 0
@@ -30,8 +29,8 @@ def standard_deviation(img, size):
                 j = p[1] - n + q[1]
                 deviation += (img[i, j] - mean) ** 2  # calculate deviation from mean
 
-            standard_deviation[p] = m.sqrt(1 / (size ** 2) * deviation)  # calculate standard deviation
-    return standard_deviation
+            standard_dev[p] = m.sqrt(1 / (size ** 2) * deviation)  # calculate standard deviation
+    return standard_dev
 
 
 def euclidean_relative(img, size):
@@ -122,8 +121,6 @@ def seed_merging(img):
                     regions[p] = count  # creates new region from new seed
                     count += 1
     return regions
-
-
 
 
 def reduce_region_number(reg, threshold):
