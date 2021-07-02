@@ -18,30 +18,45 @@ def show_images_side_by_side(img1, img2, img3):
     plt.show()
 
 
+def show_three_images_colorbar(img1, img2, img3, colorbar_size):
+    f = plt.figure(figsize=(12, 7))
+    f.add_subplot(1, 3, 1)
+    plt.imshow(img1, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    f.add_subplot(1, 3, 2)
+    plt.imshow(img2, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    f.add_subplot(1, 3, 3)
+    plt.imshow(img3, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    plt.show()
+
+
 def show_two_images(img1, img2):
     f = plt.figure(figsize=(15, 8))
 
     f.add_subplot(1, 2, 1)
     plt.imshow(img1, "gray")
-    plt.colorbar()
 
     f.add_subplot(1, 2, 2)
     plt.imshow(img2, "gray")
-    plt.colorbar()
 
     plt.show()
 
 
-def show_two_images_colorbar(img1, img2, img3):
+def show_two_images_colorbar(img1, img2, colorbar_size):
     f = plt.figure(figsize=(15, 8))
 
     f.add_subplot(1, 2, 1)
     plt.imshow(img1, "gray")
-    plt.colorbar()
+    plt.colorbar(shrink=colorbar_size)
 
     f.add_subplot(1, 2, 2)
     plt.imshow(img2, "gray")
-    plt.colorbar()
+    plt.colorbar(shrink=colorbar_size)
 
     plt.show()
 
