@@ -18,6 +18,21 @@ def show_images_side_by_side(img1, img2, img3):
 
     plt.show()
 
+def show_two_images(img1, img2):
+
+    f = plt.figure(figsize=(15, 8))
+
+    f.add_subplot(1, 2, 1)
+    plt.imshow(img1, "gray")
+    plt.colorbar()
+
+    f.add_subplot(1, 2, 2)
+    plt.imshow(img2, "gray")
+    plt.colorbar()
+
+    plt.show()
+
+
 
 def show_image(img, x, y):
     """
