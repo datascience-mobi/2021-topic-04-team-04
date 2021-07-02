@@ -19,7 +19,8 @@ def show_images_side_by_side(img1, img2, img3):
 
 
 def show_three_images_colorbar(img1, img2, img3, colorbar_size):
-    f = plt.figure(figsize=(12, 7))
+    f = plt.figure(figsize=(15, 8))
+
     f.add_subplot(1, 3, 1)
     plt.imshow(img1, "gray")
     plt.colorbar(shrink=colorbar_size)
