@@ -113,9 +113,9 @@ def evaluate_accuracy_weighted(segmented_img, gt):
     :param gt: ground truth image with region numbers (2D array)
     :return: wighted dice score (float, between 0 and 1)
     """
-    clipped_gt = gt_clip(gt)
-    background_number = find_background_number(segmented_img)
-    clipped_segmented_image = segmented_image_clip(segmented_img, background_number)
+    clipped_gt = gt_clip(gt.copy())
+    background_number = find_background_number(segmented_img.copy())
+    clipped_segmented_image = segmented_image_clip(segmented_img.copy(), background_number)
     dice_score = dice_score_weighted(clipped_segmented_image, clipped_gt)
     return dice_score
 
@@ -127,9 +127,9 @@ def evaluate_accuracy_unweighted(segmented_img, gt):
     :param gt:  ground truth image with region numbers (2D array)
     :return: unweighted dice score (float, between 0 and 1)
     """
-    clipped_gt = gt_clip(gt)
-    background_number = find_background_number(segmented_img)
-    clipped_segmented_image = segmented_image_clip(segmented_img, background_number)
+    clipped_gt = gt_clip(gt.copy())
+    background_number = find_background_number(segmented_img.copy())
+    clipped_segmented_image = segmented_image_clip(segmented_img.copy(), background_number)
     dice_score = dice_score_unweighted(clipped_segmented_image, clipped_gt)
     return dice_score
 
