@@ -376,18 +376,11 @@ def region_merging(reg, img, distance_threshold, size_threshold):
 
 
 if __name__ == '__main__':
-    image_intensity = sk.imread("../Data/N2DL-HeLa/img/t75.tif")  # load image
+    image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t31.tif")  # load image
     # image_intensity = image_intensity[300:350, 450:500]
-    image_r = sk.imread("../Result_Pictures/Seeded_Region_Growing/N2DL-HeLa/srg_t75.tif")
+    image_r = sk.imread("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t31.tif_srg_anisotrophic.tif")
 
-    image_r_copy = image_r.copy()
-    image_r_copy = distance_merging_while(image_r_copy, 0.1, image_intensity)
-    image_result = image_r_copy[0]
-    ip.show_image(image_result, 15, 8)
+    image_r_merged = region_merging(image_r, image_intensity, 0.004, 400)
 
-    image_result2 = image_result.copy()
-    image_result2 = region_merging_size(image_intensity, image_result2, image_r_copy[1], image_r_copy[2], 100)
-    ip.show_image(image_result2, 15, 8)
-
-    im = Image.fromarray(image_result2)
-    im.save("../Result_Pictures/Seeded_Region_Growing/N2DL-HeLa/srg_t75_merged.tif")
+    im = Image.fromarray(image_r_merged)
+    im.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t31.tif_srg_anisotrophic_merged")
