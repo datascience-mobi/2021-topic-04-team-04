@@ -13,14 +13,14 @@ def find_neighboring_regions(reg):
     determines adjacent regions of every region in an array where columns and row represent regions
     :param reg: array with region numbers (2D array)
     :return: 2D array where the rows are the regions and the columns are the neighboring regions.
-    If a region is a neighbor, a 1 is written in the cell, if not a 0. Example: 4 is a neighbor of 2: row 2 col 4: 1
+    If a region is a neighbor, True is written in the cell, if not False. Example: 4 is a neighbor of 2: row 2 col 4: 1
     At the beginning, this array is symmetrical (2D array)
     """
     max_region = max(reg.flatten())
-    inter_region_neighbors = np.zeros((int(max_region), int(max_region)))
+    inter_region_neighbors = np.full((int(max_region), int(max_region)), False)
     for region_number in range(1, int(max_region) + 1):
         neighboring_regions = find_neighbors_one_region(reg, region_number)
-        inter_region_neighbors[int(region_number) - 1, neighboring_regions - 1] = 1
+        inter_region_neighbors[int(region_number) - 1, neighboring_regions - 1] = True
     return inter_region_neighbors
 
 
