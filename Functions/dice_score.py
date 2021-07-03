@@ -106,6 +106,17 @@ def dice_score_unweighted(segmented_img, gt):
     return dice_score
 
 
+def final_clipping(segmented_img):
+    """
+    use segmented image to define nuclei and background
+    :param segmented_img: (2d array)
+    :return: clipped image (background: 0, nucleus: 1)
+    """
+    background_number = find_background_number(segmented_img.copy())
+    clipped_segmented_image = segmented_image_clip(segmented_img.copy(), background_number)
+    return clipped_segmented_image
+
+
 def evaluate_accuracy_weighted(segmented_img, gt):
     """
     calculates weighted dice score of two clipped images (clipping needed for comparability)
