@@ -185,6 +185,7 @@ def unseeded_region_growing_algorithm(img, start_pixel, t):
     """
     reg = np.zeros(img.shape, int)  # array with region number
     reg[start_pixel] = 1
+    size = img.shape[0] * img.shape[1]
 
     left_neighbors, right_neighbors, top_neighbors, bottom_neighbors = srg.find_seed_neighbors(reg)
 
@@ -214,5 +215,6 @@ def unseeded_region_growing_algorithm(img, start_pixel, t):
                                      means, img)
 
         #  print(np.count_nonzero(reg == 0))
-
+        if i > size:
+            break
     return reg
