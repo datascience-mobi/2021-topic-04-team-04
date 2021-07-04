@@ -273,7 +273,7 @@ def position_of_smallest_distance(left_distances, right_distances, top_distances
     """
     left_min_dist = position_of_smallest_distance_one_border(left_distances)
     right_min_dist = position_of_smallest_distance_one_border(right_distances)
-    top_min_dist = position_of_smallest_distance_one_border(right_distances)
+    top_min_dist = position_of_smallest_distance_one_border(top_distances)
     bottom_min_dist = position_of_smallest_distance_one_border(bottom_distances)
 
     pos_min_distances = [left_min_dist, right_min_dist, top_min_dist, bottom_min_dist]
@@ -451,6 +451,6 @@ if __name__ == '__main__':
     image_r = sk.imread("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t31.tif_seeds.tif")
     image_r = region_growing(image_intensity, image_r)
 
-
     im = Image.fromarray(image_r)
     im.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t31.tif_srg.tif")
+
