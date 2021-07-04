@@ -301,3 +301,13 @@ def anisotropic_filter(img):
     img_copy = img.copy()
     img_anisotropic = anisotropic_diffusion(img_copy)
     return img_anisotropic
+
+
+def normalize_intensity(img):
+    img_normalized = img.copy() / np.amax(img)
+    return img_normalized
+
+
+def subtract_minimum(img):
+    img_subtracted = img.copy() - np.amin(img)
+    return img_subtracted
