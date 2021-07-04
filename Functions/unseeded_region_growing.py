@@ -215,6 +215,4 @@ def unseeded_region_growing_algorithm(img, start_pixel, t):
                                      means, img)
 
         #  print(np.count_nonzero(reg == 0))
-        if i > size:
-            break
     return reg
