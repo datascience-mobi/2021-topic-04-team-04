@@ -29,3 +29,26 @@ def seeded_segmentation(img, gt, threshold_seeds, threshold_merging_intensity, t
     print("unweighted dice score: " + str(dice_score_unweighted) + ", weighted dice score: " + str(dice_score_weighted))
 
     return image_merged
+
+
+if __name__ == '__main__':
+    image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")
+    img_gt = sk.imread("../Data/N2DH-GOWT1/gt/man_seg01.tif")
+
+    image_seeds = sd.seeds(image_intensity, 0.7)
+    image_seeds_s = Image.fromarray(image_seeds.copy())
+    image_seeds_s.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t01_srg_seeds.tif")
+
+    image_for_srg = sd.seed_merging(image_seeds.copy())
+    image_for_srg_reduced = sd.reduce_region_number(image_for_srg.copy(), 2)
+    image_srg = srg.region_growing(image_intensity, image_for_srg_reduced.copy())
+    image_srg_s = Image.fromarray(image_srg.copy())
+    image_srg_s.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t01_srg_srg.tif")
+
+    image_merged = rm.region_merging(image_srg.copy(), image_intensity, 0.05, 400)
+    image_merged_s = Image.fromarray(image_merged.copy())
+    image_merged_s.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t01_srg_merged.tif")
+
+    image_final = ds.final_clipping(image_merged.copy())
+    image_final_s = Image.fromarray(image_final.copy())
+    image_final_s.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t01_srg_final.tif")
