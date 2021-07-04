@@ -33,6 +33,7 @@ def seeded_segmentation(img, gt, threshold_seeds, threshold_merging_intensity, t
 
 if __name__ == '__main__':
     image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")
+    #image_intensity = ip.subtract_minimum(image_intensity)
     img_gt = sk.imread("../Data/N2DH-GOWT1/gt/man_seg01.tif")
 
     image_seeds = sd.seeds(image_intensity, 0.7)
