@@ -42,6 +42,8 @@ if __name__ == '__main__':
 
     image_for_srg = sd.seed_merging(image_seeds.copy())
     image_for_srg_reduced = sd.reduce_region_number(image_for_srg.copy(), 2)
+    image_for_srg_reduced.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t01_srg_seeds_reduced.tif")
+
     image_srg = srg.region_growing(image_intensity, image_for_srg_reduced.copy())
     image_srg_s = Image.fromarray(image_srg.copy())
     image_srg_s.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t01_srg_srg.tif")
