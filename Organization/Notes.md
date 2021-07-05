@@ -57,27 +57,20 @@ def dice_coef(y_true, y_pred, smooth=1):
   t in Funktionen und threshold beim Aufrufen
 - Dokument functions ist gelöscht, die Funktionen sind in seed_detection
 
-## Talk about:
-- new_distance2 löschen?
-- find_neighbors2 löschen?
-- weitere Filter Iterationen auslagern?
-- one_region_mean1 löschen?
-- Standard_deviation_new ist ausgelagert
-- warum funktioniert region_merging nur beim ersten Durchlauf
 
 ## ToDos:
 - filtering auf zweitem Datensatz Gauß (Laura)
 - kleine Punkte dna33 (Laura)
 - dritter datensatz seeded bright spots weg (Marie), parameter
-- Parameterliste (Laura)
 - unseeded 3. datensatz dna42 (Ina)
 - Text erster Datensatz vergleichen seeded unseeded (Marie)
 - Text zweiter Datensatz Vergleich seeded unseeded (Ina und Jojo)
 - Text dritter Datensatz Vergleich seeded unseeded (Ina)
 - Diskussion (Marie)
-- Abstract (Laura)
+- Abstract (Ina)
 - PowerPoint Bilder (Jojo)
 - PowerPoint Algorithmusüberblick (Marie), Überblick aller Code
 - Diagramm Dice Scores (Marie)
 - Algorythmusgegenüberstellung Unseeded, Seeded --> Text (Marie)
 - Region_Merging File noch in Verwendung? Sonst löschen (Marie)
+- 2. Datensatz mittlerer Ausschnitt wegen dice score
