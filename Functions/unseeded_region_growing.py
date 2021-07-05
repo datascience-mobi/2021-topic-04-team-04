@@ -213,6 +213,7 @@ def unseeded_region_growing_algorithm(img, start_pixel, t):
             unseeded_label_new_pixel(reg, left_distances, right_distances, top_distances, bottom_distances,
                                      left_neighbors, right_neighbors, top_neighbors, bottom_neighbors, t,
                                      means, img)
-
+        if i > size + 10:
+            break
         #  print(np.count_nonzero(reg == 0))
     return reg
