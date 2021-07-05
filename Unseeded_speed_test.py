@@ -5,7 +5,7 @@ import skimage.io as sk
 from Functions import unseeded_region_growing as urg
 from PIL import Image
 
-image = sk.imread("Data/N2DL-HeLa/img/t52.tif")
+image = sk.imread("Data/N2DL-HeLa/img/t13.tif")
 #  img_r = ip.img_resize(image, 500, 500)
 #  ip.show_image(img_r, 15, 8)
 
@@ -16,4 +16,4 @@ image = sk.imread("Data/N2DL-HeLa/img/t52.tif")
 img_result = urg.unseeded_region_growing_algorithm(image, (0, 0), 50)
 
 im = Image.fromarray(img_result)
-im.save("Result_Pictures/Unseeded_Region_Growing/N2DL-HeLa/urg_t52.tif")
+im.save("Result_Pictures/Unseeded_Region_Growing/N2DL-HeLa/urg_t13.tif")
