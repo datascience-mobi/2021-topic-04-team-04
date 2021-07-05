@@ -64,3 +64,19 @@ def dice_coef(y_true, y_pred, smooth=1):
 - one_region_mean1 löschen?
 - Standard_deviation_new ist ausgelagert
 - warum funktioniert region_merging nur beim ersten Durchlauf
+
+## ToDos:
+- filtering auf zweitem Datensatz Gauß (Laura)
+- kleine Punkte dna33 (Laura)
+- dritter datensatz seeded bright spots weg (Marie), parameter
+- Parameterliste (Laura)
+- unseeded 3. datensatz dna42 (Ina)
+- Text erster Datensatz vergleichen seeded unseeded (Marie)
+- Text zweiter Datensatz Vergleich seeded unseeded (Ina und Jojo)
+- Text dritter Datensatz Vergleich seeded unseeded (Ina)
+- Diskussion (Marie)
+- Abstract (Laura)
+- PowerPoint Bilder (Jojo)
+- PowerPoint Algorithmusüberblick (Marie), Überblick aller Code
+- Diagramm Dice Scores (Marie)
+- Algorythmusgegenüberstellung Unseeded, Seeded --> Text (Marie)
