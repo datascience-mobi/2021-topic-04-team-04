@@ -1,0 +1,21 @@
+## Seeded Region Growing
+
+## Unseeded Region Growing
+
+### 1. Datensatz
+- Region Growing: 5
+- Region Merging: 0.001, 10000
+- Median Filter: 3
+
+### 2. Datensatz
+- Region Growing: 50
+- Region Merging: 0.000001, 10000
+- Median Filter: 3
+
+### 3. Datensatz
+- Region Growing: 5
+- Region Merging: 0.01, 10000
+- Median Filter: 3
+
+## Removal bright spots with border
+- dna-42:130, 60, 30
