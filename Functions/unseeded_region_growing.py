@@ -4,13 +4,13 @@ from Functions import seeded_region_growing as srg
 
 #  from Functions import image_processing as ip
 #  from PIL import Image
-#  import skimage.io as sk
+import skimage.io as sk
 
 
 def unseeded_calculate_one_distance(means, pixel_intensity, region_number):
     """
     calculates the distance of a pixel to the region with a specific region number
-    :param means: list of means of the regions (list)
+    :param means: array with intensity mean of the regions (1D array)
     :param pixel_intensity: the pixel which distance is calculated (tuple)
     :param region_number: number of a specific region (int)
     :return: the calculated distance for this pixel (float)
@@ -22,13 +22,13 @@ def unseeded_calculate_one_distance(means, pixel_intensity, region_number):
 def unseeded_calculate_one_border_distances(means, img, max_region, one_border_neighbors):
     """
     calculates the distance of a pixel to the regions of the neighbors of one side
-    :param means: list of means of the regions (list)
+    :param means: array with intensity mean of the regions (1D array)
     :param img: array with intensity values (2D array)
     :param max_region: highest region number (int)
     :param one_border_neighbors: array with the region numbers of the neighbors to one side (2D array)
     :return: array with the calculated distances of the pixel to the region in the neighbors array (2D array)
     """
-    one_border_distances = np.full(img.shape, 500)
+    one_border_distances = np.full(img.shape, 10000)
     for region_number in range(1, max_region + 1):
         pos_reg_bor = np.where(one_border_neighbors == region_number)
         one_border_distances[pos_reg_bor[0], pos_reg_bor[1]] = \
@@ -45,7 +45,7 @@ def unseeded_calculate_distances(img, reg, left_neighbors, right_neighbors, top_
     :param right_neighbors: array with the region numbers of the neighbors to the right side (2D array)
     :param top_neighbors: array with the region numbers of the neighbors to the upper side (2D array)
     :param bottom_neighbors: array with the region numbers of the neighbors to lower side (2D array)
-    :return: means: list of means (list), and four arrays with the calculated distances to all the sides (2D arrays)
+    :return: means: array with means (1D array), four arrays with the calculated distances to all the sides (2D arrays)
     """
     means = np.asarray(srg.mean_region(img, reg))
     max_region = int(np.amax(reg))
@@ -63,7 +63,7 @@ def unseeded_update_one_distance(img, reg, means, new_pixel, one_border_neighbor
     updates the distance array of one direction
     :param img: array with intensity values (2D array)
     :param reg: array with region numbers (2D array)
-    :param means: list of means of the regions (list)
+    :param means: array with intensity mean of the regions (1D array)
     :param new_pixel: pixel which was lastly added to a region
     :param one_border_neighbors: array with the region numbers of the neighbors to one side (2D array)
     :param one_border_distances: array with the calculated distances of the pixel to one side (2D array)
@@ -81,10 +81,10 @@ def unseeded_update_one_distance(img, reg, means, new_pixel, one_border_neighbor
 def unseeded_update_distances(img, reg, means, new_pixel, left_neighbors, right_neighbors, top_neighbors,
                               bottom_neighbors, left_distances, right_distances, top_distances, bottom_distances):
     """
-    updates the list of means and the four distance arrays for all directions
+    updates the array of means and the four distance arrays for all directions
     :param img: array with intensity values (2D array)
     :param reg: array with region numbers (2D array)
-    :param means: list of means of the regions (list)
+    :param means: array with intensity mean of the regions (1D array)
     :param new_pixel: pixel which was lastly added to a region
     :param left_neighbors: array with the region numbers of the neighbors to the left side (2D array)
     :param right_neighbors: array with the region numbers of the neighbors to the right side (2D array)
@@ -94,7 +94,7 @@ def unseeded_update_distances(img, reg, means, new_pixel, left_neighbors, right_
     :param right_distances: array with the calculated distances of the pixel to region of right neighbors (2D array)
     :param top_distances: array with the calculated distances of the pixel to region of upper neighbors (2D array)
     :param bottom_distances: array with the calculated distances of the pixel to region of lower neighbors (2D array)
-    :return: four updated distance arrays (2D arrays), means: list of means (list)
+    :return: four updated distance arrays (2D arrays), means: array with means (1D array)
     """
     means = srg.update_list_of_means(means, img, reg, new_pixel)
 
@@ -141,10 +141,10 @@ def unseeded_label_new_pixel(reg, left_distances, right_distances, top_distances
     :param top_neighbors: array with the region numbers of the neighbors to the upper side (2D array)
     :param bottom_neighbors: array with the region numbers of the neighbors to lower side (2D array)
     :param t: threshold to decide whether a pixel is similar enough to a region (float)
-    :param means: list of means of the regions (list)
+    :param means: array with intensity mean of the regions (1D array)
     :param img: array with intensity values (2D array)
     :return: reg: array with region numbers (2D array), pos_min_dist: pixel that was lastly added to a region (tuple),
-    four arrays with region numbers of neighbors (2D arrays), means: list of means (list)
+    four arrays with region numbers of neighbors (2D arrays), means: array of means (1D array)
     """
     pos_min_dist, border_number = srg.position_of_smallest_distance(left_distances, right_distances, top_distances,
                                                                     bottom_distances)
@@ -185,7 +185,6 @@ def unseeded_region_growing_algorithm(img, start_pixel, t):
     """
     reg = np.zeros(img.shape, int)  # array with region number
     reg[start_pixel] = 1
-    size = img.shape[0] * img.shape[1]
 
     left_neighbors, right_neighbors, top_neighbors, bottom_neighbors = srg.find_seed_neighbors(reg)
 
@@ -213,7 +212,12 @@ def unseeded_region_growing_algorithm(img, start_pixel, t):
             unseeded_label_new_pixel(reg, left_distances, right_distances, top_distances, bottom_distances,
                                      left_neighbors, right_neighbors, top_neighbors, bottom_neighbors, t,
                                      means, img)
-        if i > size + 10:
-            break
+
         #  print(np.count_nonzero(reg == 0))
     return reg
+
+
+if __name__ == '__main__':
+    hela = sk.imread("../Data/N2DL-HeLa/img/t13.tif")
+    hela_small = hela[160:185, 790:815]
+    hela_urg = unseeded_region_growing_algorithm(hela_small, (0, 0), 50)
