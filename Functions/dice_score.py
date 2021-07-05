@@ -144,14 +144,3 @@ def evaluate_accuracy_unweighted(segmented_img, gt):
     dice_score = dice_score_unweighted(clipped_segmented_image, clipped_gt)
     return dice_score
 
-
-if __name__ == '__main__':
-    gt_image = sk.imread("../Data/N2DH-GOWT1/gt/man_seg01.tif")
-    gt_resize = gt_image[300:350, 400:450]
-
-    segmented_image = sk.imread("../t01tifimg.tif")
-
-    dice_score_weight = evaluate_accuracy_weighted(segmented_image, gt_resize)
-    dice_score_un_weight = evaluate_accuracy_unweighted(segmented_image, gt_resize)
-    print(dice_score_weight)
-    print(dice_score_un_weight)

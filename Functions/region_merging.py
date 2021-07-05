@@ -378,9 +378,9 @@ def region_merging(reg, img, distance_threshold, size_threshold):
 if __name__ == '__main__':
     image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t31.tif")  # load image
     # image_intensity = image_intensity[300:350, 450:500]
-    image_r = sk.imread("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t31.tif_srg_anisotrophic.tif")
+    image_r = sk.imread("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/")
 
     image_r_merged = region_merging(image_r, image_intensity, 0.004, 400)
 
     im = Image.fromarray(image_r_merged)
-    im.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t31.tif_srg_anisotrophic_merged")
+    im.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/")

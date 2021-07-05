@@ -80,3 +80,4 @@ def dice_coef(y_true, y_pred, smooth=1):
 - PowerPoint Algorithmusüberblick (Marie), Überblick aller Code
 - Diagramm Dice Scores (Marie)
 - Algorythmusgegenüberstellung Unseeded, Seeded --> Text (Marie)
+- Region_Merging File noch in Verwendung? Sonst löschen (Marie)

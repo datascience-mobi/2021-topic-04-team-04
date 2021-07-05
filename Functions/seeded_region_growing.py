@@ -448,9 +448,9 @@ if __name__ == '__main__':
     # image_r = sd.seed_merging(image_r)
     # image_seeds = Image.fromarray(image_r)
     # image_seeds.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t31.tif_seeds.tif")
-    image_r = sk.imread("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t31.tif_seeds.tif")
+    image_r = sk.imread("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/")
     image_r = region_growing(image_intensity, image_r)
 
     im = Image.fromarray(image_r)
-    im.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t31.tif_srg.tif")
+    im.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/")
 
