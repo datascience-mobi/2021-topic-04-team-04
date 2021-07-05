@@ -182,6 +182,20 @@ def add_border(array):
     return array_with_border
 
 
+def add_border_variable(array, border_size):
+    array_with_border = np.zeros((array.shape[0] + 2*border_size, array.shape[1] + 2*border_size))
+    array_with_border[border_size:array.shape[0] + border_size, border_size:array.shape[1] + border_size] = array
+    return array_with_border
+
+
+def remove_border_variable(array, border_size):
+    array = np.delete(array, np.s_[0:border_size], axis=1)
+    array = np.delete(array, np.s_[0:border_size], axis=0)
+    array = np.delete(array, np.s_[array.shape[1] - border_size:array.shape[1]], axis=1)
+    array = np.delete(array, np.s_[array.shape[0] - border_size:array.shape[0]], axis=0)
+    return array
+
+
 def remove_border(array):
     """
     removes the border of an array
@@ -240,19 +254,42 @@ def image_clipping_extreme(img, t1, t2):
     return img_copy
 
 
-def remove_bright_spots(img, t1, t2):
+
+def remove_bright_spots(img, t_bright, t_background):
     """
     copies the image and tries to remove extremely bright spots for a picture
     sets all the pixels above the first threshold to the value of the second threshold
+    :param t_bright: pixels above this threshold are considered as to bright (int/float)
+    :param t_background: pixels are set to this intensity value (int/float)
     :param img: image with intensity values (2D array)
-    :param t1: pixels above this threshold are considered as to bright (int/float)
-    :param t2: pixels are set to this intensity value (int/float)
     :return: image with changed intensity values (2D array)
     """
     img_copy = img.copy()
-    for p in np.ndindex(img_copy.shape):
-        if img_copy[p] > t1:
-            img_copy[p] = t2
+    pos_bright_spot = np.where(img_copy > t_bright)
+    img_copy[pos_bright_spot[0], pos_bright_spot[1]] = t_background
+    return img_copy
+
+
+def remove_bright_spots_with_border(img, t_bright, t_background, t_border):
+    """
+    copies the image and tries to remove extremely bright spots for a picture
+    sets all the pixels above the first threshold to the value of the second threshold
+    :param t_bright: pixels above this threshold are considered as to bright (int/float)
+    :param t_border: number of border pixel (int)
+    :param t_background: pixels are set to this intensity value (int/float)
+    :param img: image with intensity values (2D array)
+    :return: image with changed intensity values (2D array)
+    """
+    img_copy = img.copy()
+    img_copy = add_border_variable(img_copy, t_border)
+    pos_bright_spot = np.where(img_copy > t_bright)
+    img_copy[pos_bright_spot[0], pos_bright_spot[1]] = t_background
+    for border_number in range(1, t_border + 1):
+        img_copy[pos_bright_spot[0] - border_number, pos_bright_spot[1]] = t_background
+        img_copy[pos_bright_spot[0] + border_number, pos_bright_spot[1]] = t_background
+        img_copy[pos_bright_spot[0], pos_bright_spot[1] - border_number] = t_background
+        img_copy[pos_bright_spot[0], pos_bright_spot[1] + border_number] = t_background
+    img_copy = remove_border_variable(img_copy, t_border)
     return img_copy
 
 
