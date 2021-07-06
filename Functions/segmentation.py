@@ -60,17 +60,20 @@ def unseeded_segmentation(img, gt, start_pixel, threshold_region_growing, thresh
 if __name__ == '__main__':
     image_intensity = sk.imread("../Data/NIH3T3/img/dna-42.png")
     #  image_intensity = ip.subtract_minimum(image_intensity)
-    image_intensity = ip.remove_bright_spots_with_border(image_intensity, 130, 60, 40)
+    image_intensity = ip.remove_bright_spots_with_border(image_intensity, 130, 60, 30)
+    image_intensity = ip.gaussian_filter(image_intensity, 3)
     img_gt = sk.imread("../Data/NIH3T3/gt/42.png")
 
-    use_image_seeds = sd.seeds(image_intensity, 0.001)
-    image_seeds_s = Image.fromarray(use_image_seeds.copy())
-    image_seeds_s.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_seeds.tif")
+    #use_image_seeds = sd.seeds(image_intensity, 0.001)
+    #image_seeds_s = Image.fromarray(use_image_seeds.copy())
+    #image_seeds_s.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_seeds.tif")
 
-    image_for_srg = sd.seed_merging(use_image_seeds.copy())
-    image_for_srg_reduced = sd.reduce_region_number(image_for_srg.copy(), 4)
-    image_for_srg_reduced_s = Image.fromarray(image_for_srg_reduced.copy())
-    image_for_srg_reduced_s.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_seeds_reduced.tif")
+    #image_for_srg = sd.seed_merging(use_image_seeds.copy())
+    #image_for_srg_reduced = sd.reduce_region_number(image_for_srg.copy(), 5)
+    #image_for_srg_reduced_s = Image.fromarray(image_for_srg_reduced.copy())
+    #image_for_srg_reduced_s.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_seeds_reduced.tif")
+
+    image_for_srg_reduced = sk.imread("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_seeds_reduced.tif")
 
     use_image_srg = srg.region_growing(image_intensity, image_for_srg_reduced.copy())
     image_srg_s = Image.fromarray(use_image_srg.copy())
