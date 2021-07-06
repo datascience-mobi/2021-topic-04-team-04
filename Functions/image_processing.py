@@ -4,16 +4,13 @@ import matplotlib.pyplot as plt
 from medpy.filter.smoothing import anisotropic_diffusion
 
 
-def show_images_side_by_side(img1, img2, img3):
+def show_images_side_by_side(img1, img2):
     f = plt.figure(figsize=(12, 7))
-    f.add_subplot(1, 3, 1)
+    f.add_subplot(1, 2, 1)
     plt.imshow(img1, "gray")
 
-    f.add_subplot(1, 3, 2)
+    f.add_subplot(1, 2, 2)
     plt.imshow(img2, "gray")
-
-    f.add_subplot(1, 3, 3)
-    plt.imshow(img3, "gray")
 
     plt.show()
 
