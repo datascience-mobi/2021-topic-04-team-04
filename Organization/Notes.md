@@ -60,14 +60,9 @@ def dice_coef(y_true, y_pred, smooth=1):
 
 ## ToDos:
 
-- dritter datensatz seeded bright spots weg (Marie), parameter
-- unseeded 3. datensatz dna42 (Ina)
-- Text erster Datensatz vergleichen seeded unseeded (Marie)
 - Text zweiter Datensatz Vergleich seeded unseeded (Ina und Jojo)
 - Text dritter Datensatz Vergleich seeded unseeded (Ina)
 - Diskussion (Marie)
-- Abstract (Ina)
-- PowerPoint Bilder (Jojo)
 - PowerPoint Algorithmusüberblick (Marie), Überblick aller Code
 - Diagramm Dice Scores (Marie)
 - Algorythmusgegenüberstellung Unseeded, Seeded --> Text (Marie)
