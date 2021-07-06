@@ -59,7 +59,7 @@ def dice_coef(y_true, y_pred, smooth=1):
 
 
 ## ToDos:
-- kleine Punkte dna33 (Laura)
+
 - dritter datensatz seeded bright spots weg (Marie), parameter
 - unseeded 3. datensatz dna42 (Ina)
 - Text erster Datensatz vergleichen seeded unseeded (Marie)
