@@ -1,4 +1,5 @@
 import skimage.io as sk
+import numpy as np
 from Functions import image_processing as ip
 from Functions import region_merging as rm
 from Functions import seeded_region_growing as srg
@@ -58,31 +59,30 @@ def unseeded_segmentation(img, gt, start_pixel, threshold_region_growing, thresh
 
 
 if __name__ == '__main__':
-    image_intensity = sk.imread("../Data/NIH3T3/img/dna-42.png")
-    #  image_intensity = ip.subtract_minimum(image_intensity)
-    image_intensity = ip.remove_bright_spots_with_border(image_intensity, 130, 60, 30)
-    image_intensity = ip.gaussian_filter(image_intensity, 3)
-    img_gt = sk.imread("../Data/NIH3T3/gt/42.png")
+    image_intensity = sk.imread("../Data/N2DL-HeLa/img/t13.tif")
+    image_intensity = ip.subtract_minimum(image_intensity)
+    image_intensity = ip.image_clipping(image_intensity, 0.05 * np.amax(image_intensity), 0.15 * np.amax(image_intensity))
+    image_intensity = ip.median_filter(image_intensity, 3)
+    #  image_intensity = ip.remove_bright_spots_with_border(image_intensity, 130, 60, 40)
+    img_gt = sk.imread("../Data/N2DL-HeLa/gt/man_seg13.tif")
 
-    #use_image_seeds = sd.seeds(image_intensity, 0.001)
-    #image_seeds_s = Image.fromarray(use_image_seeds.copy())
-    #image_seeds_s.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_seeds.tif")
+    use_image_seeds = sd.seeds(image_intensity, 0.05)
+    image_seeds_s = Image.fromarray(use_image_seeds.copy())
+    image_seeds_s.save("../Result_Pictures/Seeded_Region_Growing/N2DL-HeLa/t13_srg_seeds.tif")
 
-    #image_for_srg = sd.seed_merging(use_image_seeds.copy())
-    #image_for_srg_reduced = sd.reduce_region_number(image_for_srg.copy(), 5)
-    #image_for_srg_reduced_s = Image.fromarray(image_for_srg_reduced.copy())
-    #image_for_srg_reduced_s.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_seeds_reduced.tif")
-
-    image_for_srg_reduced = sk.imread("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_seeds_reduced.tif")
+    image_for_srg = sd.seed_merging(use_image_seeds.copy())
+    image_for_srg_reduced = sd.reduce_region_number(image_for_srg.copy(), 20)
+    image_for_srg_reduced_s = Image.fromarray(image_for_srg_reduced.copy())
+    image_for_srg_reduced_s.save("../Result_Pictures/Seeded_Region_Growing/N2DL-HeLa/t13_srg_seeds_reduced.tif")
 
     use_image_srg = srg.region_growing(image_intensity, image_for_srg_reduced.copy())
     image_srg_s = Image.fromarray(use_image_srg.copy())
-    image_srg_s.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_srg.tif")
+    image_srg_s.save("../Result_Pictures/Seeded_Region_Growing/N2DL-HeLa/t13_srg_srg.tif")
 
-    use_image_merged = rm.region_merging(use_image_srg.copy(), image_intensity, 0.1, 400)
+    use_image_merged = rm.region_merging(use_image_srg.copy(), image_intensity, 0.1, 100)
     image_merged_s = Image.fromarray(use_image_merged.copy())
-    image_merged_s.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_merged.tif")
+    image_merged_s.save("../Result_Pictures/Seeded_Region_Growing/N2DL-HeLa/t13_srg_merged.tif")
 
     image_final = ds.final_clipping(use_image_merged.copy())
     image_final_s = Image.fromarray(image_final.copy())
-    image_final_s.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_clipped.tif")
+    image_final_s.save("../Result_Pictures/Seeded_Region_Growing/N2DL-HeLa/t13_srg_clipped.tif")
