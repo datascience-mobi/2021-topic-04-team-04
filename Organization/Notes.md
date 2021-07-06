@@ -59,7 +59,6 @@ def dice_coef(y_true, y_pred, smooth=1):
 
 
 ## ToDos:
-- filtering auf zweitem Datensatz Gauß (Laura)
 - kleine Punkte dna33 (Laura)
 - dritter datensatz seeded bright spots weg (Marie), parameter
 - unseeded 3. datensatz dna42 (Ina)
@@ -73,4 +72,4 @@ def dice_coef(y_true, y_pred, smooth=1):
 - Diagramm Dice Scores (Marie)
 - Algorythmusgegenüberstellung Unseeded, Seeded --> Text (Marie)
 - Region_Merging File noch in Verwendung? Sonst löschen (Marie)
-- 2. Datensatz mittlerer Ausschnitt wegen dice score
+- 2. Datensatz mittlerer Ausschnitt wegen dice score (Laura)

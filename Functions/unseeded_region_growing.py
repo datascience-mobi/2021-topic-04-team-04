@@ -28,7 +28,7 @@ def unseeded_calculate_one_border_distances(means, img, max_region, one_border_n
     :param one_border_neighbors: array with the region numbers of the neighbors to one side (2D array)
     :return: array with the calculated distances of the pixel to the region in the neighbors array (2D array)
     """
-    one_border_distances = np.full(img.shape, 10000)
+    one_border_distances = np.full(img.shape, 1000000)
     for region_number in range(1, max_region + 1):
         pos_reg_bor = np.where(one_border_neighbors == region_number)
         one_border_distances[pos_reg_bor[0], pos_reg_bor[1]] = \
@@ -74,7 +74,7 @@ def unseeded_update_one_distance(img, reg, means, new_pixel, one_border_neighbor
                          positions_to_update[1]] = unseeded_calculate_one_distance(means, img[positions_to_update[0],
                                                                                               positions_to_update[1]],
                                                                                    reg[new_pixel])
-    one_border_distances[new_pixel] = 500
+    one_border_distances[new_pixel] = 1000000
     return one_border_distances
 
 
