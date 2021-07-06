@@ -17,6 +17,11 @@
 - Region Merging: 0.01, 10000
 - Median Filter: 3
 
+- Seeds: 0.0001
+- Remove seeds: 3
+- Region Merging: 0.1, 400
+
+
 ## Removal bright spots with border
-- dna-42: 130, 60, 30
+- dna-42: 130, 60, 40
 - dna-33: 200, 60, 40

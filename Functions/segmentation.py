@@ -32,26 +32,28 @@ def seeded_segmentation(img, gt, threshold_seeds, threshold_merging_intensity, t
 
 
 if __name__ == '__main__':
-    image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")
+    image_intensity = sk.imread("../Data/NIH3T3/img/dna-42.png")
     #image_intensity = ip.subtract_minimum(image_intensity)
-    img_gt = sk.imread("../Data/N2DH-GOWT1/gt/man_seg01.tif")
+    image_intensity = ip.remove_bright_spots_with_border(image_intensity, 130, 60, 40)
+    img_gt = sk.imread("../Data/NIH3T3/gt/42.png")
 
-    image_seeds = sd.seeds(image_intensity, 0.7)
+    image_seeds = sd.seeds(image_intensity, 0.001)
     image_seeds_s = Image.fromarray(image_seeds.copy())
-    image_seeds_s.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t01_srg_seeds.tif")
+    image_seeds_s.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_seeds.tif")
 
     image_for_srg = sd.seed_merging(image_seeds.copy())
-    image_for_srg_reduced = sd.reduce_region_number(image_for_srg.copy(), 2)
-    image_for_srg_reduced.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t01_srg_seeds_reduced.tif")
+    image_for_srg_reduced = sd.reduce_region_number(image_for_srg.copy(), 4)
+    image_for_srg_reduced_s = Image.fromarray(image_for_srg_reduced.copy())
+    image_for_srg_reduced_s.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_seeds_reduced.tif")
 
     image_srg = srg.region_growing(image_intensity, image_for_srg_reduced.copy())
     image_srg_s = Image.fromarray(image_srg.copy())
-    image_srg_s.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t01_srg_srg.tif")
+    image_srg_s.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_srg.tif")
 
-    image_merged = rm.region_merging(image_srg.copy(), image_intensity, 0.05, 400)
+    image_merged = rm.region_merging(image_srg.copy(), image_intensity, 0.1, 400)
     image_merged_s = Image.fromarray(image_merged.copy())
-    image_merged_s.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t01_srg_merged.tif")
+    image_merged_s.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_merged.tif")
 
     image_final = ds.final_clipping(image_merged.copy())
     image_final_s = Image.fromarray(image_final.copy())
-    image_final_s.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t01_srg_final.tif")
+    image_final_s.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_clipped.tif")
