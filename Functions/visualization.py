@@ -15,6 +15,10 @@ import seaborn as sns
 
 
 def barplot_preprocessing():
+    """
+    creates barplot for the dice scores of the evaluation of the preprocessing
+    :return: barplot for the preprocessing
+    """
     columns_names = ["Dice Score", "Segmentation Method", "Preprocessing"]
     dice_score = [0.901, 0.945, 0.983, 0.984, 0.980, 0.979, 0.911, 0.984, 0.889, 0.962]
     segmentation_method = ["Seeded", "Unseeded", "Seeded", "Unseeded", "Seeded", "Unseeded", "Seeded", "Unseeded",
@@ -30,6 +34,10 @@ def barplot_preprocessing():
 
 
 def barplot_results():
+    """
+    creates a barplot for the dice scores of the segmented images of the different data sets
+    :return: barplot for the different data sets
+    """
     columns_names = ["Dice Score", "Segmentation Method", "Data Sets"]
     dice_score = [0.928, 0.929, 0.878, 0.928, 1, 1]
     segmentation_method = ["Seeded", "Unseeded", "Seeded", "Unseeded", "Seeded", "Unseeded"]
@@ -43,6 +51,10 @@ def barplot_results():
 
 
 def load_imports():
+    """
+    loads all used imports except for this visualization skript
+    :return: all modules are imported
+    """
     import numpy as np
     import skimage.io as sk
     import matplotlib.pyplot as plt
@@ -58,6 +70,10 @@ def load_imports():
 
 
 def load_images():
+    """
+    loads example images of all the data sets
+    :return: graph with three images, one of each data set
+    """
     image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")
     image_intensity_data2 = sk.imread("../Data/N2DL-HeLa/img/t52.tif")
     image_intensity_data3 = sk.imread("../Data/NIH3T3/img/dna-42.png")
@@ -65,6 +81,10 @@ def load_images():
 
 
 def clipping_examples():
+    """
+    clips images using different methods and shows the results in a graph
+    :return: graph with the original image, the clipped one and the extremly clipped one
+    """
     image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")
     img_clipped = ip.image_clipping(image_intensity, 5, 25)
     img_clipped_extreme = ip.image_clipping_extreme(image_intensity, 5, 15)
@@ -72,6 +92,10 @@ def clipping_examples():
 
 
 def bright_spots_example():
+    """
+    removed bright spots using different methods and shows the results
+    :return: graph with the original image, removed bright spot image and removed bright spot with border image
+    """
     img_with_bright_spots = sk.imread("Data/NIH3T3/img/dna-33.png")
     img_removed_spots = ip.remove_bright_spots(img_with_bright_spots, 200, 60)
     img_removed_spots_with_border = ip.remove_bright_spots_with_border(img_with_bright_spots, 200, 60, 40)
@@ -79,6 +103,11 @@ def bright_spots_example():
 
 
 def region_growing_example():
+    """
+    performs seeded and unseeded region growing on a smaller image and shows the different steps and the results
+    :return: the first for images shown are for seeded region growing: the found regions, the merging by similarity,
+    the merging by size and the clipped image. The second for images show the same steps for unseeded region growing.
+    """
     image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")
     image_intensity_small = image_intensity[300:400, 400:500]
     image_seeds = sd.seeds(image_intensity_small, 0.5)
@@ -106,6 +135,10 @@ def region_growing_example():
 
 
 def results_gowt1_seeded():
+    """
+    shows the result for seeded region growing on a complete image of the N2DH-GOWT1 data set
+    :return: shows four images: the original one, the found regions, the clipped one and the ground truth image
+    """
     image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")
     image_srg_t01 = sk.imread("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t01_srg_srg.tif")
     image_srg_t01_merged_clipped = sk.imread("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t01_srg_final.tif")
@@ -115,6 +148,11 @@ def results_gowt1_seeded():
 
 
 def results_gowt1_unseeded():
+    """
+    shows the impact of median filtering after unseeded region growing
+    :return: shows four images: the image after merging, the image clipped directly after merging, the image merged
+    and filtered, the image clipped after merging and filtering
+    """
     image_urg_t01_merged = sk.imread(
         "../Result_Pictures/Unseeded_Region_Growing/N2DH-GOWT1/urg_t01_merged_0.001_10000.tif")
     image_urg_t01_merged_filtered = sk.imread(
@@ -129,6 +167,12 @@ def results_gowt1_unseeded():
 
 
 def results_hela():
+    """
+    shows the results of seeded and unseeded region growing on a complete image of the N2DL-HeLa data set
+    :return: shows six images in two rows, the original image, the found region in seeded region growing, the seeded
+    image clipped, the unseeded region growing, the unseeded image clipped and the ground truth image
+    also prints the dice scores of seeded and unseeded region growing
+    """
     image = sk.imread("../Data/N2DL-HeLa/img/t13.tif")
     gt = sk.imread("../Data/N2DL-HeLa/gt/man_seg13.tif")
     image_srg = sk.imread("../Result_Pictures/Seeded_Region_Growing/N2DL-HeLa/t13_srg_srg.tif")
@@ -147,6 +191,11 @@ def results_hela():
 
 
 def nih3t3_show_bright_spots():
+    """
+    shows the removal of a bright spot on a smaller picture of the NIH3T3 data set
+    :return: three images are shown, the original one, one with normally removed bright spot and one with removed
+    bright spot with border
+    """
     image_intensity_d3_small = sk.imread("../Data/NIH3T3/img/dna-42.png")[730:850, 1200:1300]
     img_removed_spots_intact_nuclei = ip.remove_bright_spots(image_intensity_d3_small, 130, 60)
     img_removed_spots_with_border = ip.remove_bright_spots_with_border(image_intensity_d3_small, 130, 60, 30)
@@ -155,27 +204,30 @@ def nih3t3_show_bright_spots():
 
 
 def nih3t3_srg_bright_spots():
+    """
+    shows the seeded region growing algorithm performed on smaller images of the NIH3T3 data set with different methods
+    of bright spot removal
+    :return: shows three images, shows the result pictures of the seeded region growing algorithm
+    """
     image_intensity_d3_small = sk.imread("../Data/NIH3T3/img/dna-42.png")[730:850, 1200:1300]
     gt_data3_small = sk.imread("../Data/NIH3T3/gt/42.png")[730:850, 1200:1300]
     img_removed_spots_intact_nuclei = ip.remove_bright_spots(image_intensity_d3_small, 130, 60)
     img_removed_spots_with_border = ip.remove_bright_spots_with_border(image_intensity_d3_small, 130, 60, 30)
 
     result_seg_with_bright_spots = seg.seeded_segmentation(image_intensity_d3_small, gt_data3_small, 0.05, 0.1, 400)
-    result_seg_with_bright_spots_clipped = ds.final_clipping(result_seg_with_bright_spots)
-
     result_seg_removed_spots_intact_nuclei = seg.seeded_segmentation(img_removed_spots_intact_nuclei, gt_data3_small,
                                                                      0.05, 0.26, 400)
-    result_seg_removed_spots_intact_nuclei_clipped = ds.final_clipping(result_seg_removed_spots_intact_nuclei)
-
     result_seg_removed_spots_with_border = seg.seeded_segmentation(img_removed_spots_with_border, gt_data3_small, 0.05,
                                                                    0.2, 400)
-    result_seg_removed_spots_with_border_clipped = ds.final_clipping(result_seg_removed_spots_with_border)
-
-    ip.show_three_images_colorbar(result_seg_with_bright_spots_clipped, result_seg_removed_spots_intact_nuclei_clipped,
-                                  result_seg_removed_spots_with_border_clipped, 0.55)
+    ip.show_three_images_colorbar(result_seg_with_bright_spots, result_seg_removed_spots_intact_nuclei,
+                                  result_seg_removed_spots_with_border, 0.55)
 
 
 def nih3t3_blurs():
+    """
+    shows the impact of blurs in the NIH3T3 data set on seeded region growing
+    :return: shows three images, the original one, the found regions and the clipped one
+    """
     image_dna33_small = sk.imread("../Data/NIH3T3/img/dna-33.png")[200:500, 900:1200]
     srg_image_dna33_small = sk.imread("../Result_Pictures/Unseeded_Region_Growing/NIH3T3/dna-33_5_blurs.tif")
     merged_image_small = rm.region_merging(srg_image_dna33_small.copy(), image_dna33_small, 0.01, 17500)
@@ -184,6 +236,14 @@ def nih3t3_blurs():
 
 
 def show_preprocessing():
+    """
+    shows the different preprocessing methods performed on a smaller image of the N2DL-HeLa data set and their impact
+    in seeded and unseeded region growing
+    :return: shows three sets of six images
+    first set: image normalized, clipped, clipped extreme, median, gauss and ground truth
+    second set: seeded region growing on the images of the first set and the ground truth image
+    thirs set: unseeded region growing on the images of the first set and the ground truth image
+    """
     image_hela33_small = sk.imread("../Data/N2DL-HeLa/img/t13.tif")[100:200, 450:550]
     image_hela33_small_n = ip.subtract_minimum(image_hela33_small.copy())
     image_gt_hela33_small = sk.imread("../Data/N2DL-HeLa/gt/man_seg13.tif")[100:200, 450:550]
