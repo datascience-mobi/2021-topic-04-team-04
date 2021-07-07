@@ -54,7 +54,7 @@ def unseeded_segmentation(img, gt, start_pixel, threshold_region_growing, thresh
     dice_score_unweighted = ds.evaluate_accuracy_unweighted(image_filtered.copy(), gt)
     dice_score_weighted = ds.evaluate_accuracy_weighted(image_filtered.copy(), gt)
 
-    print("weighted dice score: " + str(dice_score_weighted) + "unweighted dice score: " + str(dice_score_unweighted))
+    print("unweighted dice score: " + str(dice_score_unweighted) + ", weighted dice score: " + str(dice_score_weighted))
 
     return image_clipped
 
