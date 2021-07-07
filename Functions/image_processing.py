@@ -33,6 +33,35 @@ def show_three_images_colorbar(img1, img2, img3, colorbar_size):
     plt.show()
 
 
+def show_six_images_two_rows(img1, img2, img3, img4, img5, img6, colorbar_size)
+    f = plt.figure(figsize=(15, 8))
+
+    f.add_subplot(1, 3, 1)
+    plt.imshow(img1, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    f.add_subplot(1, 3, 2)
+    plt.imshow(img2, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    f.add_subplot(1, 3, 3)
+    plt.imshow(img3, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    f.add_subplot(2, 3, 1)
+    plt.imshow(img4, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    f.add_subplot(2, 3, 2)
+    plt.imshow(img5, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    f.add_subplot(2, 3, 3)
+    plt.imshow(img6, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    plt.show()
+
 def show_four_images_colorbar(img1, img2, img3, img4, colorbar_size):
     f = plt.figure(figsize=(15, 8))
 
