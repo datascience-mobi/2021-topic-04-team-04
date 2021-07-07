@@ -128,7 +128,7 @@ def evaluate_accuracy_weighted(segmented_img, gt):
     background_number = find_background_number(segmented_img.copy())
     clipped_segmented_image = segmented_image_clip(segmented_img.copy(), background_number)
     dice_score = dice_score_weighted(clipped_segmented_image, clipped_gt)
-    print("weighted dice score: " + str(dice_score))
+    #print("weighted dice score: " + str(dice_score))
     return dice_score
 
 
@@ -143,6 +143,6 @@ def evaluate_accuracy_unweighted(segmented_img, gt):
     background_number = find_background_number(segmented_img.copy())
     clipped_segmented_image = segmented_image_clip(segmented_img.copy(), background_number)
     dice_score = dice_score_unweighted(clipped_segmented_image, clipped_gt)
-    print("unweighted dice score: " + str(dice_score))
+    #print("unweighted dice score: " + str(dice_score))
     return dice_score
 
