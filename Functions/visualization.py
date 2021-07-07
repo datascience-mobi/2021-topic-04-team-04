@@ -1,0 +1,223 @@
+import numpy as np
+import skimage.io as sk
+import matplotlib.pyplot as plt
+from Functions import image_processing as ip
+from Functions import seeded_region_growing as srg
+from Functions import unseeded_region_growing as urg
+from Functions import seed_detection as sd
+from Functions import region_merging as rm
+from Functions import old_seeded_region_growing as old_srg
+from Functions import old_unseeded_region_growing as old_urg
+from Functions import dice_score as ds
+from Functions import segmentation as seg
+import pandas as pd
+import seaborn as sns
+
+
+def barplot_preprocessing():
+    columns_names = ["Dice Score", "Segmentation Method", "Preprocessing"]
+    dice_score = [0.901, 0.945, 0.983, 0.984, 0.980, 0.979, 0.911, 0.984, 0.889, 0.962]
+    segmentation_method = ["Seeded", "Unseeded", "Seeded", "Unseeded", "Seeded", "Unseeded", "Seeded", "Unseeded",
+                           "Seeded", "Unseeded"]
+    preprocessing = ["unprocessed", "unprocessed", "clipped", 'clipped', 'extreme clipped', 'extreme clipped', 'median',
+                     'median', 'gauss', 'gauss']
+
+    df = pd.DataFrame(list(zip(dice_score, segmentation_method, preprocessing)), columns=columns_names)
+
+    ax = sns.barplot(x="Preprocessing", y="Dice Score", hue="Segmentation Method", data=df, palette="dark")
+    ax.set(ylim=(0.85, 1))
+    plt.legend(loc=4)
+
+
+def barplot_results():
+    columns_names = ["Dice Score", "Segmentation Method", "Data Sets"]
+    dice_score = [0.928, 0.929, 0.878, 0.928, 1, 1]
+    segmentation_method = ["Seeded", "Unseeded", "Seeded", "Unseeded", "Seeded", "Unseeded"]
+    data_sets = ["N2DH-GOWT1", "N2DH-GOWT1", "N2DL-HeLa", "N2DL-HeLa", "NIH3T3", "NIH3T3"]
+
+    df = pd.DataFrame(list(zip(dice_score, segmentation_method, data_sets)), columns=columns_names)
+
+    ax = sns.barplot(x="Data Sets", y="Dice Score", hue="Segmentation Method", data=df, palette="dark")
+    ax.set(ylim=(0.85, 1))
+    plt.legend(loc=4)
+
+
+def load_imports():
+    import numpy as np
+    import skimage.io as sk
+    import matplotlib.pyplot as plt
+    from Functions import image_processing as ip
+    from Functions import seeded_region_growing as srg
+    from Functions import unseeded_region_growing as urg
+    from Functions import seed_detection as sd
+    from Functions import region_merging as rm
+    from Functions import old_seeded_region_growing as old_srg
+    from Functions import old_unseeded_region_growing as old_urg
+    from Functions import dice_score as ds
+    from Functions import segmentation as seg
+
+
+def load_images():
+    image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")
+    image_intensity_data2 = sk.imread("../Data/N2DL-HeLa/img/t52.tif")
+    image_intensity_data3 = sk.imread("../Data/NIH3T3/img/dna-42.png")
+    ip.show_three_images_colorbar(image_intensity, image_intensity_data2, image_intensity_data3, 0.45)
+
+
+def clipping_examples():
+    image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")
+    img_clipped = ip.image_clipping(image_intensity, 5, 25)
+    img_clipped_extreme = ip.image_clipping_extreme(image_intensity, 5, 15)
+    ip.show_three_images_colorbar(image_intensity, img_clipped, img_clipped_extreme, 0.45)
+
+
+def bright_spots_example():
+    img_with_bright_spots = sk.imread("Data/NIH3T3/img/dna-33.png")
+    img_removed_spots = ip.remove_bright_spots(img_with_bright_spots, 200, 60)
+    img_removed_spots_with_border = ip.remove_bright_spots_with_border(img_with_bright_spots, 200, 60, 40)
+    ip.show_three_images_colorbar(img_with_bright_spots, img_removed_spots, img_removed_spots_with_border, 0.35)
+
+
+def region_growing_example():
+    image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")
+    image_intensity_small = image_intensity[300:400, 400:500]
+    image_seeds = sd.seeds(image_intensity_small, 0.5)
+    image_regions_from_seeds = sd.seed_merging(image_seeds)
+
+    image_regions = srg.region_growing(image_intensity_small, image_regions_from_seeds.copy())
+    image_result_unseeded = urg.unseeded_region_growing_algorithm(image_intensity_small, (0, 0), 5)
+
+    results_region_merging_similarity = rm.distance_merging_while(image_regions.copy(), 0.05, image_intensity_small)
+    image_rm_similarity, inter_region_neighbors, means = results_region_merging_similarity
+    image_rm_size = rm.region_merging_size(image_intensity_small, image_rm_similarity.copy(), inter_region_neighbors,
+                                           means, 500)
+    image_clipped_s = ds.final_clipping(image_rm_size.copy())
+    ip.show_four_images_colorbar(image_regions, image_rm_similarity, image_rm_size, image_clipped_s, 0.45)
+
+    results_region_merging_similarity_urg = rm.distance_merging_while(image_result_unseeded.copy(), 0.08,
+                                                                      image_intensity_small)
+    image_rm_similarity_urg, inter_region_neighbors_urg, means_urg = results_region_merging_similarity_urg
+    image_rm_size_urg = rm.region_merging_size(image_intensity_small, image_rm_similarity_urg.copy(),
+                                               inter_region_neighbors_urg, means_urg, 1000)
+    image_clipped_s_urg = ds.final_clipping(image_rm_size_urg.copy())
+
+    ip.show_four_images_colorbar(image_result_unseeded, image_rm_similarity_urg, image_rm_size_urg, image_clipped_s_urg,
+                                 0.45)
+
+
+def results_gowt1_seeded():
+    image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")
+    image_srg_t01 = sk.imread("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t01_srg_srg.tif")
+    image_srg_t01_merged_clipped = sk.imread("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t01_srg_final.tif")
+    image_gt_t01 = sk.imread("../Data/N2DH-GOWT1/gt/man_seg01.tif")
+
+    ip.show_four_images_colorbar(image_intensity, image_srg_t01, image_srg_t01_merged_clipped, image_gt_t01, 0.35)
+
+
+def results_gowt1_unseeded():
+    image_urg_t01_merged = sk.imread(
+        "../Result_Pictures/Unseeded_Region_Growing/N2DH-GOWT1/urg_t01_merged_0.001_10000.tif")
+    image_urg_t01_merged_filtered = sk.imread(
+        "../Result_Pictures/Unseeded_Region_Growing/N2DH-GOWT1/urg_t01_merged_0.001_10000_filtered_3.tif")
+    image_urg_t01_merged_clipped = sk.imread(
+        "../Result_Pictures/Unseeded_Region_Growing/N2DH-GOWT1/urg_t01_clipped.tif")
+    image_urg_t01_merged_filtered_clipped = sk.imread(
+        "../Result_Pictures/Unseeded_Region_Growing/N2DH-GOWT1/urg_t01_filtered_median3_clipped.tif")
+
+    ip.show_four_images_colorbar(image_urg_t01_merged, image_urg_t01_merged_clipped, image_urg_t01_merged_filtered,
+                                 image_urg_t01_merged_filtered_clipped, 0.35)
+
+
+def results_hela():
+    image = sk.imread("../Data/N2DL-HeLa/img/t13.tif")
+    gt = sk.imread("../Data/N2DL-HeLa/gt/man_seg13.tif")
+    image_srg = sk.imread("../Result_Pictures/Seeded_Region_Growing/N2DL-HeLa/t13_srg_srg.tif")
+    image_srg_clipped = sk.imread("../Result_Pictures/Seeded_Region_Growing/N2DL-HeLa/t13_srg_clipped.tif")
+    image_urg = sk.imread("../Result_Pictures/Unseeded_Region_Growing/N2DL-HeLa/urg_t13_50.tif")
+    image_urg_filtered_clipped = sk.imread("../Result_Pictures/Unseeded_Region_Growing/N2DL-HeLa/urg_t13_clipped.tif")
+    ip.show_six_images_two_rows(image, image_srg, image_srg_clipped, image_urg, image_urg_filtered_clipped, gt, 0.45)
+    dice_score_weighted_srg = ds.evaluate_accuracy_weighted(image_srg_clipped, gt)
+    dice_score_unweighted_srg = ds.evaluate_accuracy_unweighted(image_srg_clipped, gt)
+    print("Seeded: weighted dice score: " + str(dice_score_weighted_srg) + "unweighted dice score: " +
+          str(dice_score_unweighted_srg))
+    dice_score_weighted_urg = ds.evaluate_accuracy_weighted(image_urg_filtered_clipped, gt)
+    dice_score_unweighted_urg = ds.evaluate_accuracy_unweighted(image_urg_filtered_clipped, gt)
+    print("Unseeded: weighted dice score: " + str(dice_score_weighted_urg) + "unweighted dice score: " + str(
+        dice_score_unweighted_urg))
+
+
+def nih3t3_show_bright_spots():
+    image_intensity_d3_small = sk.imread("../Data/NIH3T3/img/dna-42.png")[730:850, 1200:1300]
+    img_removed_spots_intact_nuclei = ip.remove_bright_spots(image_intensity_d3_small, 130, 60)
+    img_removed_spots_with_border = ip.remove_bright_spots_with_border(image_intensity_d3_small, 130, 60, 30)
+    ip.show_three_images_colorbar(image_intensity_d3_small, img_removed_spots_intact_nuclei,
+                                  img_removed_spots_with_border, 0.55)
+
+
+def nih3t3_srg_bright_spots():
+    image_intensity_d3_small = sk.imread("../Data/NIH3T3/img/dna-42.png")[730:850, 1200:1300]
+    gt_data3_small = sk.imread("../Data/NIH3T3/gt/42.png")[730:850, 1200:1300]
+    img_removed_spots_intact_nuclei = ip.remove_bright_spots(image_intensity_d3_small, 130, 60)
+    img_removed_spots_with_border = ip.remove_bright_spots_with_border(image_intensity_d3_small, 130, 60, 30)
+
+    result_seg_with_bright_spots = seg.seeded_segmentation(image_intensity_d3_small, gt_data3_small, 0.05, 0.1, 400)
+    result_seg_with_bright_spots_clipped = ds.final_clipping(result_seg_with_bright_spots)
+
+    result_seg_removed_spots_intact_nuclei = seg.seeded_segmentation(img_removed_spots_intact_nuclei, gt_data3_small,
+                                                                     0.05, 0.26, 400)
+    result_seg_removed_spots_intact_nuclei_clipped = ds.final_clipping(result_seg_removed_spots_intact_nuclei)
+
+    result_seg_removed_spots_with_border = seg.seeded_segmentation(img_removed_spots_with_border, gt_data3_small, 0.05,
+                                                                   0.2, 400)
+    result_seg_removed_spots_with_border_clipped = ds.final_clipping(result_seg_removed_spots_with_border)
+
+    ip.show_three_images_colorbar(result_seg_with_bright_spots_clipped, result_seg_removed_spots_intact_nuclei_clipped,
+                                  result_seg_removed_spots_with_border_clipped, 0.55)
+
+
+def nih3t3_blurs():
+    image_dna33_small = sk.imread("../Data/NIH3T3/img/dna-33.png")[200:500, 900:1200]
+    srg_image_dna33_small = sk.imread("../Result_Pictures/Unseeded_Region_Growing/NIH3T3/dna-33_5_blurs.tif")
+    merged_image_small = rm.region_merging(srg_image_dna33_small.copy(), image_dna33_small, 0.01, 17500)
+    clipped_image_small = ds.final_clipping(merged_image_small)
+    ip.show_three_images_colorbar(image_dna33_small, srg_image_dna33_small, clipped_image_small, 0.45)
+
+
+def show_preprocessing():
+    image_hela33_small = sk.imread("../Data/N2DL-HeLa/img/t13.tif")[100:200, 450:550]
+    image_hela33_small_n = ip.subtract_minimum(image_hela33_small.copy())
+    image_gt_hela33_small = sk.imread("../Data/N2DL-HeLa/gt/man_seg13.tif")[100:200, 450:550]
+
+    image_hela33_clipped = ip.image_clipping(image_hela33_small_n, 0.03 * np.amax(image_hela33_small_n),
+                                             0.1 * np.amax(image_hela33_small_n))
+    image_hela33_clipped_extreme = ip.image_clipping_extreme(image_hela33_small_n, 0.03 * np.amax(image_hela33_small_n),
+                                                             0.1 * np.amax(image_hela33_small_n))
+    image_hela33_median = ip.median_filter(image_hela33_small_n, 3)
+    image_hela33_gauss = ip.gaussian_filter(image_hela33_small_n, 3)
+    ip.show_six_images_colorbar(image_hela33_small_n, image_hela33_clipped, image_hela33_clipped_extreme,
+                                image_hela33_median, image_hela33_gauss, image_gt_hela33_small, 0.25)
+
+    image_small_segmented = seg.seeded_segmentation(image_hela33_small_n, image_gt_hela33_small, 0.9, 0.1, 300)
+    image_clipped_segmented = seg.seeded_segmentation(image_hela33_clipped, image_gt_hela33_small, 0.9, 0.1, 300)
+    image_clipped_extreme_segmented = seg.seeded_segmentation(image_hela33_clipped_extreme, image_gt_hela33_small, 0.9,
+                                                              0.1, 300)
+    image_median_segmented = seg.seeded_segmentation(image_hela33_median, image_gt_hela33_small, 0.9, 0.1, 300)
+    image_gauss_segmented = seg.seeded_segmentation(image_hela33_gauss, image_gt_hela33_small, 0.9, 0.1, 300)
+    ip.show_six_images_colorbar(image_small_segmented, image_clipped_segmented, image_clipped_extreme_segmented,
+                                image_median_segmented, image_gauss_segmented, image_gt_hela33_small, 0.25)
+
+    image_small_segmented_urg = seg.unseeded_segmentation(image_hela33_small_n, image_gt_hela33_small.copy(), (0, 0),
+                                                          50, 0.01, 300)
+    image_clipped_segmented_urg = seg.unseeded_segmentation(image_hela33_clipped, image_gt_hela33_small.copy(), (0, 0),
+                                                            50, 0.1, 300)
+    image_clipped_extreme_segmented_urg = seg.unseeded_segmentation(image_hela33_clipped_extreme,
+                                                                    image_gt_hela33_small.copy(), (0, 0), 50, 0.1, 300)
+    image_median_segmented_urg = seg.unseeded_segmentation(image_hela33_median, image_gt_hela33_small.copy(), (0, 0),
+                                                           50, 0.1, 300)
+    image_hela33_gauss = ip.gaussian_filter(image_hela33_small, 3)
+    image_gauss_segmented_urg = seg.unseeded_segmentation(image_hela33_gauss, image_gt_hela33_small.copy(), (0, 0), 50,
+                                                          0.01, 300)
+    ip.show_six_images_colorbar(image_small_segmented_urg, image_clipped_segmented_urg,
+                                image_clipped_extreme_segmented_urg, image_median_segmented_urg,
+                                image_gauss_segmented_urg, image_gt_hela33_small, 0.25)
+
