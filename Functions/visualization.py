@@ -124,6 +124,7 @@ def results_gowt1_seeded():
     image_srg_t01 = sk.imread("Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t01_srg_srg.tif")
     image_srg_t01_merged_clipped = sk.imread("Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t01_srg_final.tif")
     image_gt_t01 = sk.imread("Data/N2DH-GOWT1/gt/man_seg01.tif")
+    image_gt_t01 = ds.final_clipping(image_gt_t01)
 
     ip.show_four_images_colorbar(image_intensity, image_srg_t01, image_srg_t01_merged_clipped, image_gt_t01, 0.35)
 
