@@ -195,13 +195,13 @@ def unseeded_region_growing_algorithm(img, start_pixel, t):
         unseeded_label_new_pixel(reg, left_distances, right_distances, top_distances, bottom_distances, left_neighbors,
                                  right_neighbors, top_neighbors, bottom_neighbors, t, means, img)
 
-    i = 0
+    #  i = 0
 
     while srg.unlabeled_pixel_exist(reg):
 
-        i += 1
-        if i % 5000 == 0:
-            print(i)
+        #  i += 1
+        #  if i % 5000 == 0:
+            #  print(i)
 
         left_distances, right_distances, top_distances, bottom_distances, means = \
             unseeded_update_distances(img, reg, means, pos_min_dist, left_neighbors, right_neighbors, top_neighbors,

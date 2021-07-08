@@ -163,11 +163,11 @@ def results_hela():
     ip.show_six_images_two_rows(image, image_srg, image_srg_clipped, image_urg, image_urg_filtered_clipped, gt, 0.45)
     dice_score_weighted_srg = ds.evaluate_accuracy_weighted(image_srg_clipped, gt)
     dice_score_unweighted_srg = ds.evaluate_accuracy_unweighted(image_srg_clipped, gt)
-    print("Seeded: weighted dice score: " + str(dice_score_weighted_srg) + "unweighted dice score: " +
+    print("Seeded: weighted dice score: " + str(dice_score_weighted_srg) + ", unweighted dice score: " +
           str(dice_score_unweighted_srg))
     dice_score_weighted_urg = ds.evaluate_accuracy_weighted(image_urg_filtered_clipped, gt)
     dice_score_unweighted_urg = ds.evaluate_accuracy_unweighted(image_urg_filtered_clipped, gt)
-    print("Unseeded: weighted dice score: " + str(dice_score_weighted_urg) + "unweighted dice score: " + str(
+    print("Unseeded: weighted dice score: " + str(dice_score_weighted_urg) + ", unweighted dice score: " + str(
         dice_score_unweighted_urg))
 
 
