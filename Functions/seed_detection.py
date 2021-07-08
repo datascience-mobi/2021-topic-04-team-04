@@ -47,7 +47,7 @@ def euclidean_relative(img, size):
             for q in np.ndindex(size, size):
                 i = p[0] - n + q[0]
                 j = p[1] - n + q[1]
-                neighborhood_distance.append((img[p] - img[i, j]) / (img[p] + 0.000001))
+                neighborhood_distance.append(np.float((img[p] - img[i, j]) / (img[p] + 0.000001)))
                 # adds relative euclidean distance to list, adds 0.000001 to prevent division by 0
             maximal_euclidean_distance[p] = max(neighborhood_distance)  # chooses maximum distance
     return maximal_euclidean_distance
@@ -79,8 +79,8 @@ def otsu_thresholding(img):
     :return: threshold for seed detection criteria similarity (float)
     """
     otsu_threshold = threshold_otsu(img) / np.amax(img)
-    # otsu_threshold = 0.1
-    print(otsu_threshold)
+    #  otsu_threshold = 0.1
+    #  print(otsu_threshold)
     return otsu_threshold
 
 
@@ -141,5 +141,5 @@ def reduce_region_number(reg, threshold):
             counter += 1
         else:
             reg[pos_of_reg[0], pos_of_reg[1]] = 0
-    print(np.unique(reg.flatten()))
+    #  print(np.unique(reg.flatten()))
     return reg

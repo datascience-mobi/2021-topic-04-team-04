@@ -124,6 +124,7 @@ def results_gowt1_seeded():
     image_srg_t01 = sk.imread("Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t01_srg_srg.tif")
     image_srg_t01_merged_clipped = sk.imread("Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/t01_srg_final.tif")
     image_gt_t01 = sk.imread("Data/N2DH-GOWT1/gt/man_seg01.tif")
+    image_gt_t01 = ds.final_clipping(image_gt_t01)
 
     ip.show_four_images_colorbar(image_intensity, image_srg_t01, image_srg_t01_merged_clipped, image_gt_t01, 0.35)
 
@@ -163,11 +164,11 @@ def results_hela():
     ip.show_six_images_two_rows(image, image_srg, image_srg_clipped, image_urg, image_urg_filtered_clipped, gt, 0.45)
     dice_score_weighted_srg = ds.evaluate_accuracy_weighted(image_srg_clipped, gt)
     dice_score_unweighted_srg = ds.evaluate_accuracy_unweighted(image_srg_clipped, gt)
-    print("Seeded: weighted dice score: " + str(dice_score_weighted_srg) + "unweighted dice score: " +
+    print("Seeded: weighted dice score: " + str(dice_score_weighted_srg) + ", unweighted dice score: " +
           str(dice_score_unweighted_srg))
     dice_score_weighted_urg = ds.evaluate_accuracy_weighted(image_urg_filtered_clipped, gt)
     dice_score_unweighted_urg = ds.evaluate_accuracy_unweighted(image_urg_filtered_clipped, gt)
-    print("Unseeded: weighted dice score: " + str(dice_score_weighted_urg) + "unweighted dice score: " + str(
+    print("Unseeded: weighted dice score: " + str(dice_score_weighted_urg) + ", unweighted dice score: " + str(
         dice_score_unweighted_urg))
 
 

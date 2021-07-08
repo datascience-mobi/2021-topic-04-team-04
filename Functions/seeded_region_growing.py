@@ -420,13 +420,13 @@ def region_growing(img, reg):
         label_new_pixel(reg, left_distances, right_distances, top_distances, bottom_distances, left_neighbors,
                         right_neighbors, top_neighbors, bottom_neighbors)
 
-    i = 0
+    #  i = 0
 
     while unlabeled_pixel_exist(reg):
         
-        i += 1
-        if i % 5000 == 0:
-            print(i)
+        #  i += 1
+        #  if i % 5000 == 0:
+            #  print(i)
 
         left_distances, right_distances, top_distances, bottom_distances = \
             update_distances(img, reg, means, pos_min_dist, left_neighbors, right_neighbors, top_neighbors,

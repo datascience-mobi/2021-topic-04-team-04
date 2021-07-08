@@ -10,6 +10,8 @@
 1. update environment: change environment.yml file, commit, update and activate https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#updating-an-environment
    1. conda env update --prefix ./env --file environment.yml  --prune
 1. push, others can pull now environment.yml file and continue in the same way
+1. update environment without history
+    - conda env export --from-history > environment.yml
 
 ## Create Python package
 - https://www.tutorialsteacher.com/python/python-package 
@@ -60,10 +62,5 @@ def dice_coef(y_true, y_pred, smooth=1):
 
 ## ToDos:
 
-- Text zweiter Datensatz Vergleich seeded unseeded (Ina und Jojo)
 - Text dritter Datensatz Vergleich seeded unseeded (Ina)
-- Diskussion (Marie)
-- PowerPoint Algorithmusüberblick (Marie), Überblick aller Code
-- Diagramm Dice Scores (Marie)
-- Algorythmusgegenüberstellung Unseeded, Seeded --> Text (Marie)
-- Region_Merging File noch in Verwendung? Sonst löschen (Marie)
+- PowerPoint Algorithmus überblick (Marie), Überblick aller Code
