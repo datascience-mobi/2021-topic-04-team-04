@@ -67,4 +67,3 @@ def dice_coef(y_true, y_pred, smooth=1):
 - Diagramm Dice Scores (Marie)
 - Algorythmusgegenüberstellung Unseeded, Seeded --> Text (Marie)
 - Region_Merging File noch in Verwendung? Sonst löschen (Marie)
-- 2. Datensatz mittlerer Ausschnitt wegen dice score (Laura)
