@@ -63,4 +63,4 @@ def dice_coef(y_true, y_pred, smooth=1):
 ## ToDos:
 
 - Text dritter Datensatz Vergleich seeded unseeded (Ina)
-- PowerPoint Algorithmusüberblick (Marie), Überblick aller Code
+- PowerPoint Algorithmus überblick (Marie), Überblick aller Code
