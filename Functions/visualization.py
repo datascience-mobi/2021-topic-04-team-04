@@ -30,7 +30,7 @@ def barplot_preprocessing():
 
     ax = sns.barplot(x="Preprocessing", y="Dice Score", hue="Segmentation Method", data=df, palette="dark")
     ax.set(ylim=(0.85, 1))
-    plt.legend(loc=4)
+    plt.legend(loc=3)
 
 
 def barplot_results():
@@ -39,15 +39,15 @@ def barplot_results():
     :return: barplot for the different data sets
     """
     columns_names = ["Dice Score", "Segmentation Method", "Data Sets"]
-    dice_score = [0.928, 0.929, 0.878, 0.928, 1, 1]
+    dice_score = [0.928, 0.929, 0.878, 0.928, 1, 0.738]
     segmentation_method = ["Seeded", "Unseeded", "Seeded", "Unseeded", "Seeded", "Unseeded"]
     data_sets = ["N2DH-GOWT1", "N2DH-GOWT1", "N2DL-HeLa", "N2DL-HeLa", "NIH3T3", "NIH3T3"]
 
     df = pd.DataFrame(list(zip(dice_score, segmentation_method, data_sets)), columns=columns_names)
 
     ax = sns.barplot(x="Data Sets", y="Dice Score", hue="Segmentation Method", data=df, palette="dark")
-    ax.set(ylim=(0.85, 1))
-    plt.legend(loc=4)
+    ax.set(ylim=(0.7, 1))
+    plt.legend(loc=3)
 
 
 def load_images():
@@ -102,7 +102,7 @@ def region_growing_example():
     image_rm_size = rm.region_merging_size(image_intensity_small, image_rm_similarity.copy(), inter_region_neighbors,
                                            means, 500)
     image_clipped_s = ds.final_clipping(image_rm_size.copy())
-    ip.show_four_images_colorbar(image_regions, image_rm_similarity, image_rm_size, image_clipped_s, 0.45)
+    ip.show_four_images_colorbar(image_regions, image_rm_similarity, image_rm_size, image_clipped_s, 0.38)
 
     results_region_merging_similarity_urg = rm.distance_merging_while(image_result_unseeded.copy(), 0.08,
                                                                       image_intensity_small)
@@ -112,7 +112,7 @@ def region_growing_example():
     image_clipped_s_urg = ds.final_clipping(image_rm_size_urg.copy())
 
     ip.show_four_images_colorbar(image_result_unseeded, image_rm_similarity_urg, image_rm_size_urg, image_clipped_s_urg,
-                                 0.45)
+                                 0.38)
 
 
 def results_gowt1_seeded():
@@ -126,7 +126,7 @@ def results_gowt1_seeded():
     image_gt_t01 = sk.imread("Data/N2DH-GOWT1/gt/man_seg01.tif")
     image_gt_t01 = ds.final_clipping(image_gt_t01)
 
-    ip.show_four_images_colorbar(image_intensity, image_srg_t01, image_srg_t01_merged_clipped, image_gt_t01, 0.35)
+    ip.show_four_images_colorbar(image_intensity, image_srg_t01, image_srg_t01_merged_clipped, image_gt_t01, 0.38)
 
 
 def results_gowt1_unseeded():
@@ -145,7 +145,7 @@ def results_gowt1_unseeded():
         "Result_Pictures/Unseeded_Region_Growing/N2DH-GOWT1/urg_t01_filtered_median3_clipped.tif")
 
     ip.show_four_images_colorbar(image_urg_t01_merged, image_urg_t01_merged_clipped, image_urg_t01_merged_filtered,
-                                 image_urg_t01_merged_filtered_clipped, 0.35)
+                                 image_urg_t01_merged_filtered_clipped, 0.38)
 
 
 def results_hela():
@@ -161,7 +161,7 @@ def results_hela():
     image_srg_clipped = sk.imread("Result_Pictures/Seeded_Region_Growing/N2DL-HeLa/t13_srg_clipped.tif")
     image_urg = sk.imread("Result_Pictures/Unseeded_Region_Growing/N2DL-HeLa/urg_t13_50.tif")
     image_urg_filtered_clipped = sk.imread("Result_Pictures/Unseeded_Region_Growing/N2DL-HeLa/urg_t13_clipped.tif")
-    ip.show_six_images_two_rows(image, image_srg, image_srg_clipped, image_urg, image_urg_filtered_clipped, gt, 0.3)
+    ip.show_six_images_two_rows(image, image_srg, image_srg_clipped, image_urg, image_urg_filtered_clipped, gt, 0.84)
     dice_score_weighted_srg = ds.evaluate_accuracy_weighted(image_srg_clipped, gt)
     dice_score_unweighted_srg = ds.evaluate_accuracy_unweighted(image_srg_clipped, gt)
     print("Seeded: weighted dice score: " + str(dice_score_weighted_srg) + ", unweighted dice score: " +
@@ -237,7 +237,7 @@ def show_preprocessing():
     image_hela33_median = ip.median_filter(image_hela33_small_n, 3)
     image_hela33_gauss = ip.gaussian_filter(image_hela33_small_n, 1)
     ip.show_six_images_colorbar(image_hela33_small_n, image_hela33_clipped, image_hela33_clipped_extreme,
-                                image_hela33_median, image_hela33_gauss, image_gt_hela33_small, 0.25)
+                                image_hela33_median, image_hela33_gauss, image_gt_hela33_small, 0.32)
 
     image_small_segmented = seg.seeded_segmentation(image_hela33_small_n, image_gt_hela33_small, 0.9, 0.1, 300)
     image_clipped_segmented = seg.seeded_segmentation(image_hela33_clipped, image_gt_hela33_small, 0.9, 0.1, 300)
@@ -246,7 +246,7 @@ def show_preprocessing():
     image_median_segmented = seg.seeded_segmentation(image_hela33_median, image_gt_hela33_small, 0.9, 0.1, 300)
     image_gauss_segmented = seg.seeded_segmentation(image_hela33_gauss, image_gt_hela33_small, 0.9, 0.1, 300)
     ip.show_six_images_colorbar(image_small_segmented, image_clipped_segmented, image_clipped_extreme_segmented,
-                                image_median_segmented, image_gauss_segmented, image_gt_hela33_small, 0.25)
+                                image_median_segmented, image_gauss_segmented, image_gt_hela33_small, 0.32)
 
     image_small_segmented_urg = seg.unseeded_segmentation(image_hela33_small_n, image_gt_hela33_small.copy(), (0, 0),
                                                           50, 0.01, 300)
@@ -261,7 +261,7 @@ def show_preprocessing():
                                                           0.01, 300)
     ip.show_six_images_colorbar(image_small_segmented_urg, image_clipped_segmented_urg,
                                 image_clipped_extreme_segmented_urg, image_median_segmented_urg,
-                                image_gauss_segmented_urg, image_gt_hela33_small, 0.25)
+                                image_gauss_segmented_urg, image_gt_hela33_small, 0.32)
 
 
 def results_nih3t3_seeded():
@@ -297,5 +297,4 @@ def results_nih3t3_unseeded():
     image_urg_t01_merged_filtered_clipped = sk.imread(
         "Result_Pictures/Unseeded_Region_Growing/NIH3T3/dna-42_clipped.tif")
 
-    ip.show_two_images_colorbar(image_urg_t01_merged_filtered, image_urg_t01_merged_filtered_clipped, 0.45)
-
+    ip.show_two_images_colorbar(image_urg_t01_merged_filtered, image_urg_t01_merged_filtered_clipped, 0.54)

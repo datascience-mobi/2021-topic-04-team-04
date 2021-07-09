@@ -34,36 +34,37 @@ def show_three_images_colorbar(img1, img2, img3, colorbar_size):
 
 
 def show_six_images_two_rows(img1, img2, img3, img4, img5, img6, colorbar_size):
-    f = plt.figure(figsize=(15, 8))
+    f = plt.figure(figsize=(15, 6))
 
-    f.add_subplot(3, 3, 1)
+    f.add_subplot(2, 3, 1)
     plt.imshow(img1, "gray")
     plt.colorbar(shrink=colorbar_size)
 
-    f.add_subplot(3, 3, 2)
+    f.add_subplot(2, 3, 2)
     plt.imshow(img2, "gray")
     plt.colorbar(shrink=colorbar_size)
 
-    f.add_subplot(3, 3, 3)
+    f.add_subplot(2, 3, 3)
     plt.imshow(img3, "gray")
     plt.colorbar(shrink=colorbar_size)
 
-    f.add_subplot(1, 3, 1)
+    f.add_subplot(2, 3, 4)
     plt.imshow(img4, "gray")
     plt.colorbar(shrink=colorbar_size)
 
-    f.add_subplot(1, 3, 2)
+    f.add_subplot(2, 3, 5)
     plt.imshow(img5, "gray")
     plt.colorbar(shrink=colorbar_size)
 
-    f.add_subplot(1, 3, 3)
+    f.add_subplot(2, 3, 6)
     plt.imshow(img6, "gray")
     plt.colorbar(shrink=colorbar_size)
 
     plt.show()
 
+
 def show_four_images_colorbar(img1, img2, img3, img4, colorbar_size):
-    f = plt.figure(figsize=(15, 8))
+    f = plt.figure(figsize=(17, 8))
 
     f.add_subplot(1, 4, 1)
     plt.imshow(img1, "gray")
@@ -85,7 +86,7 @@ def show_four_images_colorbar(img1, img2, img3, img4, colorbar_size):
 
 
 def show_six_images_colorbar(img1, img2, img3, img4, img5, img6, colorbar_size):
-    f = plt.figure(figsize=(15, 8))
+    f = plt.figure(figsize=(22, 8))
 
     f.add_subplot(1, 6, 1)
     plt.imshow(img1, "gray")
@@ -112,7 +113,6 @@ def show_six_images_colorbar(img1, img2, img3, img4, img5, img6, colorbar_size):
     plt.colorbar(shrink=colorbar_size)
 
     plt.show()
-
 
 
 def show_two_images(img1, img2):
@@ -187,8 +187,7 @@ def is_border_pixel(pixel, img):
     :param img: image of which the border is tested (2D array)
     :return: True for border pixel, False for not border pixel (True/False)
     """
-    if pixel[0] - 1 >= 0 and pixel[1] - 1 >= 0 and pixel[0] + 1 <= img.shape[0] - 1 and pixel[1] + 1 <= img.shape[
-        1] - 1:
+    if pixel[0] - 1 >= 0 and pixel[1] - 1 >= 0 and pixel[0] + 1 <= img.shape[0] - 1 and pixel[1] + 1 <= img.shape[1] - 1:
         return False
     return True
 
@@ -240,7 +239,7 @@ def add_border(array):
 
 
 def add_border_variable(array, border_size):
-    array_with_border = np.zeros((array.shape[0] + 2*border_size, array.shape[1] + 2*border_size))
+    array_with_border = np.zeros((array.shape[0] + 2 * border_size, array.shape[1] + 2 * border_size))
     array_with_border[border_size:array.shape[0] + border_size, border_size:array.shape[1] + border_size] = array
     return array_with_border
 
@@ -309,7 +308,6 @@ def image_clipping_extreme(img, t1, t2):
             img_copy[p] = img_copy[p]
 
     return img_copy
-
 
 
 def remove_bright_spots(img, t_bright, t_background):
