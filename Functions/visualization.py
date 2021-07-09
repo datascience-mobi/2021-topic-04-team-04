@@ -161,7 +161,7 @@ def results_hela():
     image_srg_clipped = sk.imread("Result_Pictures/Seeded_Region_Growing/N2DL-HeLa/t13_srg_clipped.tif")
     image_urg = sk.imread("Result_Pictures/Unseeded_Region_Growing/N2DL-HeLa/urg_t13_50.tif")
     image_urg_filtered_clipped = sk.imread("Result_Pictures/Unseeded_Region_Growing/N2DL-HeLa/urg_t13_clipped.tif")
-    ip.show_six_images_two_rows(image, image_srg, image_srg_clipped, image_urg, image_urg_filtered_clipped, gt, 0.45)
+    ip.show_six_images_two_rows(image, image_srg, image_srg_clipped, image_urg, image_urg_filtered_clipped, gt, 0.3)
     dice_score_weighted_srg = ds.evaluate_accuracy_weighted(image_srg_clipped, gt)
     dice_score_unweighted_srg = ds.evaluate_accuracy_unweighted(image_srg_clipped, gt)
     print("Seeded: weighted dice score: " + str(dice_score_weighted_srg) + ", unweighted dice score: " +
