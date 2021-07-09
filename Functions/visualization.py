@@ -263,3 +263,39 @@ def show_preprocessing():
                                 image_clipped_extreme_segmented_urg, image_median_segmented_urg,
                                 image_gauss_segmented_urg, image_gt_hela33_small, 0.25)
 
+
+def results_nih3t3_seeded():
+    """
+    shows the result for seeded region growing on a complete image of the NIH3T3 data set
+    :return: shows six images: the original one, the found regions, three differently  clipped ones and the ground truth
+             image
+    """
+    image_intensity = sk.imread("Data/NIH3T3/img/dna-42.png")
+    image_srg_dna_42 = sk.imread("Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_srg.tif")
+    image_srg_dna_42_merged_clipped_undetected_cells = sk.imread(
+        "Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_merged_0.057_200.tif")
+    image_srg_dna_42_merged_clipped_background = sk.imread(
+        "Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_clipped_background_merged.tif")
+    image_srg_dna_42_merged_clipped_manually = sk.imread("")
+    image_gt_dna_42 = sk.imread("Data/NIH3T3/gt/42.png")
+    image_gt_dna_42 = ds.final_clipping(image_gt_dna_42)
+
+    ip.show_three_images_colorbar(image_intensity, image_gt_dna_42, image_srg_dna_42, 0.35)
+    ip.show_three_images_colorbar(image_srg_dna_42_merged_clipped_undetected_cells,
+                                  image_srg_dna_42_merged_clipped_background, image_srg_dna_42_merged_clipped_manually,
+                                  0.35)
+
+
+def results_nih3t3_unseeded():
+    """
+    shows the result for unseeded region growing on a complete image of the NIH3T3 data set
+    :return: shows two images: the image after merging and filtering and the image clipped after merging and filtering
+    """
+    image_urg_t01_merged_filtered = sk.imread(
+        "Result_Pictures/Unseeded_Region_Growing/NIH3T3/dna-42_merging_0.07_10000_median_3.tif")
+    image_urg_t01_merged_filtered_clipped = ds.segmented_image_clip(image_urg_t01_merged_filtered,
+                                                                    ds.find_background_number(
+                                                                        image_urg_t01_merged_filtered))
+
+    ip.show_two_images_colorbar(image_urg_t01_merged_filtered, image_urg_t01_merged_filtered_clipped, 0.45)
+

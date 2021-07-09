@@ -59,6 +59,18 @@ def unseeded_segmentation(img, gt, start_pixel, threshold_region_growing, thresh
     return image_clipped
 
 
+def manuel_segmentation():
+    """
+    manual segmentation for the dna-42 after seeded region growing to manually merge the to background regions
+    :return:
+    """
+    image_segmented = sk.imread("Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_merged_0.056_200.tif")
+    second_background = np.where(image_segmented == 19)
+    image_segmented[second_background] = 1
+    ip.show_image(image_segmented, 15, 8)
+
+
+
 if __name__ == '__main__':
     image_intensity = sk.imread("../Data/NIH3T3/img/dna-42.png")
     #  image_intensity = ip.subtract_minimum(image_intensity)
