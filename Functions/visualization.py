@@ -20,7 +20,7 @@ def barplot_preprocessing():
     :return: barplot for the preprocessing
     """
     columns_names = ["Dice Score", "Segmentation Method", "Preprocessing"]
-    dice_score = [0.901, 0.945, 0.983, 0.984, 0.980, 0.979, 0.911, 0.984, 0.889, 0.962]
+    dice_score = [0.908, 0.945, 0.983, 0.984, 0.980, 0.979, 0.911, 0.984, 0.908, 0.962]
     segmentation_method = ["Seeded", "Unseeded", "Seeded", "Unseeded", "Seeded", "Unseeded", "Seeded", "Unseeded",
                            "Seeded", "Unseeded"]
     preprocessing = ["unprocessed", "unprocessed", "clipped", 'clipped', 'extreme clipped', 'extreme clipped', 'median',
@@ -235,7 +235,7 @@ def show_preprocessing():
     image_hela33_clipped_extreme = ip.image_clipping_extreme(image_hela33_small_n, 0.03 * np.amax(image_hela33_small_n),
                                                              0.1 * np.amax(image_hela33_small_n))
     image_hela33_median = ip.median_filter(image_hela33_small_n, 3)
-    image_hela33_gauss = ip.gaussian_filter(image_hela33_small_n, 3)
+    image_hela33_gauss = ip.gaussian_filter(image_hela33_small_n, 1)
     ip.show_six_images_colorbar(image_hela33_small_n, image_hela33_clipped, image_hela33_clipped_extreme,
                                 image_hela33_median, image_hela33_gauss, image_gt_hela33_small, 0.25)
 
