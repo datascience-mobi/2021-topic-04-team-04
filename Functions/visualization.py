@@ -273,10 +273,11 @@ def results_nih3t3_seeded():
     image_intensity = sk.imread("Data/NIH3T3/img/dna-42.png")
     image_srg_dna_42 = sk.imread("Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_srg.tif")
     image_srg_dna_42_merged_clipped_undetected_cells = sk.imread(
-        "Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_merged_0.057_200.tif")
+        "Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_merged_0.057_200_clipped_undetected_cells.tif")
     image_srg_dna_42_merged_clipped_background = sk.imread(
-        "Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_clipped_background_merged.tif")
-    image_srg_dna_42_merged_clipped_manually = sk.imread("")
+        "Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_merged_0.056_200_clipped_background_merged.tif")
+    image_srg_dna_42_merged_clipped_manually = sk.imread(
+        "Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_clipped_merged_manuel.tif")
     image_gt_dna_42 = sk.imread("Data/NIH3T3/gt/42.png")
     image_gt_dna_42 = ds.final_clipping(image_gt_dna_42)
 
@@ -293,9 +294,8 @@ def results_nih3t3_unseeded():
     """
     image_urg_t01_merged_filtered = sk.imread(
         "Result_Pictures/Unseeded_Region_Growing/NIH3T3/dna-42_merging_0.07_10000_median_3.tif")
-    image_urg_t01_merged_filtered_clipped = ds.segmented_image_clip(image_urg_t01_merged_filtered,
-                                                                    ds.find_background_number(
-                                                                        image_urg_t01_merged_filtered))
+    image_urg_t01_merged_filtered_clipped = sk.imread(
+        "Result_Pictures/Unseeded_Region_Growing/NIH3T3/dna-42_clipped.tif")
 
     ip.show_two_images_colorbar(image_urg_t01_merged_filtered, image_urg_t01_merged_filtered_clipped, 0.45)
 

@@ -67,7 +67,7 @@ def manuel_segmentation():
     image_segmented = sk.imread("Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_merged_0.056_200.tif")
     second_background = np.where(image_segmented == 19)
     image_segmented[second_background] = 1
-    ip.show_image(image_segmented, 15, 8)
+    return image_segmented
 
 
 
