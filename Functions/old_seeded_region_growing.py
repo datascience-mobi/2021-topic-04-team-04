@@ -266,11 +266,11 @@ def region_growing(img, reg):
     distances = regions_new[3]
     neighbors = add_missing_neighbors(img, regions_new[1], neighbors, reg)
 
-    i = 0
+    #  i = 0
     while unlabeled_pixel_exist(neighbors):
-        i += 1
-        if i % 1000 == 0:
-            print(i)
+        #  i += 1
+        #  if i % 1000 == 0:
+        #      print(i)
 
         dist = new_distance(img, regions_new[0], dist[1], distances, regions_new[1], neighbors,
                             dist[2])

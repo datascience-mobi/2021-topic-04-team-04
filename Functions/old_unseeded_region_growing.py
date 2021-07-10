@@ -91,11 +91,11 @@ def old_unseeded_region_growing_algorithm(img, start_pixel, t):
     reg[start_pixel] = 1
 
     neighbors = old_srg.find_neighbors(reg)
-    i = 0
+    #  i = 0
     while len(neighbors) > 0:
-        i += 1
-        if i % 1000 == 0:
-            print(i)
+        #  i += 1
+        #  if i % 1000 == 0:
+        #      print(i)
 
         dis, nearest_region = old_unseeded_distance(img, neighbors, reg)
         pick = old_unseeded_pixel_pick(dis)

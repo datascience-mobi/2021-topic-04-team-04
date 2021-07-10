@@ -50,6 +50,20 @@ def barplot_results():
     plt.legend(loc=3)
 
 
+def barplot_runtime():
+    columns_names = ["Runtime in ms", "Sd_runtime in ms", "Segmentation Method", "Algorithm version"]
+    runtime = [6440, 18200, 703, 672]
+    sd_time = [99.1, 796, 11.1, 24.4]
+    segmentation_method = ["Seeded", "Unseeded", "Seeded", "Unseeded"]
+    version = ["Old", "Old", "New", "New"]
+
+    df = pd.DataFrame(list(zip(runtime, sd_time, segmentation_method, version)), columns=columns_names)
+    print(df)
+
+    ax = sns.barplot(x="Algorithm version", y="Runtime in ms", hue="Segmentation Method", data=df, palette="dark")
+    ax.set(ylim=(0, 20000))
+    plt.legend(loc=3)
+
 def load_images():
     """
     loads example images of all the data sets
