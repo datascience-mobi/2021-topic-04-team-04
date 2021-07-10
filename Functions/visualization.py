@@ -39,14 +39,14 @@ def barplot_results():
     :return: barplot for the different data sets
     """
     columns_names = ["Dice Score", "Segmentation Method", "Data Sets"]
-    dice_score = [0.928, 0.929, 0.878, 0.928, 1, 0.738]
+    dice_score = [0.928, 0.929, 0.878, 0.928, 0.68, 0.738]
     segmentation_method = ["Seeded", "Unseeded", "Seeded", "Unseeded", "Seeded", "Unseeded"]
     data_sets = ["N2DH-GOWT1", "N2DH-GOWT1", "N2DL-HeLa", "N2DL-HeLa", "NIH3T3", "NIH3T3"]
 
     df = pd.DataFrame(list(zip(dice_score, segmentation_method, data_sets)), columns=columns_names)
 
     ax = sns.barplot(x="Data Sets", y="Dice Score", hue="Segmentation Method", data=df, palette="dark")
-    ax.set(ylim=(0.7, 1))
+    ax.set(ylim=(0.65, 1))
     plt.legend(loc=3)
 
 
