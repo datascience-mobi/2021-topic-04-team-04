@@ -308,7 +308,6 @@ def results_nih3t3_unseeded():
     """
     image_urg_t01_merged_filtered = sk.imread(
         "Result_Pictures/Unseeded_Region_Growing/NIH3T3/dna-42_merging_0.07_10000_median_3.tif")
-    image_urg_t01_merged_filtered_clipped = sk.imread(
-        "Result_Pictures/Unseeded_Region_Growing/NIH3T3/dna-42_clipped.tif")
+    image_urg_t01_merged_filtered_clipped = ds.final_clipping(image_urg_t01_merged_filtered)
 
     ip.show_two_images_colorbar(image_urg_t01_merged_filtered, image_urg_t01_merged_filtered_clipped, 0.54)
