@@ -58,7 +58,7 @@ def barplot_runtime():
     version = ["Old", "Old", "New", "New"]
 
     df = pd.DataFrame(list(zip(runtime, sd_time, segmentation_method, version)), columns=columns_names)
-    print(df)
+    #  print(df)
 
     ax = sns.barplot(x="Algorithm version", y="Runtime in ms", hue="Segmentation Method", data=df, palette="dark")
     ax.set(ylim=(0, 20000))
