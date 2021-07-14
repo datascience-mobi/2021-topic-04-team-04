@@ -1,5 +1,7 @@
 import skimage.io as sk
 import numpy as np
+import image_processing as ip
+import segmentation as seg
 
 
 def find_background_number(reg):
@@ -93,3 +95,16 @@ def final_clipping(segmented_img):
     background_number = find_background_number(segmented_img.copy())
     clipped_segmented_image = segmented_image_clip(segmented_img.copy(), background_number)
     return clipped_segmented_image
+
+
+if __name__ == '__main__':
+    image_hela33_small = sk.imread("../Data/N2DL-HeLa/img/t13.tif")[100:200, 450:550]
+    image_hela33_small_n = ip.subtract_minimum(image_hela33_small.copy())
+    image_gt_hela33_small = sk.imread("../Data/N2DL-HeLa/gt/man_seg13.tif")[100:200, 450:550]
+    image_hela13_clipped = ip.image_clipping(image_hela33_small_n, 0.03 * np.amax(image_hela33_small_n),
+                                             0.1 * np.amax(image_hela33_small_n))
+    image_clipped_segmented_urg = seg.unseeded_segmentation(image_hela13_clipped, image_gt_hela33_small.copy(), (0, 0),
+                                                            50, 0.1, 300)
+
+    dice_value = dice_score(image_clipped_segmented_urg, image_gt_hela33_small)
+    print(dice_value)
