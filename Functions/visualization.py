@@ -176,14 +176,10 @@ def results_hela():
     image_urg = sk.imread("Result_Pictures/Unseeded_Region_Growing/N2DL-HeLa/urg_t13_50.tif")
     image_urg_filtered_clipped = sk.imread("Result_Pictures/Unseeded_Region_Growing/N2DL-HeLa/urg_t13_clipped.tif")
     ip.show_six_images_two_rows(image, image_srg, image_srg_clipped, image_urg, image_urg_filtered_clipped, gt, 0.84)
-    dice_score_weighted_srg = ds.evaluate_accuracy_weighted(image_srg_clipped, gt)
-    dice_score_unweighted_srg = ds.evaluate_accuracy_unweighted(image_srg_clipped, gt)
-    print("Seeded: weighted dice score: " + str(dice_score_weighted_srg) + ", unweighted dice score: " +
-          str(dice_score_unweighted_srg))
-    dice_score_weighted_urg = ds.evaluate_accuracy_weighted(image_urg_filtered_clipped, gt)
-    dice_score_unweighted_urg = ds.evaluate_accuracy_unweighted(image_urg_filtered_clipped, gt)
-    print("Unseeded: weighted dice score: " + str(dice_score_weighted_urg) + ", unweighted dice score: " + str(
-        dice_score_unweighted_urg))
+    dice_value_srg = ds.dice_score(image_srg_clipped, gt)
+    print("Seeded: dice score: " + str(dice_value_srg))
+    dice_value_urg = ds.dice_score(image_urg_filtered_clipped, gt)
+    print("Unseeded: dice score: " + str(dice_value_urg))
 
 
 def nih3t3_show_bright_spots():

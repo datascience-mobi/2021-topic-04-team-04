@@ -27,9 +27,8 @@ def seeded_segmentation(img, gt, threshold_seeds, threshold_merging_intensity, t
     image_merged = rm.region_merging(image_srg, img, threshold_merging_intensity, threshold_merging_size)
     image_clipped = ds.final_clipping(image_merged)
 
-    dice_score_unweighted = ds.evaluate_accuracy_unweighted(image_merged.copy(), gt)
-    dice_score_weighted = ds.evaluate_accuracy_weighted(image_merged.copy(), gt)
-    print("unweighted dice score: " + str(dice_score_unweighted) + ", weighted dice score: " + str(dice_score_weighted))
+    dice_value = ds.dice_score(image_merged, gt)
+    print("dice score: " + str(dice_value))
 
     return image_clipped
 
@@ -51,10 +50,9 @@ def unseeded_segmentation(img, gt, start_pixel, threshold_region_growing, thresh
     image_filtered = ip.median_filter(image_merged, 3)
     image_clipped = ds.final_clipping(image_filtered)
 
-    dice_score_unweighted = ds.evaluate_accuracy_unweighted(image_filtered.copy(), gt)
-    dice_score_weighted = ds.evaluate_accuracy_weighted(image_filtered.copy(), gt)
+    dice_value = ds.dice_score(image_merged, gt)
 
-    print("unweighted dice score: " + str(dice_score_unweighted) + ", weighted dice score: " + str(dice_score_weighted))
+    print("dice score: " + str(dice_value))
 
     return image_clipped
 
@@ -68,7 +66,6 @@ def manuel_segmentation():
     second_background = np.where(image_segmented == 19)
     image_segmented[second_background] = 1
     return image_segmented
-
 
 
 if __name__ == '__main__':
