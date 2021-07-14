@@ -249,12 +249,12 @@ def show_preprocessing():
     ip.show_six_images_colorbar(image_hela13_small_n, image_hela13_clipped, image_hela13_clipped_extreme,
                                 image_hela13_median, image_hela13_gauss, image_gt_hela13_small, 0.32)
 
-    image_small_segmented = seg.seeded_segmentation(image_hela13_small_n, image_gt_hela13_small, 0.9, 0.1, 300)
-    image_clipped_segmented = seg.seeded_segmentation(image_hela13_clipped, image_gt_hela13_small, 0.9, 0.1, 300)
-    image_clipped_extreme_segmented = seg.seeded_segmentation(image_hela13_clipped_extreme, image_gt_hela13_small, 0.9,
+    image_small_segmented = seg.seeded_segmentation(image_hela13_small_n, image_gt_hela13_small, 0.5, 0.1, 300)
+    image_clipped_segmented = seg.seeded_segmentation(image_hela13_clipped, image_gt_hela13_small, 0.5, 0.1, 300)
+    image_clipped_extreme_segmented = seg.seeded_segmentation(image_hela13_clipped_extreme, image_gt_hela13_small, 0.5,
                                                               0.1, 300)
-    image_median_segmented = seg.seeded_segmentation(image_hela13_median, image_gt_hela13_small, 0.9, 0.1, 300)
-    image_gauss_segmented = seg.seeded_segmentation(image_hela13_gauss, image_gt_hela13_small, 0.9, 0.1, 300)
+    image_median_segmented = seg.seeded_segmentation(image_hela13_median, image_gt_hela13_small, 0.5, 0.1, 300)
+    image_gauss_segmented = seg.seeded_segmentation(image_hela13_gauss, image_gt_hela13_small, 0.5, 0.1, 300)
     ip.show_six_images_colorbar(image_small_segmented, image_clipped_segmented, image_clipped_extreme_segmented,
                                 image_median_segmented, image_gauss_segmented, image_gt_hela13_small, 0.32)
 

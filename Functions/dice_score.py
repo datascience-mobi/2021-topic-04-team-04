@@ -1,7 +1,7 @@
 import skimage.io as sk
 import numpy as np
-import image_processing as ip
-import segmentation as seg
+from Functions import image_processing as ip
+from Functions import segmentation as seg
 
 
 def find_background_number(reg):

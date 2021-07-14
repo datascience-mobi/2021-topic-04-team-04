@@ -47,7 +47,7 @@ def euclidean_relative(img, size):
             for q in np.ndindex(size, size):
                 i = p[0] - n + q[0]
                 j = p[1] - n + q[1]
-                neighborhood_distance.append(np.float((img[p] - img[i, j]) / (img[p] + 0.000001)))
+                neighborhood_distance.append((np.float(img[p]) - np.float(img[i, j])) / (np.float(img[p]) + 0.00000001))
                 # adds relative euclidean distance to list, adds 0.000001 to prevent division by 0
             maximal_euclidean_distance[p] = max(neighborhood_distance)  # chooses maximum distance
     return maximal_euclidean_distance
