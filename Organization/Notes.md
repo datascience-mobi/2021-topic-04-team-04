@@ -8,7 +8,7 @@
 1. update environment without history
     - conda env export --from-history > environment.yml
 1. update environment from environment.yml file https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#updating-an-environment
-   1. conda env update --prefix ./env --file environment.yml  --prune
+   1. conda env update --file environment.yml  --prune
 
 ## Create Python package
 - https://www.tutorialsteacher.com/python/python-package
