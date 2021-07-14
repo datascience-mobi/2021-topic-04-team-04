@@ -4,6 +4,43 @@ import matplotlib.pyplot as plt
 from medpy.filter.smoothing import anisotropic_diffusion
 
 
+def show_two_images_title(img1, img2, f_title, img1_title, img2_title, colorbar_size):
+    plt.figure(figsize=(10, 4))
+    plt.suptitle(f_title, fontsize=18)
+
+    s1 = plt.subplot(1, 2, 1)
+    s1.set_title(img1_title, fontsize=16)
+    plt.imshow(img1, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    s2 = plt.subplot(1, 2, 2)
+    s2.set_title(img2_title, fontsize=16)
+    plt.imshow(img2, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+
+def show_three_images_title(img1, img2, img3, f_title, img1_title, img2_title, img3_title, colorbar_size):
+    plt.figure(figsize=(15, 8))
+    plt.suptitle(f_title, fontsize=18, y = 0.75)
+
+    s1 = plt.subplot(1, 3, 1)
+    s1.set_title(img1_title, fontsize=16)
+    plt.imshow(img1, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    s2 = plt.subplot(1, 3, 2)
+    s2.set_title(img2_title, fontsize=16)
+    plt.imshow(img2, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    s3 = plt.subplot(1, 3, 3)
+    s3.set_title(img3_title, fontsize=16)
+    plt.imshow(img3, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+
+
+
 def show_images_side_by_side(img1, img2):
     f = plt.figure(figsize=(12, 7))
     f.add_subplot(1, 2, 1)
@@ -187,7 +224,8 @@ def is_border_pixel(pixel, img):
     :param img: image of which the border is tested (2D array)
     :return: True for border pixel, False for not border pixel (True/False)
     """
-    if pixel[0] - 1 >= 0 and pixel[1] - 1 >= 0 and pixel[0] + 1 <= img.shape[0] - 1 and pixel[1] + 1 <= img.shape[1] - 1:
+    if pixel[0] - 1 >= 0 and pixel[1] - 1 >= 0 and pixel[0] + 1 <= img.shape[0] - 1 and pixel[1] + 1 <= img.shape[
+        1] - 1:
         return False
     return True
 
