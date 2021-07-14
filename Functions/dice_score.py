@@ -65,45 +65,23 @@ def region_count(segmented_img, region_number):
     return count_region
 
 
-def region_dice_score(segmented_img, gt, region_number):
+def dice_score(segmented_img, gt):
     """
-    calculates dice score for a region
-    :param segmented_img: result image with region numbers (2D array)
-    :param gt: ground truth image with region numbers (2D array)
-    :param region_number: region for which the dice score is calculated (int)
-    :return: dice score for the region (float, between 0 and 1)
+    calculates dice score
+    :param segmented_img: image after region merging (2d array)
+    :param gt: ground truth image (2d array)
+    :return: dice score (float between 0 and 1)
     """
-    count_intersection = intersection_count(segmented_img, gt, region_number)
-    count_segmented_image = region_count(segmented_img, region_number)
-    count_gt = region_count(gt, region_number)
-    region_score = 2 * count_intersection / (count_segmented_image + count_gt)
-    return region_score
+    clipped_gt = gt_clip(gt.copy())
+    background_number = find_background_number(segmented_img.copy())
+    clipped_segmented_image = segmented_image_clip(segmented_img.copy(), background_number)
 
+    true_positive = intersection_count(clipped_segmented_image, clipped_gt, 1)
+    true_negative = intersection_count(clipped_segmented_image, clipped_gt, 0)
+    number_of_pixels = segmented_img.size
 
-def dice_score_weighted(segmented_img, gt):
-    """
-    calculates weighted dice score looking separately the different regions so all regions have the same impact
-    (regardless the size)
-    :param segmented_img: result image with region numbers (2D array)
-    :param gt: ground truth image with region numbers (2D array)
-    :return: weighted dice score of whole image (float, between 0 and 1)
-    """
-    dice_score_background = region_dice_score(segmented_img, gt, 0)
-    dice_score_nucleus = region_dice_score(segmented_img, gt, 1)
-    dice_score = 0.5 * (dice_score_nucleus + dice_score_background)
-    return dice_score
-
-
-def dice_score_unweighted(segmented_img, gt):
-    """
-    calculates dice score for the whole image without weighing all regions equally
-    :param segmented_img: result image with region numbers (2D array)
-    :param gt: ground truth image with region numbers (2D array)
-    :return: unweighted dice score of whole image (float, between 0 and 1)
-    """
-    count_intersection = intersection_count(segmented_img, gt, 0) + intersection_count(segmented_img, gt, 1)
-    dice_score = 2 * count_intersection / (segmented_img.size + gt.size)
-    return dice_score
+    dice_score_value = 2 * true_positive / (number_of_pixels - true_negative + true_positive)
+    return dice_score_value
 
 
 def final_clipping(segmented_img):
@@ -115,34 +93,3 @@ def final_clipping(segmented_img):
     background_number = find_background_number(segmented_img.copy())
     clipped_segmented_image = segmented_image_clip(segmented_img.copy(), background_number)
     return clipped_segmented_image
-
-
-def evaluate_accuracy_weighted(segmented_img, gt):
-    """
-    calculates weighted dice score of two clipped images (clipping needed for comparability)
-    :param segmented_img: result image with region numbers (2D array)
-    :param gt: ground truth image with region numbers (2D array)
-    :return: wighted dice score (float, between 0 and 1)
-    """
-    clipped_gt = gt_clip(gt.copy())
-    background_number = find_background_number(segmented_img.copy())
-    clipped_segmented_image = segmented_image_clip(segmented_img.copy(), background_number)
-    dice_score = dice_score_weighted(clipped_segmented_image, clipped_gt)
-    #  print("weighted dice score: " + str(dice_score))
-    return dice_score
-
-
-def evaluate_accuracy_unweighted(segmented_img, gt):
-    """
-    calculates unweighted dice score of two comparable images (achieved with image clipping)
-    :param segmented_img: result image with region numbers (2D array)
-    :param gt:  ground truth image with region numbers (2D array)
-    :return: unweighted dice score (float, between 0 and 1)
-    """
-    clipped_gt = gt_clip(gt.copy())
-    background_number = find_background_number(segmented_img.copy())
-    clipped_segmented_image = segmented_image_clip(segmented_img.copy(), background_number)
-    dice_score = dice_score_unweighted(clipped_segmented_image, clipped_gt)
-    #  print("unweighted dice score: " + str(dice_score))
-    return dice_score
-
