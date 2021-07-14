@@ -20,7 +20,7 @@ def barplot_preprocessing():
     :return: barplot for the preprocessing
     """
     columns_names = ["Dice Score", "Segmentation Method", "Preprocessing"]
-    dice_score = [0.908, 0.945, 0.983, 0.984, 0.980, 0.979, 0.911, 0.984, 0.908, 0.962]
+    dice_score = [0.841, 0.906, 0.971, 0.972, 0.965, 0.965, 0.846, 0.973, 0.841, 0.935]
     segmentation_method = ["Seeded", "Unseeded", "Seeded", "Unseeded", "Seeded", "Unseeded", "Seeded", "Unseeded",
                            "Seeded", "Unseeded"]
     preprocessing = ["unprocessed", "unprocessed", "clipped", 'clipped', 'extreme clipped', 'extreme clipped', 'median',
@@ -29,7 +29,7 @@ def barplot_preprocessing():
     df = pd.DataFrame(list(zip(dice_score, segmentation_method, preprocessing)), columns=columns_names)
 
     ax = sns.barplot(x="Preprocessing", y="Dice Score", hue="Segmentation Method", data=df, palette="dark")
-    ax.set(ylim=(0.85, 1))
+    ax.set(ylim=(0.8, 1))
     plt.legend(loc=3)
 
 
@@ -39,14 +39,14 @@ def barplot_results():
     :return: barplot for the different data sets
     """
     columns_names = ["Dice Score", "Segmentation Method", "Data Sets"]
-    dice_score = [0.928, 0.929, 0.878, 0.928, 0.68, 0.738]
+    dice_score = [0.865, 0.868, 0.767, 0.861, 0.44, 0.55]
     segmentation_method = ["Seeded", "Unseeded", "Seeded", "Unseeded", "Seeded", "Unseeded"]
     data_sets = ["N2DH-GOWT1", "N2DH-GOWT1", "N2DL-HeLa", "N2DL-HeLa", "NIH3T3", "NIH3T3"]
 
     df = pd.DataFrame(list(zip(dice_score, segmentation_method, data_sets)), columns=columns_names)
 
     ax = sns.barplot(x="Data Sets", y="Dice Score", hue="Segmentation Method", data=df, palette="dark")
-    ax.set(ylim=(0.65, 1))
+    ax.set(ylim=(0.40, 1))
     plt.legend(loc=3)
 
 
@@ -177,9 +177,9 @@ def results_hela():
     image_urg_filtered_clipped = sk.imread("Result_Pictures/Unseeded_Region_Growing/N2DL-HeLa/urg_t13_clipped.tif")
     ip.show_six_images_two_rows(image, image_srg, image_srg_clipped, image_urg, image_urg_filtered_clipped, gt, 0.84)
     dice_value_srg = ds.dice_score(image_srg_clipped, gt)
-    print("Seeded: dice score: " + str(dice_value_srg))
+    print("Seeded Dice score: " + str(dice_value_srg))
     dice_value_urg = ds.dice_score(image_urg_filtered_clipped, gt)
-    print("Unseeded: dice score: " + str(dice_value_urg))
+    print("Unseeded Dice score: " + str(dice_value_urg))
 
 
 def nih3t3_show_bright_spots():
@@ -236,42 +236,42 @@ def show_preprocessing():
     second set: seeded region growing on the images of the first set and the ground truth image
     thirs set: unseeded region growing on the images of the first set and the ground truth image
     """
-    image_hela33_small = sk.imread("Data/N2DL-HeLa/img/t13.tif")[100:200, 450:550]
-    image_hela33_small_n = ip.subtract_minimum(image_hela33_small.copy())
-    image_gt_hela33_small = sk.imread("Data/N2DL-HeLa/gt/man_seg13.tif")[100:200, 450:550]
+    image_hela13_small = sk.imread("Data/N2DL-HeLa/img/t13.tif")[100:200, 450:550]
+    image_hela13_small_n = ip.subtract_minimum(image_hela13_small.copy())
+    image_gt_hela13_small = sk.imread("Data/N2DL-HeLa/gt/man_seg13.tif")[100:200, 450:550]
 
-    image_hela33_clipped = ip.image_clipping(image_hela33_small_n, 0.03 * np.amax(image_hela33_small_n),
-                                             0.1 * np.amax(image_hela33_small_n))
-    image_hela33_clipped_extreme = ip.image_clipping_extreme(image_hela33_small_n, 0.03 * np.amax(image_hela33_small_n),
-                                                             0.1 * np.amax(image_hela33_small_n))
-    image_hela33_median = ip.median_filter(image_hela33_small_n, 3)
-    image_hela33_gauss = ip.gaussian_filter(image_hela33_small_n, 1)
-    ip.show_six_images_colorbar(image_hela33_small_n, image_hela33_clipped, image_hela33_clipped_extreme,
-                                image_hela33_median, image_hela33_gauss, image_gt_hela33_small, 0.32)
+    image_hela13_clipped = ip.image_clipping(image_hela13_small_n, 0.03 * np.amax(image_hela13_small_n),
+                                             0.1 * np.amax(image_hela13_small_n))
+    image_hela13_clipped_extreme = ip.image_clipping_extreme(image_hela13_small_n, 0.03 * np.amax(image_hela13_small_n),
+                                                             0.1 * np.amax(image_hela13_small_n))
+    image_hela13_median = ip.median_filter(image_hela13_small_n, 3)
+    image_hela13_gauss = ip.gaussian_filter(image_hela13_small_n, 1)
+    ip.show_six_images_colorbar(image_hela13_small_n, image_hela13_clipped, image_hela13_clipped_extreme,
+                                image_hela13_median, image_hela13_gauss, image_gt_hela13_small, 0.32)
 
-    image_small_segmented = seg.seeded_segmentation(image_hela33_small_n, image_gt_hela33_small, 0.9, 0.1, 300)
-    image_clipped_segmented = seg.seeded_segmentation(image_hela33_clipped, image_gt_hela33_small, 0.9, 0.1, 300)
-    image_clipped_extreme_segmented = seg.seeded_segmentation(image_hela33_clipped_extreme, image_gt_hela33_small, 0.9,
+    image_small_segmented = seg.seeded_segmentation(image_hela13_small_n, image_gt_hela13_small, 0.9, 0.1, 300)
+    image_clipped_segmented = seg.seeded_segmentation(image_hela13_clipped, image_gt_hela13_small, 0.9, 0.1, 300)
+    image_clipped_extreme_segmented = seg.seeded_segmentation(image_hela13_clipped_extreme, image_gt_hela13_small, 0.9,
                                                               0.1, 300)
-    image_median_segmented = seg.seeded_segmentation(image_hela33_median, image_gt_hela33_small, 0.9, 0.1, 300)
-    image_gauss_segmented = seg.seeded_segmentation(image_hela33_gauss, image_gt_hela33_small, 0.9, 0.1, 300)
+    image_median_segmented = seg.seeded_segmentation(image_hela13_median, image_gt_hela13_small, 0.9, 0.1, 300)
+    image_gauss_segmented = seg.seeded_segmentation(image_hela13_gauss, image_gt_hela13_small, 0.9, 0.1, 300)
     ip.show_six_images_colorbar(image_small_segmented, image_clipped_segmented, image_clipped_extreme_segmented,
-                                image_median_segmented, image_gauss_segmented, image_gt_hela33_small, 0.32)
+                                image_median_segmented, image_gauss_segmented, image_gt_hela13_small, 0.32)
 
-    image_small_segmented_urg = seg.unseeded_segmentation(image_hela33_small_n, image_gt_hela33_small.copy(), (0, 0),
+    image_small_segmented_urg = seg.unseeded_segmentation(image_hela13_small_n, image_gt_hela13_small.copy(), (0, 0),
                                                           50, 0.01, 300)
-    image_clipped_segmented_urg = seg.unseeded_segmentation(image_hela33_clipped, image_gt_hela33_small.copy(), (0, 0),
+    image_clipped_segmented_urg = seg.unseeded_segmentation(image_hela13_clipped, image_gt_hela13_small.copy(), (0, 0),
                                                             50, 0.1, 300)
-    image_clipped_extreme_segmented_urg = seg.unseeded_segmentation(image_hela33_clipped_extreme,
-                                                                    image_gt_hela33_small.copy(), (0, 0), 50, 0.1, 300)
-    image_median_segmented_urg = seg.unseeded_segmentation(image_hela33_median, image_gt_hela33_small.copy(), (0, 0),
+    image_clipped_extreme_segmented_urg = seg.unseeded_segmentation(image_hela13_clipped_extreme,
+                                                                    image_gt_hela13_small.copy(), (0, 0), 50, 0.1, 300)
+    image_median_segmented_urg = seg.unseeded_segmentation(image_hela13_median, image_gt_hela13_small.copy(), (0, 0),
                                                            50, 0.1, 300)
-    image_hela33_gauss = ip.gaussian_filter(image_hela33_small, 3)
-    image_gauss_segmented_urg = seg.unseeded_segmentation(image_hela33_gauss, image_gt_hela33_small.copy(), (0, 0), 50,
+    image_hela33_gauss = ip.gaussian_filter(image_hela13_small, 3)
+    image_gauss_segmented_urg = seg.unseeded_segmentation(image_hela33_gauss, image_gt_hela13_small.copy(), (0, 0), 50,
                                                           0.01, 300)
     ip.show_six_images_colorbar(image_small_segmented_urg, image_clipped_segmented_urg,
                                 image_clipped_extreme_segmented_urg, image_median_segmented_urg,
-                                image_gauss_segmented_urg, image_gt_hela33_small, 0.32)
+                                image_gauss_segmented_urg, image_gt_hela13_small, 0.32)
 
 
 def results_nih3t3_seeded():
