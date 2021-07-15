@@ -102,7 +102,7 @@ def bright_spots_example():
                                                                                                         "bright "
                                                                                                         "spots",
                                "image with bright spots", "removed bright spots", "removed bright spots with border",
-                               0.35, 0.75)
+                               0.35, 0.7)
 
 
 def region_growing_example():
@@ -274,8 +274,11 @@ def show_preprocessing():
                                                              0.1 * np.amax(image_hela13_small_n))
     image_hela13_median = ip.median_filter(image_hela13_small_n, 3)
     image_hela13_gauss = ip.gaussian_filter(image_hela13_small_n, 1)
-    ip.show_six_images_colorbar(image_hela13_small_n, image_hela13_clipped, image_hela13_clipped_extreme,
-                                image_hela13_median, image_hela13_gauss, image_gt_hela13_small, 0.32)
+    ip.show_six_images_title(image_hela13_small_n, image_hela13_clipped, image_hela13_clipped_extreme,
+                             image_hela13_median, image_hela13_gauss, image_gt_hela13_small,
+                             "Application of different preprocessing methods on image t13 fragment (N2DL-Hela)",
+                             "unprocessed image", "clipped image", "extremely clipped image", "median filter sigma 3",
+                             "gaussian filter sigma 1", "ground truth image", 0.3)
 
     image_small_segmented = seg.seeded_segmentation(image_hela13_small_n, image_gt_hela13_small, 0.5, 0.1, 300)
     image_clipped_segmented = seg.seeded_segmentation(image_hela13_clipped, image_gt_hela13_small, 0.5, 0.1, 300)
@@ -283,8 +286,12 @@ def show_preprocessing():
                                                               0.1, 300)
     image_median_segmented = seg.seeded_segmentation(image_hela13_median, image_gt_hela13_small, 0.5, 0.1, 300)
     image_gauss_segmented = seg.seeded_segmentation(image_hela13_gauss, image_gt_hela13_small, 0.5, 0.1, 300)
-    ip.show_six_images_colorbar(image_small_segmented, image_clipped_segmented, image_clipped_extreme_segmented,
-                                image_median_segmented, image_gauss_segmented, image_gt_hela13_small, 0.32)
+    ip.show_six_images_title(image_small_segmented, image_clipped_segmented, image_clipped_extreme_segmented,
+                                image_median_segmented, image_gauss_segmented, image_gt_hela13_small,
+                                "Results of differently preprocessed images after seeded region growing",
+                                "unprocessed image", "clipped image", "extremely clipped image",
+                                "median filter sigma 3",
+                                "gaussian filter sigma 1", "ground truth image", 0.3)
 
     image_small_segmented_urg = seg.unseeded_segmentation(image_hela13_small_n, image_gt_hela13_small.copy(), (0, 0),
                                                           50, 0.01, 300)
@@ -297,9 +304,13 @@ def show_preprocessing():
     image_hela33_gauss = ip.gaussian_filter(image_hela13_small, 3)
     image_gauss_segmented_urg = seg.unseeded_segmentation(image_hela33_gauss, image_gt_hela13_small.copy(), (0, 0), 50,
                                                           0.01, 300)
-    ip.show_six_images_colorbar(image_small_segmented_urg, image_clipped_segmented_urg,
-                                image_clipped_extreme_segmented_urg, image_median_segmented_urg,
-                                image_gauss_segmented_urg, image_gt_hela13_small, 0.32)
+    ip.show_six_images_title(image_small_segmented_urg, image_clipped_segmented_urg,
+                             image_clipped_extreme_segmented_urg, image_median_segmented_urg,
+                             image_gauss_segmented_urg, image_gt_hela13_small,
+                             "Results of differently preprocessed images after unseeded region growing",
+                             "unprocessed image", "clipped image", "extremely clipped image",
+                             "median filter sigma 3",
+                             "gaussian filter sigma 1", "ground truth image", 0.3)
 
 
 def results_nih3t3_seeded():

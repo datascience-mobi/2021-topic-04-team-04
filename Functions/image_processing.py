@@ -19,7 +19,8 @@ def show_two_images_title(img1, img2, f_title, img1_title, img2_title, colorbar_
     plt.colorbar(shrink=colorbar_size)
 
 
-def show_three_images_title(img1, img2, img3, f_title, img1_title, img2_title, img3_title, colorbar_size, title_position):
+def show_three_images_title(img1, img2, img3, f_title, img1_title, img2_title, img3_title, colorbar_size,
+                            title_position):
     plt.figure(figsize=(15, 8))
     plt.suptitle(f_title, fontsize=18, y=title_position)
 
@@ -97,7 +98,44 @@ def show_six_images_two_rows_title(img1, img2, img3, img4, img5, img6, f_title, 
     plt.colorbar(shrink=colorbar_size)
 
     s6 = plt.subplot(2, 3, 6)
-    s4.set_title(img6_title, fontsize=14)
+    s6.set_title(img6_title, fontsize=14)
+    plt.imshow(img6, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+
+def show_six_images_title(img1, img2, img3, img4, img5, img6, f_title, img1_title, img2_title, img3_title,
+                          img4_title, img5_title, img6_title,
+                          colorbar_size):
+    plt.figure(figsize=(20, 8))
+    plt.suptitle(f_title, fontsize=16, y=0.7)
+
+    s1 = plt.subplot(1, 6, 1)
+    s1.set_title(img1_title, fontsize=14)
+    plt.imshow(img1, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    s2 = plt.subplot(1, 6, 2)
+    s2.set_title(img2_title, fontsize=14)
+    plt.imshow(img2, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    s3 = plt.subplot(1, 6, 3)
+    s3.set_title(img3_title, fontsize=14)
+    plt.imshow(img3, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    s4 = plt.subplot(1, 6, 4)
+    s4.set_title(img4_title, fontsize=14)
+    plt.imshow(img4, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    s5 = plt.subplot(1, 6, 5)
+    s5.set_title(img5_title, fontsize=14)
+    plt.imshow(img5, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    s6 = plt.subplot(1, 6, 6)
+    s6.set_title(img6_title, fontsize=14)
     plt.imshow(img6, "gray")
     plt.colorbar(shrink=colorbar_size)
 
