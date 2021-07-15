@@ -102,7 +102,7 @@ def bright_spots_example():
                                                                                                         "bright "
                                                                                                         "spots",
                                "image with bright spots", "removed bright spots", "removed bright spots with border",
-                               0.35, 0.75)
+                               0.35, 0.7)
 
 
 def region_growing_example():
