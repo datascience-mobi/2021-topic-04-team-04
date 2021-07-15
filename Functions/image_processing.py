@@ -98,7 +98,7 @@ def show_six_images_two_rows_title(img1, img2, img3, img4, img5, img6, f_title, 
     plt.colorbar(shrink=colorbar_size)
 
     s6 = plt.subplot(2, 3, 6)
-    s4.set_title(img6_title, fontsize=14)
+    s6.set_title(img6_title, fontsize=14)
     plt.imshow(img6, "gray")
     plt.colorbar(shrink=colorbar_size)
 
@@ -135,7 +135,7 @@ def show_six_images_title(img1, img2, img3, img4, img5, img6, f_title, img1_titl
     plt.colorbar(shrink=colorbar_size)
 
     s6 = plt.subplot(1, 6, 6)
-    s4.set_title(img6_title, fontsize=14)
+    s6.set_title(img6_title, fontsize=14)
     plt.imshow(img6, "gray")
     plt.colorbar(shrink=colorbar_size)
 

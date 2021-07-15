@@ -277,8 +277,8 @@ def show_preprocessing():
     ip.show_six_images_title(image_hela13_small_n, image_hela13_clipped, image_hela13_clipped_extreme,
                              image_hela13_median, image_hela13_gauss, image_gt_hela13_small,
                              "Application of different preprocessing methods on image t13 fragment (N2DL-Hela)",
-                             "unprocessed image", "clipped image", "extremely clipped image", "median filter omega 3",
-                             "gaussian filter sigma 1", "ground truth image", 0.2)
+                             "unprocessed image", "clipped image", "extremely clipped image", "median filter sigma 3",
+                             "gaussian filter sigma 1", "ground truth image", 0.3)
 
     image_small_segmented = seg.seeded_segmentation(image_hela13_small_n, image_gt_hela13_small, 0.5, 0.1, 300)
     image_clipped_segmented = seg.seeded_segmentation(image_hela13_clipped, image_gt_hela13_small, 0.5, 0.1, 300)
@@ -290,8 +290,8 @@ def show_preprocessing():
                                 image_median_segmented, image_gauss_segmented, image_gt_hela13_small,
                                 "Results of differently preprocessed images after seeded region growing",
                                 "unprocessed image", "clipped image", "extremely clipped image",
-                                "median filter omega 3",
-                                "gaussian filter sigma 1", "ground truth image", 0.25)
+                                "median filter sigma 3",
+                                "gaussian filter sigma 1", "ground truth image", 0.3)
 
     image_small_segmented_urg = seg.unseeded_segmentation(image_hela13_small_n, image_gt_hela13_small.copy(), (0, 0),
                                                           50, 0.01, 300)
@@ -309,8 +309,8 @@ def show_preprocessing():
                              image_gauss_segmented_urg, image_gt_hela13_small,
                              "Results of differently preprocessed images after unseeded region growing",
                              "unprocessed image", "clipped image", "extremely clipped image",
-                             "median filter omega 3",
-                             "gaussian filter sigma 1", "ground truth image", 0.27)
+                             "median filter sigma 3",
+                             "gaussian filter sigma 1", "ground truth image", 0.3)
 
 
 def results_nih3t3_seeded():
