@@ -20,7 +20,7 @@ def barplot_preprocessing():
     :return: barplot for the preprocessing
     """
     columns_names = ["Dice Score", "Segmentation Method", "Preprocessing"]
-    dice_score = [0.841, 0.906, 0.971, 0.972, 0.965, 0.965, 0.846, 0.973, 0.841, 0.935]
+    dice_score = [0.786, 0.906, 0.972, 0.973, 0.965, 0.965, 0.785, 0.973, 0.756, 0.935]
     segmentation_method = ["Seeded", "Unseeded", "Seeded", "Unseeded", "Seeded", "Unseeded", "Seeded", "Unseeded",
                            "Seeded", "Unseeded"]
     preprocessing = ["unprocessed", "unprocessed", "clipped", 'clipped', 'extreme clipped', 'extreme clipped', 'median',
@@ -29,7 +29,7 @@ def barplot_preprocessing():
     df = pd.DataFrame(list(zip(dice_score, segmentation_method, preprocessing)), columns=columns_names)
 
     ax = sns.barplot(x="Preprocessing", y="Dice Score", hue="Segmentation Method", data=df, palette="dark")
-    ax.set(ylim=(0.8, 1))
+    ax.set(ylim=(0.7, 1))
     plt.legend(loc=3)
 
 
