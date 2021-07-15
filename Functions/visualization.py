@@ -64,6 +64,7 @@ def barplot_runtime():
     ax.set(ylim=(0, 20000))
     plt.legend(loc=3)
 
+
 def load_images():
     """
     loads example images of all the data sets
@@ -72,7 +73,8 @@ def load_images():
     image_intensity = sk.imread("Data/N2DH-GOWT1/img/t01.tif")
     image_intensity_data2 = sk.imread("Data/N2DL-HeLa/img/t52.tif")
     image_intensity_data3 = sk.imread("Data/NIH3T3/img/dna-42.png")
-    ip.show_three_images_colorbar(image_intensity, image_intensity_data2, image_intensity_data3, 0.45)
+    ip.show_three_images_title(image_intensity, image_intensity_data2, image_intensity_data3,
+                               "Example images of different data sets", "N2DH-GOWT", "N2DL-Hela", "NIH3T3", 0.45, 0.75)
 
 
 def clipping_examples():
@@ -83,7 +85,9 @@ def clipping_examples():
     image_intensity = sk.imread("Data/N2DH-GOWT1/img/t01.tif")
     img_clipped = ip.image_clipping(image_intensity, 5, 25)
     img_clipped_extreme = ip.image_clipping_extreme(image_intensity, 5, 15)
-    ip.show_three_images_title(image_intensity, img_clipped, img_clipped_extreme, "Application of different clipping methods", "unprocessed", "clipped", "clipped to border values", 0.45)
+    ip.show_three_images_title(image_intensity, img_clipped, img_clipped_extreme,
+                               "Application of different clipping methods", "unprocessed", "clipped",
+                               "clipped to border values", 0.45, 0.75)
 
 
 def bright_spots_example():
@@ -94,7 +98,11 @@ def bright_spots_example():
     img_with_bright_spots = sk.imread("Data/NIH3T3/img/dna-33.png")
     img_removed_spots = ip.remove_bright_spots(img_with_bright_spots, 200, 60)
     img_removed_spots_with_border = ip.remove_bright_spots_with_border(img_with_bright_spots, 200, 60, 40)
-    ip.show_three_images_colorbar(img_with_bright_spots, img_removed_spots, img_removed_spots_with_border, 0.35)
+    ip.show_three_images_title(img_with_bright_spots, img_removed_spots, img_removed_spots_with_border, "Clipping of "
+                                                                                                        "bright "
+                                                                                                        "spots",
+                               "image with bright spots", "removed bright spots", "removed bright spots with border",
+                               0.35, 0.75)
 
 
 def region_growing_example():
@@ -116,7 +124,9 @@ def region_growing_example():
     image_rm_size = rm.region_merging_size(image_intensity_small, image_rm_similarity.copy(), inter_region_neighbors,
                                            means, 500)
     image_clipped_s = ds.final_clipping(image_rm_size.copy())
-    ip.show_four_images_colorbar(image_regions, image_rm_similarity, image_rm_size, image_clipped_s, 0.38)
+    ip.show_four_images_title(image_regions, image_rm_similarity, image_rm_size, image_clipped_s,
+                              "Visualization of region merging after seeded region growing", "after region growing",
+                              "region merging by similarity", "region merging by size", "final result", 0.3)
 
     results_region_merging_similarity_urg = rm.distance_merging_while(image_result_unseeded.copy(), 0.08,
                                                                       image_intensity_small)
@@ -125,8 +135,9 @@ def region_growing_example():
                                                inter_region_neighbors_urg, means_urg, 1000)
     image_clipped_s_urg = ds.final_clipping(image_rm_size_urg.copy())
 
-    ip.show_four_images_colorbar(image_result_unseeded, image_rm_similarity_urg, image_rm_size_urg, image_clipped_s_urg,
-                                 0.38)
+    ip.show_four_images_title(image_result_unseeded, image_rm_similarity_urg, image_rm_size_urg, image_clipped_s_urg,
+                              "Visualization of region merging after unseeded region growing", "after region growing",
+                              "region merging by similarity", "region merging by size", "final result", 0.3)
 
 
 def results_gowt1_seeded():
@@ -140,7 +151,9 @@ def results_gowt1_seeded():
     image_gt_t01 = sk.imread("Data/N2DH-GOWT1/gt/man_seg01.tif")
     image_gt_t01 = ds.final_clipping(image_gt_t01)
 
-    ip.show_four_images_colorbar(image_intensity, image_srg_t01, image_srg_t01_merged_clipped, image_gt_t01, 0.38)
+    ip.show_four_images_title(image_intensity, image_srg_t01, image_srg_t01_merged_clipped, image_gt_t01,
+                              "Result of image t01 of N2DH-GOWT1 after seeded region growing", "normal image",
+                              "after seeded region growing", "final image", "ground truth image", 0.34)
 
 
 def results_gowt1_unseeded():
@@ -158,8 +171,13 @@ def results_gowt1_unseeded():
     image_urg_t01_merged_filtered_clipped = sk.imread(
         "Result_Pictures/Unseeded_Region_Growing/N2DH-GOWT1/urg_t01_filtered_median3_clipped.tif")
 
-    ip.show_four_images_colorbar(image_urg_t01_merged, image_urg_t01_merged_clipped, image_urg_t01_merged_filtered,
-                                 image_urg_t01_merged_filtered_clipped, 0.38)
+    ip.show_four_images_title(image_urg_t01_merged, image_urg_t01_merged_clipped, image_urg_t01_merged_filtered,
+                              image_urg_t01_merged_filtered_clipped,
+                              "Effects of median filtering after region merging on image t01 of N2DH-GOWT1 after"
+                              " unseeded region growing",
+                              "merged image",
+                              "final image after merging", "merged and filtered",
+                              "final image after merging and filtering", 0.34)
 
 
 def results_hela():
@@ -175,7 +193,10 @@ def results_hela():
     image_srg_clipped = sk.imread("Result_Pictures/Seeded_Region_Growing/N2DL-HeLa/t13_srg_clipped.tif")
     image_urg = sk.imread("Result_Pictures/Unseeded_Region_Growing/N2DL-HeLa/urg_t13_50.tif")
     image_urg_filtered_clipped = sk.imread("Result_Pictures/Unseeded_Region_Growing/N2DL-HeLa/urg_t13_clipped.tif")
-    ip.show_six_images_two_rows(image, image_srg, image_srg_clipped, image_urg, image_urg_filtered_clipped, gt, 0.84)
+    ip.show_six_images_two_rows_title(image, image_srg, image_srg_clipped, image_urg, image_urg_filtered_clipped, gt,
+                                      "Results of seeded and unseeded region growing on image t13 of N2DL-Hela",
+                                      "normal image", "seeded region growing", "final result srg",
+                                      "unseeded region growing", "final result urg", "ground truth image", 0.85)
     dice_value_srg = ds.dice_score(image_srg_clipped, gt)
     print("Seeded Dice score: " + str(dice_value_srg))
     dice_value_urg = ds.dice_score(image_urg_filtered_clipped, gt)
@@ -191,8 +212,10 @@ def nih3t3_show_bright_spots():
     image_intensity_d3_small = sk.imread("Data/NIH3T3/img/dna-42.png")[730:850, 1200:1300]
     img_removed_spots_intact_nuclei = ip.remove_bright_spots(image_intensity_d3_small, 130, 60)
     img_removed_spots_with_border = ip.remove_bright_spots_with_border(image_intensity_d3_small, 130, 60, 30)
-    ip.show_three_images_colorbar(image_intensity_d3_small, img_removed_spots_intact_nuclei,
-                                  img_removed_spots_with_border, 0.55)
+    ip.show_three_images_title(image_intensity_d3_small, img_removed_spots_intact_nuclei,
+                               img_removed_spots_with_border,
+                               "Preprocessing of dna-42 image fragment (NIH3T3) to remove bright spots",
+                               "image fragment", "clipping of bright spots", "clipping with border removal", 0.55, 0.8)
 
 
 def nih3t3_srg_bright_spots():
@@ -211,8 +234,11 @@ def nih3t3_srg_bright_spots():
                                                                      0.05, 0.26, 400)
     result_seg_removed_spots_with_border = seg.seeded_segmentation(img_removed_spots_with_border, gt_data3_small, 0.05,
                                                                    0.2, 400)
-    ip.show_three_images_colorbar(result_seg_with_bright_spots, result_seg_removed_spots_intact_nuclei,
-                                  result_seg_removed_spots_with_border, 0.55)
+    ip.show_three_images_title(result_seg_with_bright_spots, result_seg_removed_spots_intact_nuclei,
+                               result_seg_removed_spots_with_border,
+                               "Effects of bright spot removal on a dna-42 image fragment after seeded region growing",
+                               "result of unprocessed image", "bright spot removal", "bright spot removal with border",
+                               0.55, 0.8)
 
 
 def nih3t3_blurs():
@@ -224,7 +250,9 @@ def nih3t3_blurs():
     srg_image_dna33_small = sk.imread("Result_Pictures/Unseeded_Region_Growing/NIH3T3/dna-33_5_blurs.tif")
     merged_image_small = rm.region_merging(srg_image_dna33_small.copy(), image_dna33_small, 0.01, 17500)
     clipped_image_small = ds.final_clipping(merged_image_small)
-    ip.show_three_images_colorbar(image_dna33_small, srg_image_dna33_small, clipped_image_small, 0.45)
+    ip.show_three_images_title(image_dna33_small, srg_image_dna33_small, clipped_image_small,
+                               "Impact of blurs on seeded region growing of dna-33 (NIH3T3)", "dna-33 image fragment",
+                               "seeded region growing", "final result", 0.45, 0.75)
 
 
 def show_preprocessing():
@@ -291,10 +319,15 @@ def results_nih3t3_seeded():
     image_gt_dna_42 = sk.imread("Data/NIH3T3/gt/42.png")
     image_gt_dna_42 = ds.final_clipping(image_gt_dna_42)
 
-    ip.show_three_images_colorbar(image_intensity, image_gt_dna_42, image_srg_dna_42, 0.35)
-    ip.show_three_images_colorbar(image_srg_dna_42_merged_clipped_undetected_cells,
-                                  image_srg_dna_42_merged_clipped_background, image_srg_dna_42_merged_clipped_manually,
-                                  0.35)
+    ip.show_six_images_two_rows_title(image_intensity, image_gt_dna_42, image_srg_dna_42,
+                                      image_srg_dna_42_merged_clipped_undetected_cells,
+                                      image_srg_dna_42_merged_clipped_background,
+                                      image_srg_dna_42_merged_clipped_manually,
+                                      "Results of seeded region growing on dna-42 (NIH3T3) and evaluation of region "
+                                      "merging",
+                                      "normal image", "ground truth image", "after seeded region growing",
+                                      "merging, several background regions", "merging, one background region",
+                                      "manual merging of background", 0.85)
 
 
 def results_nih3t3_unseeded():

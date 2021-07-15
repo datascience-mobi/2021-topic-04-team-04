@@ -6,22 +6,22 @@ from medpy.filter.smoothing import anisotropic_diffusion
 
 def show_two_images_title(img1, img2, f_title, img1_title, img2_title, colorbar_size):
     plt.figure(figsize=(10, 4))
-    plt.suptitle(f_title, fontsize=18)
+    plt.suptitle(f_title, fontsize=16)
 
     s1 = plt.subplot(1, 2, 1)
-    s1.set_title(img1_title, fontsize=16)
+    s1.set_title(img1_title, fontsize=14)
     plt.imshow(img1, "gray")
     plt.colorbar(shrink=colorbar_size)
 
     s2 = plt.subplot(1, 2, 2)
-    s2.set_title(img2_title, fontsize=16)
+    s2.set_title(img2_title, fontsize=14)
     plt.imshow(img2, "gray")
     plt.colorbar(shrink=colorbar_size)
 
 
-def show_three_images_title(img1, img2, img3, f_title, img1_title, img2_title, img3_title, colorbar_size):
+def show_three_images_title(img1, img2, img3, f_title, img1_title, img2_title, img3_title, colorbar_size, title_position):
     plt.figure(figsize=(15, 8))
-    plt.suptitle(f_title, fontsize=18, y = 0.75)
+    plt.suptitle(f_title, fontsize=18, y=title_position)
 
     s1 = plt.subplot(1, 3, 1)
     s1.set_title(img1_title, fontsize=16)
@@ -39,6 +39,67 @@ def show_three_images_title(img1, img2, img3, f_title, img1_title, img2_title, i
     plt.colorbar(shrink=colorbar_size)
 
 
+def show_four_images_title(img1, img2, img3, img4, f_title, img1_title, img2_title, img3_title, img4_title,
+                           colorbar_size):
+    plt.figure(figsize=(15, 8))
+    plt.suptitle(f_title, fontsize=16, y=0.7)
+
+    s1 = plt.subplot(1, 4, 1)
+    s1.set_title(img1_title, fontsize=14)
+    plt.imshow(img1, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    s2 = plt.subplot(1, 4, 2)
+    s2.set_title(img2_title, fontsize=14)
+    plt.imshow(img2, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    s3 = plt.subplot(1, 4, 3)
+    s3.set_title(img3_title, fontsize=14)
+    plt.imshow(img3, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    s4 = plt.subplot(1, 4, 4)
+    s4.set_title(img4_title, fontsize=14)
+    plt.imshow(img4, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+
+def show_six_images_two_rows_title(img1, img2, img3, img4, img5, img6, f_title, img1_title, img2_title, img3_title,
+                                   img4_title, img5_title, img6_title,
+                                   colorbar_size):
+    plt.figure(figsize=(15, 7))
+    plt.suptitle(f_title, fontsize=16, y=0.95)
+
+    s1 = plt.subplot(2, 3, 1)
+    s1.set_title(img1_title, fontsize=14)
+    plt.imshow(img1, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    s2 = plt.subplot(2, 3, 2)
+    s2.set_title(img2_title, fontsize=14)
+    plt.imshow(img2, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    s3 = plt.subplot(2, 3, 3)
+    s3.set_title(img3_title, fontsize=14)
+    plt.imshow(img3, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    s4 = plt.subplot(2, 3, 4)
+    s4.set_title(img4_title, fontsize=14)
+    plt.imshow(img4, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    s5 = plt.subplot(2, 3, 5)
+    s5.set_title(img5_title, fontsize=14)
+    plt.imshow(img5, "gray")
+    plt.colorbar(shrink=colorbar_size)
+
+    s6 = plt.subplot(2, 3, 6)
+    s4.set_title(img6_title, fontsize=14)
+    plt.imshow(img6, "gray")
+    plt.colorbar(shrink=colorbar_size)
 
 
 def show_images_side_by_side(img1, img2):
