@@ -105,7 +105,7 @@ def region_growing_example():
     """
     image_intensity = sk.imread("Data/N2DH-GOWT1/img/t01.tif")
     image_intensity_small = image_intensity[300:400, 400:500]
-    image_seeds = sd.seeds(image_intensity_small, 0.5)
+    image_seeds = sd.seeds(image_intensity_small, 0.001)
     image_regions_from_seeds = sd.seed_merging(image_seeds)
 
     image_regions = srg.region_growing(image_intensity_small, image_regions_from_seeds.copy())
