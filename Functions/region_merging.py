@@ -364,7 +364,7 @@ def region_merging(reg, img, distance_threshold, size_threshold):
     performs the distance region merging algorithm and the size region merging algorithm after each other
     :param reg: array with region numbers (2D array)
     :param img: array with intensity values (2D array)
-    :param distance_threshold: regions with more intensity similarity than the threshold will be merged (float)
+    :param distance_threshold: regions with smaller intensity distance than the threshold will be merged (float)
     :param size_threshold: regions that are smaller than this threshold will be merged (int)
     :return:
     """
