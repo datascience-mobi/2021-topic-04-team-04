@@ -83,7 +83,7 @@ def clipping_examples():
     image_intensity = sk.imread("Data/N2DH-GOWT1/img/t01.tif")
     img_clipped = ip.image_clipping(image_intensity, 5, 25)
     img_clipped_extreme = ip.image_clipping_extreme(image_intensity, 5, 15)
-    ip.show_three_images_colorbar(image_intensity, img_clipped, img_clipped_extreme, 0.45)
+    ip.show_three_images_title(image_intensity, img_clipped, img_clipped_extreme, "Application of different clipping methods", "unprocessed", "clipped", "clipped to border values", 0.45)
 
 
 def bright_spots_example():
