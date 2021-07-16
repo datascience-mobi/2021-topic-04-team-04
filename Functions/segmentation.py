@@ -28,9 +28,9 @@ def seeded_segmentation(img, gt, threshold_seeds, threshold_merging_intensity, t
     image_clipped = ds.final_clipping(image_merged)
 
     dice_value = ds.dice_score(image_merged, gt)
-    print("Dice score: " + str(dice_value))
+    #print("Dice score: " + str(dice_value))
 
-    return image_clipped
+    return image_clipped, dice_value
 
 
 def unseeded_segmentation(img, gt, start_pixel, threshold_region_growing, threshold_merging_intensity,
@@ -52,9 +52,9 @@ def unseeded_segmentation(img, gt, start_pixel, threshold_region_growing, thresh
 
     dice_value = ds.dice_score(image_merged, gt)
 
-    print("Dice score: " + str(dice_value))
+    #print("Dice score: " + str(dice_value))
 
-    return image_clipped
+    return image_clipped, dice_value
 
 
 def manuel_segmentation():

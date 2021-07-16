@@ -229,16 +229,22 @@ def nih3t3_srg_bright_spots():
     img_removed_spots_intact_nuclei = ip.remove_bright_spots(image_intensity_d3_small, 130, 60)
     img_removed_spots_with_border = ip.remove_bright_spots_with_border(image_intensity_d3_small, 130, 60, 30)
 
-    result_seg_with_bright_spots = seg.seeded_segmentation(image_intensity_d3_small, gt_data3_small, 0.05, 0.1, 400)
-    result_seg_removed_spots_intact_nuclei = seg.seeded_segmentation(img_removed_spots_intact_nuclei, gt_data3_small,
-                                                                     0.05, 0.26, 400)
-    result_seg_removed_spots_with_border = seg.seeded_segmentation(img_removed_spots_with_border, gt_data3_small, 0.05,
-                                                                   0.2, 400)
+    result_seg_with_bright_spots, dice_score_with_bright_spots = seg.seeded_segmentation(image_intensity_d3_small,
+                                                                                         gt_data3_small, 0.05, 0.1, 400)
+    result_seg_removed_spots_intact_nuclei, dice_score_removed_spots = seg.seeded_segmentation(
+        img_removed_spots_intact_nuclei, gt_data3_small,
+        0.05, 0.26, 400)
+    result_seg_removed_spots_with_border, dice_score_removed_spots_border = seg.seeded_segmentation(
+        img_removed_spots_with_border, gt_data3_small, 0.05,
+        0.2, 400)
     ip.show_three_images_title(result_seg_with_bright_spots, result_seg_removed_spots_intact_nuclei,
                                result_seg_removed_spots_with_border,
                                "Effects of bright spot removal on a dna-42 image fragment after seeded region growing",
                                "result of unprocessed image", "bright spot removal", "bright spot removal with border",
                                0.55, 0.8)
+    print("Dice score with bright spots: " + str(dice_score_with_bright_spots))
+    print("Dice score after removing bright spots: " + str(dice_score_removed_spots))
+    print("Dice score after removing bright spots and border: " + str(dice_score_removed_spots_border))
 
 
 def nih3t3_blurs():
@@ -280,30 +286,41 @@ def show_preprocessing():
                              "unprocessed image", "clipped image", "extremely clipped image", "median filter sigma 3",
                              "gaussian filter sigma 1", "ground truth image", 0.3)
 
-    image_small_segmented = seg.seeded_segmentation(image_hela13_small_n, image_gt_hela13_small, 0.5, 0.1, 300)
-    image_clipped_segmented = seg.seeded_segmentation(image_hela13_clipped, image_gt_hela13_small, 0.5, 0.1, 300)
-    image_clipped_extreme_segmented = seg.seeded_segmentation(image_hela13_clipped_extreme, image_gt_hela13_small, 0.5,
-                                                              0.1, 300)
-    image_median_segmented = seg.seeded_segmentation(image_hela13_median, image_gt_hela13_small, 0.5, 0.1, 300)
-    image_gauss_segmented = seg.seeded_segmentation(image_hela13_gauss, image_gt_hela13_small, 0.5, 0.1, 300)
+    image_small_segmented, dice_seeded_normal = seg.seeded_segmentation(image_hela13_small_n, image_gt_hela13_small,
+                                                                        0.5, 0.1, 300)
+    image_clipped_segmented, dice_seeded_clipped = seg.seeded_segmentation(image_hela13_clipped, image_gt_hela13_small,
+                                                                           0.5, 0.1, 300)
+    image_clipped_extreme_segmented, dice_seeded_clipped_extreme = seg.seeded_segmentation(image_hela13_clipped_extreme,
+                                                                                           image_gt_hela13_small, 0.5,
+                                                                                           0.1, 300)
+    image_median_segmented, dice_seeded_median = seg.seeded_segmentation(image_hela13_median, image_gt_hela13_small,
+                                                                         0.5, 0.1, 300)
+    image_gauss_segmented, dice_seeded_gaussian = seg.seeded_segmentation(image_hela13_gauss, image_gt_hela13_small,
+                                                                          0.5, 0.1, 300)
     ip.show_six_images_title(image_small_segmented, image_clipped_segmented, image_clipped_extreme_segmented,
-                                image_median_segmented, image_gauss_segmented, image_gt_hela13_small,
-                                "Results of differently preprocessed images after seeded region growing",
-                                "unprocessed image", "clipped image", "extremely clipped image",
-                                "median filter sigma 3",
-                                "gaussian filter sigma 1", "ground truth image", 0.3)
+                             image_median_segmented, image_gauss_segmented, image_gt_hela13_small,
+                             "Results of differently preprocessed images after seeded region growing",
+                             "unprocessed image", "clipped image", "extremely clipped image",
+                             "median filter sigma 3",
+                             "gaussian filter sigma 1", "ground truth image", 0.3)
 
-    image_small_segmented_urg = seg.unseeded_segmentation(image_hela13_small_n, image_gt_hela13_small.copy(), (0, 0),
-                                                          50, 0.01, 300)
-    image_clipped_segmented_urg = seg.unseeded_segmentation(image_hela13_clipped, image_gt_hela13_small.copy(), (0, 0),
-                                                            50, 0.1, 300)
-    image_clipped_extreme_segmented_urg = seg.unseeded_segmentation(image_hela13_clipped_extreme,
-                                                                    image_gt_hela13_small.copy(), (0, 0), 50, 0.1, 300)
-    image_median_segmented_urg = seg.unseeded_segmentation(image_hela13_median, image_gt_hela13_small.copy(), (0, 0),
-                                                           50, 0.1, 300)
+    image_small_segmented_urg, dice_unseeded_normal = seg.unseeded_segmentation(image_hela13_small_n,
+                                                                                image_gt_hela13_small.copy(), (0, 0),
+                                                                                50, 0.01, 300)
+    image_clipped_segmented_urg, dice_unseeded_clipped = seg.unseeded_segmentation(image_hela13_clipped,
+                                                                                   image_gt_hela13_small.copy(), (0, 0),
+                                                                                   50, 0.1, 300)
+    image_clipped_extreme_segmented_urg, dice_unseeded_clipped_extreme = seg.unseeded_segmentation(
+        image_hela13_clipped_extreme,
+        image_gt_hela13_small.copy(), (0, 0), 50, 0.1, 300)
+    image_median_segmented_urg, dice_unseeded_median = seg.unseeded_segmentation(image_hela13_median,
+                                                                                 image_gt_hela13_small.copy(), (0, 0),
+                                                                                 50, 0.1, 300)
     image_hela33_gauss = ip.gaussian_filter(image_hela13_small, 3)
-    image_gauss_segmented_urg = seg.unseeded_segmentation(image_hela33_gauss, image_gt_hela13_small.copy(), (0, 0), 50,
-                                                          0.01, 300)
+    image_gauss_segmented_urg, dice_unseeded_gaussian = seg.unseeded_segmentation(image_hela33_gauss,
+                                                                                  image_gt_hela13_small.copy(), (0, 0),
+                                                                                  50,
+                                                                                  0.01, 300)
     ip.show_six_images_title(image_small_segmented_urg, image_clipped_segmented_urg,
                              image_clipped_extreme_segmented_urg, image_median_segmented_urg,
                              image_gauss_segmented_urg, image_gt_hela13_small,
@@ -311,6 +328,16 @@ def show_preprocessing():
                              "unprocessed image", "clipped image", "extremely clipped image",
                              "median filter sigma 3",
                              "gaussian filter sigma 1", "ground truth image", 0.3)
+    print("Dice score of normal image: Seeded region growing: " + str(
+        dice_seeded_normal) + " Unseeded region growing:" + str(dice_unseeded_normal))
+    print("Dice score of clipped image: Seeded region growing: " + str(
+        dice_seeded_clipped) + " Unseeded region growing:" + str(dice_unseeded_clipped))
+    print("Dice score of extremely clipped image: Seeded region growing: " + str(
+        dice_seeded_clipped_extreme) + " Unseeded region growing:" + str(dice_unseeded_clipped_extreme))
+    print("Dice score of median filtered image: Seeded region growing: " + str(
+        dice_seeded_median) + " Unseeded region growing:" + str(dice_unseeded_median))
+    print("Dice score of gaussian filtered image: Seeded region growing: " + str(
+        dice_seeded_gaussian) + " Unseeded region growing:" + str(dice_unseeded_gaussian))
 
 
 def results_nih3t3_seeded():
