@@ -127,7 +127,7 @@ def region_growing_example():
     image_clipped_s = ds.final_clipping(image_rm_size.copy())
     ip.show_four_images_title(image_regions, image_rm_similarity, image_rm_size, image_clipped_s,
                               "Visualization of region merging after seeded region growing", "after region growing",
-                              "region merging by similarity", "region merging by size", "final result", 0.3)
+                              "region merging by similarity", "region merging by size", "final result", 0.335)
 
     results_region_merging_similarity_urg = rm.distance_merging_while(image_result_unseeded.copy(), 0.08,
                                                                       image_intensity_small)
@@ -138,7 +138,7 @@ def region_growing_example():
 
     ip.show_four_images_title(image_result_unseeded, image_rm_similarity_urg, image_rm_size_urg, image_clipped_s_urg,
                               "Visualization of region merging after unseeded region growing", "after region growing",
-                              "region merging by similarity", "region merging by size", "final result", 0.3)
+                              "region merging by similarity", "region merging by size", "final result", 0.335)
 
 
 def results_gowt1_seeded():
