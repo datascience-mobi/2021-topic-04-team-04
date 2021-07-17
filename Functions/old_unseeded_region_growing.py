@@ -1,11 +1,6 @@
 import numpy as np
 from Functions import old_seeded_region_growing as old_srg
 
-# import skimage.io as sk
-# import matplotlib.pyplot as plt
-# import math as m
-# from Functions import image_processing as ip
-
 
 def old_unseeded_distance(img, neighbors, reg):
     """

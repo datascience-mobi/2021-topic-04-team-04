@@ -6,8 +6,6 @@ from Functions import seeded_region_growing as srg
 from Functions import unseeded_region_growing as urg
 from Functions import seed_detection as sd
 from Functions import region_merging as rm
-from Functions import old_seeded_region_growing as old_srg
-from Functions import old_unseeded_region_growing as old_urg
 from Functions import dice_score as ds
 from Functions import segmentation as seg
 import pandas as pd

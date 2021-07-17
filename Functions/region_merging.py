@@ -1,10 +1,6 @@
 import numpy as np
-import skimage.io as sk
 from Functions import image_processing as ip
 from Functions import seeded_region_growing as srg
-
-#  from Functions import seed_detection as sd
-from PIL import Image
 
 
 def find_neighboring_regions(reg):
@@ -117,7 +113,7 @@ def region_distance_new(img, reg, pos_min_dist, means, inter_region_distances, i
     :return: inter_region_distances: updated distances between mean intensity values of regions (2D array)
     """
     maximal_intensity = np.amax(img)
-    changed_region1 = int(pos_min_dist[0])  # Regions Nummer 1 die übernommen wird
+    changed_region1 = int(pos_min_dist[0])  # new region is region 1
     changed_region2 = int(pos_min_dist[1])
     means = update_mean_values(means, changed_region1, changed_region2, img, reg)
     inter_region_distances = update_distances(changed_region1, changed_region2, inter_region_distances, means,
@@ -372,14 +368,3 @@ def region_merging(reg, img, distance_threshold, size_threshold):
     image_rm_similarity, inter_region_neighbors, means = results_region_merging_similarity
     image_rm_size = region_merging_size(img, image_rm_similarity, inter_region_neighbors, means, size_threshold)
     return image_rm_size
-
-
-if __name__ == '__main__':
-    image_intensity = sk.imread("../Data/N2DH-GOWT1/img/t31.tif")  # load image
-    # image_intensity = image_intensity[300:350, 450:500]
-    image_r = sk.imread("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/")
-
-    image_r_merged = region_merging(image_r, image_intensity, 0.004, 400)
-
-    im = Image.fromarray(image_r_merged)
-    im.save("../Result_Pictures/Seeded_Region_Growing/N2DH-GOWT1/")

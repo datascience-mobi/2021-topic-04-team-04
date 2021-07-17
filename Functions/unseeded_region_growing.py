@@ -2,11 +2,6 @@ import numpy as np
 from Functions import seeded_region_growing as srg
 
 
-#  from Functions import image_processing as ip
-#  from PIL import Image
-import skimage.io as sk
-
-
 def unseeded_calculate_one_distance(means, pixel_intensity, region_number):
     """
     calculates the distance of a pixel to the region with a specific region number
@@ -183,7 +178,7 @@ def unseeded_region_growing_algorithm(img, start_pixel, t):
     :param t: threshold to decide whether a pixel is similar enough to a region (float)
     :return: array with region numbers (2D array)
     """
-    reg = np.zeros(img.shape, int)  # array with region number
+    reg = np.zeros(img.shape, int)
     reg[start_pixel] = 1
 
     left_neighbors, right_neighbors, top_neighbors, bottom_neighbors = srg.find_seed_neighbors(reg)
@@ -206,12 +201,4 @@ def unseeded_region_growing_algorithm(img, start_pixel, t):
             unseeded_label_new_pixel(reg, left_distances, right_distances, top_distances, bottom_distances,
                                      left_neighbors, right_neighbors, top_neighbors, bottom_neighbors, t,
                                      means, img)
-
-        #  print(np.count_nonzero(reg == 0))
     return reg
-
-
-if __name__ == '__main__':
-    hela = sk.imread("../Data/N2DL-HeLa/img/t13.tif")
-    hela_small = hela[160:185, 790:815]
-    hela_urg = unseeded_region_growing_algorithm(hela_small, (0, 0), 50)

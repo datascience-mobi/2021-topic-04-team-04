@@ -3,9 +3,6 @@ import math as m
 from Functions import image_processing as ip
 from skimage.filters import threshold_otsu
 
-# import skimage.io as sk
-#  from collections import Counter
-
 
 def standard_deviation(img, size):
     """  calculates standard deviation of every pixel
@@ -141,5 +138,4 @@ def reduce_region_number(reg, threshold):
             counter += 1
         else:
             reg[pos_of_reg[0], pos_of_reg[1]] = 0
-    #  print(np.unique(reg.flatten()))
     return reg

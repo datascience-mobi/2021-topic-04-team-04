@@ -1,11 +1,5 @@
-import skimage.io as sk
 import numpy as np
-from Functions import image_processing as ip
-from Functions import seed_detection as sd
 
-
-# import math as m
-# import matplotlib.pyplot as plt
 
 def find_neighbors(reg):
     """
@@ -61,7 +55,7 @@ def get_neighbors(img, p):
 def mean_region(img, reg):
     """
     :param img: image with intensity values (2D array)
-    :param reg: array with pixle numbers (2D array)
+    :param reg: array with pixel numbers (2D array)
     :return: list with mean values of the regions, region number 1 has index 0 (list)
     """
     mean_value = []
@@ -179,7 +173,8 @@ def new_distance(img, reg, nearest_reg, dis, new_pixel, neighbors, means):
                     recalculated = True
                     for neighbor_position in four_neighbors:
                         if is_labeled(reg, neighbor_position):
-                            distance.append(calculate_distance(img, means, max_intensity, pixel, reg[neighbor_position]))
+                            distance.append(
+                                calculate_distance(img, means, max_intensity, pixel, reg[neighbor_position]))
                             region_number.append(reg[neighbor_position])
 
                     min_dist = min(distance)
@@ -234,7 +229,6 @@ def label(reg, dis, nearest_reg, neighbors):
     reg[pos_min_dist] = nearest_reg[pos_min_dist]
     neighbors.remove(pos_min_dist)
     dis[pos_min_dist] = 1
-    #print(len(neighbors))
     return reg, pos_min_dist, neighbors, dis
 
 
@@ -307,14 +301,3 @@ def add_missing_neighbors(img, pos_min_dist, neighbors, reg):
         if neighbor not in neighbors and not is_labeled(reg, neighbor):
             neighbors.append(neighbor)
     return neighbors
-
-
-if __name__ == '__main__':
-    image = sk.imread("../Data/N2DH-GOWT1/img/t01.tif")  # load image
-    img_s = image[300:400, 300:500]
-    img_result = sd.seeds(img_s, 40)
-    img_result = sd.seed_merging(img_result)
-    #img_result = sd.decrease_region_number(img_result, 50)
-
-    img_result = region_growing(img_s, img_result)
-    ip.show_image(img_result, 15, 8)

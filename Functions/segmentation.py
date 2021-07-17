@@ -28,7 +28,6 @@ def seeded_segmentation(img, gt, threshold_seeds, threshold_merging_intensity, t
     image_clipped = ds.final_clipping(image_merged)
 
     dice_value = ds.dice_score(image_merged, gt)
-    #print("Dice score: " + str(dice_value))
 
     return image_clipped, dice_value
 
@@ -52,8 +51,6 @@ def unseeded_segmentation(img, gt, start_pixel, threshold_region_growing, thresh
 
     dice_value = ds.dice_score(image_merged, gt)
 
-    #print("Dice score: " + str(dice_value))
-
     return image_clipped, dice_value
 
 
@@ -69,31 +66,12 @@ def manuel_segmentation():
 
 
 if __name__ == '__main__':
-    image_intensity = sk.imread("../Data/NIH3T3/img/dna-42.png")
-    #  image_intensity = ip.subtract_minimum(image_intensity)
-    image_intensity = ip.remove_bright_spots_with_border(image_intensity, 130, 60, 30)
-    image_intensity = ip.gaussian_filter(image_intensity, 3)
-    img_gt = sk.imread("../Data/NIH3T3/gt/42.png")
+    image_intensity = sk.imread("../Data/N2DH-GOWT1/img/man_seg01.tif")
+    img_gt = sk.imread("../Data/N2DH-GOWT1/gt/man_seg01.tif")
+    image_final_srg, dice_srg = seeded_segmentation(image_intensity, img_gt, 0.1, 0.05, 400)
+    image_final_srg_save = Image.fromarray(image_final_srg.copy())
+    image_final_srg_save.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_merged.tif")
 
-    use_image_seeds = sd.seeds(image_intensity, 0.001)
-    image_seeds_s = Image.fromarray(use_image_seeds.copy())
-    image_seeds_s.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_seeds.tif")
-
-    image_for_srg = sd.seed_merging(use_image_seeds.copy())
-    image_for_srg_reduced = sd.reduce_region_number(image_for_srg.copy(), 5)
-    image_for_srg_reduced_s = Image.fromarray(image_for_srg_reduced.copy())
-    image_for_srg_reduced_s.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_seeds_reduced.tif")
-
-    #image_for_srg_reduced = sk.imread("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_seeds_reduced.tif")
-
-    use_image_srg = srg.region_growing(image_intensity, image_for_srg_reduced.copy())
-    image_srg_s = Image.fromarray(use_image_srg.copy())
-    image_srg_s.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_srg.tif")
-
-    use_image_merged = rm.region_merging(use_image_srg.copy(), image_intensity, 0.1, 400)
-    image_merged_s = Image.fromarray(use_image_merged.copy())
-    image_merged_s.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_merged.tif")
-
-    image_final = ds.final_clipping(use_image_merged.copy())
-    image_final_s = Image.fromarray(image_final.copy())
-    image_final_s.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_clipped.tif")
+    image_final_urg, dice_urg = unseeded_segmentation(image_intensity, img_gt, (0, 0), 5, 0.001, 10000)
+    image_final_urg_save = Image.fromarray(image_final_urg.copy())
+    image_final_urg_save.save("../Result_Pictures/Seeded_Region_Growing/NIH3T3/dna-42_srg_clipped.tif")
