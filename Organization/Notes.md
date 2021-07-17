@@ -25,6 +25,3 @@
 ## Use of image segmentation 
 - https://imageannotation.home.blog/2020/06/18/what-is-the-application-of-image-segmentation/
 
-## ToDos:
-- Text dritter Datensatz Vergleich seeded unseeded (Ina)
-- PowerPoint Algorithmus überblick (Marie), Überblick aller Code
