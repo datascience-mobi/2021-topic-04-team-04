@@ -52,8 +52,8 @@ def barplot_results():
 
 def barplot_runtime():
     columns_names = ["Runtime in ms", "Sd_runtime in ms", "Segmentation Method", "Algorithm version"]
-    runtime = [6440, 18200, 703, 672]
-    sd_time = [99.1, 796, 11.1, 24.4]
+    runtime = [9790, 24900, 678, 933]
+    sd_time = [2500, 2120, 22.5, 36.5]
     segmentation_method = ["Seeded", "Unseeded", "Seeded", "Unseeded"]
     version = ["Old", "Old", "New", "New"]
 
@@ -61,7 +61,7 @@ def barplot_runtime():
     #  print(df)
 
     ax = sns.barplot(x="Algorithm version", y="Runtime in ms", hue="Segmentation Method", data=df, palette="dark")
-    ax.set(ylim=(0, 20000))
+    ax.set(ylim=(0, 27000))
     plt.legend(loc=3)
 
 
